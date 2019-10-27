@@ -5,7 +5,7 @@
  */
 package negocio;
 
-import java.security.Timestamp;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 
 /**
@@ -13,17 +13,20 @@ import java.util.ArrayList;
  * @author Vinicius
  */
 public class Emprestimo {
+    
+    private static int idBD = 0; //int global para controlar o ID autoincrementado
     private int idEmprestimo;
     private int idResponsavel;
     private Timestamp retirada;
     private Timestamp devolucao;
     private ArrayList equipamento;
 
-    public Emprestimo(int idEmprestimo, int idResponsavel, Timestamp retirada, ArrayList equipamento) {
-        this.idEmprestimo = idEmprestimo;
+    public Emprestimo(int idResponsavel, Timestamp retirada, ArrayList equipamento) {
+        this.idEmprestimo = Emprestimo.idBD;
         this.idResponsavel = idResponsavel;
         this.retirada = retirada;
         this.equipamento = equipamento;
+        Emprestimo.idBD++;
     }
 
     public int getIdEmprestimo() {

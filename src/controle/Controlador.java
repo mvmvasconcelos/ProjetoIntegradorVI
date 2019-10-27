@@ -5,10 +5,54 @@
  */
 package controle;
 
+import java.util.ArrayList;
+import negocio.Emprestimo;
+import negocio.Equipamento;
+import negocio.Responsavel;
+
+
 /**
  *
  * @author vinicius
  */
 public class Controlador {
+    /* Listas temporária para armazenar os objetos criados    
+       posteriormente serão substituídas pelo banco de dados */    
+    public static ArrayList<Equipamento> listaDeEquipamentos = new ArrayList<>();
+    public static ArrayList<Responsavel> listaDeResponsaveis = new ArrayList<>();
+    public static ArrayList<Emprestimo> listaDeEmprestimos = new ArrayList<>();
     
+    /** Cria um novo equipamento e adiciona ele à lista
+     *
+     * @param codigo
+     * @param tipo
+     * @param descricao
+     */
+    public void cadastraEquipamento(int codigo, String tipo, String descricao){
+        Equipamento novo = new Equipamento(codigo, tipo, descricao);
+        salvaObjeto(novo);
+    }
+    
+    /** Cria um novo responsavel e adiciona ele à lista
+     *
+     * @param nome
+     * @param codigo
+     * @param telefone
+     * @param email
+     */
+    public void cadastraResponsavel ( String nome, int codigo, String telefone, String email){
+        Responsavel novo = new Responsavel(nome, codigo, telefone, email);
+        salvaObjeto(novo);
+    }
+    
+    //Adiciona o objeto à lista correspondente
+    public void salvaObjeto(Equipamento equipamento){
+        listaDeEquipamentos.add(equipamento);
+    }
+    public void salvaObjeto(Responsavel responsavel){
+        listaDeResponsaveis.add(responsavel);
+    }
+    public void salvaObjeto(Emprestimo emprestimo){
+        listaDeEmprestimos.add(emprestimo);
+    }
 }

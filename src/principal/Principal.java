@@ -5,6 +5,7 @@
  */
 package principal;
 
+import java.sql.Timestamp;
 import telas.TelaPrincipal;
 
 /**
@@ -20,6 +21,10 @@ public class Principal {
         java.awt.EventQueue.invokeLater(() -> {
             new TelaPrincipal().setVisible(true);
         });
+        
+        Timestamp ts = new Timestamp(System.currentTimeMillis());
+        System.out.println("Current Time Stamp: " + ts);
+        
     }
     
 }

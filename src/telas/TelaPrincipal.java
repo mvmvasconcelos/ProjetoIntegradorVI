@@ -5,11 +5,14 @@
  */
 package telas;
 
+import controle.Controlador;
+
 /**
  *
  * @author vinicius
  */
 public class TelaPrincipal extends javax.swing.JFrame {
+    Controlador controlador = new Controlador();
 
     /**
      * Creates new form TelaPrincipal
