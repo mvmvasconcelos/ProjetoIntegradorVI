@@ -62,5 +62,18 @@ public class Responsavel {
     public void setEmail(String email) {
         this.email = email;
     }
+    
+    /** Retorna string com todos os dados do equipamento
+     * 
+     * @return String
+     */
+    public String getTudo(){
+        return "IDBD: " + idBD 
+             + "\nID:" + id
+             + "\nNOME:" + nome
+             + "\nCÓDIGO:" + codigo
+             + "\nTELEFONE:" + telefone
+             + "\nDESCRIÇÃO:" + email;
+    }
         
 }

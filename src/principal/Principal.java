@@ -6,6 +6,7 @@
 package principal;
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import telas.TelaPrincipal;
 
 /**
@@ -23,7 +24,20 @@ public class Principal {
         });
         
         Timestamp ts = new Timestamp(System.currentTimeMillis());
-        System.out.println("Current Time Stamp: " + ts);
+        
+        //Construa um DateFormat, com o o formato pretendido
+        SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat hf = new SimpleDateFormat("HH:mm");
+        
+
+        // Obtenha a String que representa a data nesse formato
+        String formattedDate = df.format(ts);
+        String formattedHora = hf.format(ts);
+        
+        System.out.println("Timestamp: " + ts);
+        System.out.println("Dia: " + formattedDate);
+        System.out.println("Hora: " + formattedHora);
+        
         
     }
     

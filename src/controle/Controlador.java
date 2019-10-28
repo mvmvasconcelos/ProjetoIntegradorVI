@@ -5,6 +5,7 @@
  */
 package controle;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import negocio.Emprestimo;
 import negocio.Equipamento;
@@ -21,6 +22,10 @@ public class Controlador {
     public static ArrayList<Equipamento> listaDeEquipamentos = new ArrayList<>();
     public static ArrayList<Responsavel> listaDeResponsaveis = new ArrayList<>();
     public static ArrayList<Emprestimo> listaDeEmprestimos = new ArrayList<>();
+    
+    public ArrayList getListaEmprestimos(){
+        return listaDeEmprestimos;
+    }
     
     /** Cria um novo equipamento e adiciona ele à lista
      *
@@ -43,6 +48,26 @@ public class Controlador {
     public void cadastraResponsavel ( String nome, int codigo, String telefone, String email){
         Responsavel novo = new Responsavel(nome, codigo, telefone, email);
         salvaObjeto(novo);
+    }
+    
+    public void cadastraEmprestimo(int idResponsavel, Timestamp retirada, int idEquipamento){
+        Emprestimo novo = new Emprestimo(idResponsavel, retirada, idEquipamento);
+        salvaObjeto(novo);
+    }
+    
+    /**
+     * Recebe o id e percorre a lista de responsáveis para pegar o nome
+     * correspondente ao id
+     * @param id
+     * @return String
+     */
+    public String getNomeResponsavel(int id){
+        for (int i = 0; i < listaDeResponsaveis.size(); i++) {
+            if (listaDeResponsaveis.get(i).getId() == id) {
+                return listaDeResponsaveis.get(i).getNome();
+            }            
+        }
+        return null;
     }
     
     //Adiciona o objeto à lista correspondente
