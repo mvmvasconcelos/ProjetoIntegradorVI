@@ -12,6 +12,7 @@ import javax.swing.table.DefaultTableModel;
 import negocio.Emprestimo;
 import negocio.Equipamento;
 import java.sql.Timestamp;
+import negocio.Responsavel;
 
 
 /**
@@ -22,7 +23,14 @@ public class TelaPrincipal extends javax.swing.JFrame {
     //Carrega o controlador
     Controlador controlador = new Controlador();
     //Cria lista de emprestimos
-    ArrayList<Emprestimo> listaDeEmprestimos =  controlador.getListaEmprestimos();
+    ArrayList<Emprestimo> listaDeEmprestimos =  controlador.getListaDeEmprestimos();
+    
+    /** Tipos de listagem para abrir a janela correta ao clicar duas vezes na tabela
+     * 1 - Emprestimos
+     * 2 - Responsáveis
+     * 3 - Equipamentos
+     */
+    int tipoListagem;
     
     //Cria modelo de tabela, será usado na manipulação da mesma
     DefaultTableModel tabela; 
@@ -38,8 +46,13 @@ public class TelaPrincipal extends javax.swing.JFrame {
         initComponents();
     }
     
-    private void montaTabela(){
+    private void consultarTodosEmprestimos(){
         if (listaDeEmprestimos.size() > 0) {
+            //Muda título da tabela
+            lblListando.setText("Listando todos os empréstimos");
+            //Atualiza o tipo da listagem
+            tipoListagem = 1;
+            
             //limparLista();
             //Recria a tabela caso ela tenha sido modificada            
             tabelaPrincipal.setModel(new javax.swing.table.DefaultTableModel(
@@ -66,9 +79,9 @@ public class TelaPrincipal extends javax.swing.JFrame {
             for (int i = 0; i < listaDeEmprestimos.size(); i++) {               
                 
                 //Busca na lista de equipamentos o idEquipamento do emprestimo atual
-                dadosDaLinhaNaColuna[0] = Controlador.listaDeEquipamentos.get(listaDeEmprestimos.get(i).getIdEquipamento()).getDescricao();
+                dadosDaLinhaNaColuna[0] = controlador.getListaDeEquipamentos().get(listaDeEmprestimos.get(i).getIdEquipamento()).getDescricao();
                 
-                dadosDaLinhaNaColuna[1] = Controlador.listaDeEquipamentos.get(listaDeEmprestimos.get(i).getIdEquipamento()).getCodigo();
+                dadosDaLinhaNaColuna[1] = controlador.getListaDeEquipamentos().get(listaDeEmprestimos.get(i).getIdEquipamento()).getCodigo();
                 
                 //Pega o nome do responsável de acordo com o id do empréstimo atual
                 String nomeResponsavel = controlador.getNomeResponsavel(listaDeEmprestimos.get(i).getIdResponsavel());
@@ -101,7 +114,118 @@ public class TelaPrincipal extends javax.swing.JFrame {
         } else { //Se estiver vazia, avisa o usuário
             //exibirMensagem();
             JOptionPane.showMessageDialog(this, "Nenhum empréstimo");
-        }  
+        }
+    }
+    
+    private void consultarResponsaveis(){
+        ArrayList<Responsavel> listaDeResponsaveis = controlador.getListaDeResponsaveis();
+        if (listaDeResponsaveis.size() > 0) {
+            //Muda título da tabela
+            lblListando.setText("Listando responsáveis");
+            //Atualiza o tipo da listagem
+            tipoListagem = 2;
+
+            //limparLista();
+            //Recria a tabela caso ela tenha sido modificada            
+            tabelaPrincipal.setModel(new javax.swing.table.DefaultTableModel(
+                new Object [][] {},
+                new String [] {
+                     "Nome", "Código", "Telefone", "E-Mail", "idResponsavel"
+                })
+                {
+                boolean[] canEdit = new boolean [] {
+                    false, false, false, false, false
+                };
+
+                @Override
+                public boolean isCellEditable(int rowIndex, int columnIndex) {
+                    return canEdit [columnIndex];
+                }}
+            );
+            //define a tabela com o mesmo modelo da tabelaPrincipal
+            tabela = (DefaultTableModel) tabelaPrincipal.getModel();
+
+            //Cria um objeto dadosDaLinhaNaColuna, onde cada posição é será coluna
+            Object dadosDaLinhaNaColuna[] = new Object[5];
+            //percorre o lista e popula as colunas de acordo com a posicao
+            for (int i = 0; i < listaDeResponsaveis.size(); i++) {               
+                
+                //Busca na lista de equipamentos o idEquipamento do emprestimo atual
+                dadosDaLinhaNaColuna[0] = listaDeResponsaveis.get(i).getNome();
+                dadosDaLinhaNaColuna[1] = listaDeResponsaveis.get(i).getCodigo();
+                dadosDaLinhaNaColuna[2] = listaDeResponsaveis.get(i).getTelefone();
+                dadosDaLinhaNaColuna[3] = listaDeResponsaveis.get(i).getEmail();
+                dadosDaLinhaNaColuna[4] = listaDeResponsaveis.get(i).getIdResponsavel();
+                
+                //Adiciona os dados à linha na tabela
+                tabela.addRow(dadosDaLinhaNaColuna);                
+
+            }
+            //Define o autoresize pra 3, não lembro qual o motivo.
+            tabelaPrincipal.setAutoResizeMode(3);
+            //Oculta última coluna que é apenas para passar referência
+            tabelaPrincipal.getColumnModel().getColumn(4).setMinWidth(0);
+            tabelaPrincipal.getColumnModel().getColumn(4).setMaxWidth(0);
+            jScrollPane1.getVerticalScrollBar().setValue(0);
+        } else { //Se estiver vazia, avisa o usuário
+            //exibirMensagem();
+            JOptionPane.showMessageDialog(this, "Nenhum responsável cadastrado.");
+        }        
+    }
+    
+    private void consultarEquipamentos(){
+        ArrayList<Equipamento> listaDeEquipamentos = Controlador.getListaDeEquipamentos();
+        if (listaDeEquipamentos.size() > 0) {
+            //Muda título da tabela
+            lblListando.setText("Listando equipamentos");
+            //Atualiza o tipo da listagem
+            tipoListagem = 3;
+            //limparLista();
+            //Recria a tabela caso ela tenha sido modificada
+            tabelaPrincipal.setModel(new javax.swing.table.DefaultTableModel(
+                new Object [][] {},
+                new String [] {
+                     "Código", "Tipo", "Descrição", "Situação", "idEquipamento"
+                })
+                {
+                boolean[] canEdit = new boolean [] {
+                    false, false, false, false, false
+                };
+
+                @Override
+                public boolean isCellEditable(int rowIndex, int columnIndex) {
+                    return canEdit [columnIndex];
+                }}
+            );
+            //define a tabela com o mesmo modelo da tabelaPrincipal
+            tabela = (DefaultTableModel) tabelaPrincipal.getModel();
+
+            //Cria um objeto dadosDaLinhaNaColuna, onde cada posição é será coluna
+            Object dadosDaLinhaNaColuna[] = new Object[5];
+            //percorre o lista e popula as colunas de acordo com a posicao
+            for (int i = 0; i < listaDeEquipamentos.size(); i++) {               
+                
+                //Busca na lista de equipamentos o idEquipamento do emprestimo atual
+                dadosDaLinhaNaColuna[0] = listaDeEquipamentos.get(i).getCodigo();
+                dadosDaLinhaNaColuna[1] = listaDeEquipamentos.get(i).getTipo();
+                dadosDaLinhaNaColuna[2] = listaDeEquipamentos.get(i).getDescricao();
+                dadosDaLinhaNaColuna[3] = listaDeEquipamentos.get(i).getSituacao();
+                dadosDaLinhaNaColuna[4] = listaDeEquipamentos.get(i).getIdEquipamento();
+                
+                //Adiciona os dados à linha na tabela
+                tabela.addRow(dadosDaLinhaNaColuna);                
+
+            }
+            //Define o autoresize pra 3, não lembro qual o motivo.
+            tabelaPrincipal.setAutoResizeMode(3);
+            //Oculta última coluna que é apenas para passar referência
+            tabelaPrincipal.getColumnModel().getColumn(4).setMinWidth(0);
+            tabelaPrincipal.getColumnModel().getColumn(4).setMaxWidth(0);
+            jScrollPane1.getVerticalScrollBar().setValue(0);
+        } else { //Se estiver vazia, avisa o usuário
+            //exibirMensagem();
+            JOptionPane.showMessageDialog(this, "Nenhum equipamento cadastrado.");
+        }    
     }
     
     void cadastraResponsavelTemporario(){
@@ -109,7 +233,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
         conta++;
     }
     void cadastraEquipamentoTemporario(){
-        controlador.cadastraEquipamento(123456 + conta, "Projetor", "Descrição do Projetor");
+        controlador.cadastraEquipamento(123456 + conta, "Projetor", "Descrição do Projetor", "D");
         conta++;
     }
     
@@ -117,11 +241,11 @@ public class TelaPrincipal extends javax.swing.JFrame {
         //Registra se existe ou não
         boolean existe = false;
         //Percorre a lista buscando se o código do equipamento atual existe 
-        for (int i = 0; i < Controlador.listaDeEquipamentos.size(); i++) {
+        for (int i = 0; i < controlador.getListaDeEquipamentos().size(); i++) {
             //Se houver o equipamento com o id passado
-            if (Controlador.listaDeEquipamentos.get(i).getCodigo() == cod) {
+            if (controlador.getListaDeEquipamentos().get(i).getCodigo() == cod) {
                 //Cadastra o empréstimo, diz que existe e sai do for
-                controlador.cadastraEmprestimo(0, new Timestamp(System.currentTimeMillis()), Controlador.listaDeEquipamentos.get(i).getId());
+                controlador.cadastraEmprestimo(0, new Timestamp(System.currentTimeMillis()), controlador.getListaDeEquipamentos().get(i).getIdEquipamento());
                 existe = true;
                 break;
             } else {
@@ -153,9 +277,18 @@ public class TelaPrincipal extends javax.swing.JFrame {
         btnTempResponsavel = new javax.swing.JButton();
         btnTempEquipamento = new javax.swing.JButton();
         btnListar = new javax.swing.JButton();
+        lblListando = new javax.swing.JLabel();
         menuPrincipal = new javax.swing.JMenuBar();
-        itemArquivo = new javax.swing.JMenu();
-        itemSobre = new javax.swing.JMenu();
+        jmArquivo = new javax.swing.JMenu();
+        jmiNovoResponsavel = new javax.swing.JMenuItem();
+        jmiNovoEquipamento = new javax.swing.JMenuItem();
+        jmiSair = new javax.swing.JMenuItem();
+        jmListagens = new javax.swing.JMenu();
+        jmiListarEmprestimos = new javax.swing.JMenuItem();
+        jmiListarPendentes = new javax.swing.JMenuItem();
+        jmiListarEquipamentos = new javax.swing.JMenuItem();
+        jmiListarResponsaveis = new javax.swing.JMenuItem();
+        jmSobre = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Controle de Empréstimos");
@@ -190,16 +323,14 @@ public class TelaPrincipal extends javax.swing.JFrame {
             }
         });
 
-        btnTempEmprestimo.setText("3 Emprestimo");
-
-        btnTempResponsavel.setText("2 Responsavel");
+        btnTempResponsavel.setText("Cad. Resp");
         btnTempResponsavel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnTempResponsavelActionPerformed(evt);
             }
         });
 
-        btnTempEquipamento.setText("1 Equipamento");
+        btnTempEquipamento.setText("Cad. Equip");
         btnTempEquipamento.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnTempEquipamentoActionPerformed(evt);
@@ -213,11 +344,71 @@ public class TelaPrincipal extends javax.swing.JFrame {
             }
         });
 
-        itemArquivo.setText("Arquivo");
-        menuPrincipal.add(itemArquivo);
+        lblListando.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
+        lblListando.setText("Listando empréstimos");
 
-        itemSobre.setText("Sobre");
-        menuPrincipal.add(itemSobre);
+        jmArquivo.setText("Arquivo");
+
+        jmiNovoResponsavel.setText("Novo Responsável");
+        jmiNovoResponsavel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmiNovoResponsavelActionPerformed(evt);
+            }
+        });
+        jmArquivo.add(jmiNovoResponsavel);
+
+        jmiNovoEquipamento.setText("Novo Equipamento");
+        jmiNovoEquipamento.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmiNovoEquipamentoActionPerformed(evt);
+            }
+        });
+        jmArquivo.add(jmiNovoEquipamento);
+
+        jmiSair.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F4, java.awt.event.InputEvent.ALT_MASK));
+        jmiSair.setText("Sair");
+        jmiSair.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmiSairActionPerformed(evt);
+            }
+        });
+        jmArquivo.add(jmiSair);
+
+        menuPrincipal.add(jmArquivo);
+
+        jmListagens.setText("Listagens");
+
+        jmiListarEmprestimos.setText("Listar Todos os Empréstimos");
+        jmiListarEmprestimos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmiListarEmprestimosActionPerformed(evt);
+            }
+        });
+        jmListagens.add(jmiListarEmprestimos);
+
+        jmiListarPendentes.setText("Listar Empréstimos Pendentes");
+        jmListagens.add(jmiListarPendentes);
+
+        jmiListarEquipamentos.setText("Listar Equipamentos");
+        jmiListarEquipamentos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmiListarEquipamentosActionPerformed(evt);
+            }
+        });
+        jmListagens.add(jmiListarEquipamentos);
+
+        jmiListarResponsaveis.setText("Listar Responsáveis");
+        jmiListarResponsaveis.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmiListarResponsaveisActionPerformed(evt);
+            }
+        });
+        jmListagens.add(jmiListarResponsaveis);
+
+        menuPrincipal.add(jmListagens);
+
+        jmSobre.setText("Sobre");
+        menuPrincipal.add(jmSobre);
 
         setJMenuBar(menuPrincipal);
 
@@ -229,10 +420,13 @@ public class TelaPrincipal extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(lblCodigo, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
-                    .addComponent(txtCodigo))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnRegistrar)
+                    .addComponent(lblListando, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(lblCodigo, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
+                            .addComponent(txtCodigo))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnRegistrar)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnListar, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -262,8 +456,10 @@ public class TelaPrincipal extends javax.swing.JFrame {
                                 .addComponent(btnTempResponsavel, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(btnTempEquipamento, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(btnListar, javax.swing.GroupLayout.Alignment.TRAILING))))
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 383, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(lblListando, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 356, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         pack();
@@ -279,20 +475,57 @@ public class TelaPrincipal extends javax.swing.JFrame {
 
     private void btnTempEquipamentoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTempEquipamentoActionPerformed
         cadastraEquipamentoTemporario();
-        for (int i = 0; i < Controlador.listaDeEquipamentos.size(); i++) {
-            System.out.println("EQUIPAMENTO " + i + "\n"+ Controlador.listaDeEquipamentos.get(i).getTudo()+ "\n");
+        for (int i = 0; i < Controlador.getListaDeEquipamentos().size(); i++) {
+            System.out.println("EQUIPAMENTO " + i + "\n"+ Controlador.getListaDeEquipamentos().get(i).getTudo()+ "\n");
         }
     }//GEN-LAST:event_btnTempEquipamentoActionPerformed
 
     private void btnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarActionPerformed
-        System.out.println("EQUIPA: " + Integer.parseInt(txtCodigo.getText()));
-        cadastraEmprestimo(Integer.parseInt(txtCodigo.getText()));
-        System.out.println(Controlador.listaDeEmprestimos.size());
+        
+        //Se existir o código digitado, abre a tela de empréstimo
+        if (controlador.existeObjeto(Integer.parseInt(txtCodigo.getText()), 4)) {
+            System.out.println("Existe o código!");
+        
+            TelaEmprestimo novaTela = new TelaEmprestimo(Integer.parseInt(txtCodigo.getText()));
+            /*System.out.println("EQUIPA: " + Integer.parseInt(txtCodigo.getText()));
+            cadastraEmprestimo(Integer.parseInt(txtCodigo.getText()));
+            System.out.println(Controlador.listaDeEmprestimos.size());*/
+        
+        } else {
+            JOptionPane.showMessageDialog(this, "Não existe o código digitado");
+        }
+
     }//GEN-LAST:event_btnRegistrarActionPerformed
 
     private void btnListarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnListarActionPerformed
-        montaTabela();
+        consultarTodosEmprestimos();
     }//GEN-LAST:event_btnListarActionPerformed
+
+    private void jmiSairActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiSairActionPerformed
+        System.exit(0);
+    }//GEN-LAST:event_jmiSairActionPerformed
+
+    private void jmiNovoResponsavelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiNovoResponsavelActionPerformed
+        TelaResponsavel novaTela = new TelaResponsavel();
+        novaTela.setVisible(true);
+    }//GEN-LAST:event_jmiNovoResponsavelActionPerformed
+
+    private void jmiNovoEquipamentoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiNovoEquipamentoActionPerformed
+        TelaEquipamento novaTela = new TelaEquipamento();
+        novaTela.setVisible(true);
+    }//GEN-LAST:event_jmiNovoEquipamentoActionPerformed
+
+    private void jmiListarEmprestimosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiListarEmprestimosActionPerformed
+        consultarTodosEmprestimos();
+    }//GEN-LAST:event_jmiListarEmprestimosActionPerformed
+
+    private void jmiListarResponsaveisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiListarResponsaveisActionPerformed
+        consultarResponsaveis();
+    }//GEN-LAST:event_jmiListarResponsaveisActionPerformed
+
+    private void jmiListarEquipamentosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiListarEquipamentosActionPerformed
+        consultarEquipamentos();
+    }//GEN-LAST:event_jmiListarEquipamentosActionPerformed
 
     /**
      * @param args the command line arguments
@@ -335,10 +568,19 @@ public class TelaPrincipal extends javax.swing.JFrame {
     private javax.swing.JButton btnTempEmprestimo;
     private javax.swing.JButton btnTempEquipamento;
     private javax.swing.JButton btnTempResponsavel;
-    private javax.swing.JMenu itemArquivo;
-    private javax.swing.JMenu itemSobre;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JMenu jmArquivo;
+    private javax.swing.JMenu jmListagens;
+    private javax.swing.JMenu jmSobre;
+    private javax.swing.JMenuItem jmiListarEmprestimos;
+    private javax.swing.JMenuItem jmiListarEquipamentos;
+    private javax.swing.JMenuItem jmiListarPendentes;
+    private javax.swing.JMenuItem jmiListarResponsaveis;
+    private javax.swing.JMenuItem jmiNovoEquipamento;
+    private javax.swing.JMenuItem jmiNovoResponsavel;
+    private javax.swing.JMenuItem jmiSair;
     private javax.swing.JLabel lblCodigo;
+    private javax.swing.JLabel lblListando;
     private javax.swing.JMenuBar menuPrincipal;
     private javax.swing.JTable tabelaPrincipal;
     private javax.swing.JTextField txtCodigo;

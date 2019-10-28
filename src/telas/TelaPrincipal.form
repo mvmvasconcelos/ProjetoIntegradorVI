@@ -4,12 +4,77 @@
   <NonVisualComponents>
     <Menu class="javax.swing.JMenuBar" name="menuPrincipal">
       <SubComponents>
-        <Menu class="javax.swing.JMenu" name="itemArquivo">
+        <Menu class="javax.swing.JMenu" name="jmArquivo">
           <Properties>
             <Property name="text" type="java.lang.String" value="Arquivo"/>
           </Properties>
+          <SubComponents>
+            <MenuItem class="javax.swing.JMenuItem" name="jmiNovoResponsavel">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Novo Respons&#xe1;vel"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jmiNovoResponsavelActionPerformed"/>
+              </Events>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="jmiNovoEquipamento">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Novo Equipamento"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jmiNovoEquipamentoActionPerformed"/>
+              </Events>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="jmiSair">
+              <Properties>
+                <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
+                  <KeyStroke key="Alt+F4"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Sair"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jmiSairActionPerformed"/>
+              </Events>
+            </MenuItem>
+          </SubComponents>
         </Menu>
-        <Menu class="javax.swing.JMenu" name="itemSobre">
+        <Menu class="javax.swing.JMenu" name="jmListagens">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Listagens"/>
+          </Properties>
+          <SubComponents>
+            <MenuItem class="javax.swing.JMenuItem" name="jmiListarEmprestimos">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Listar Todos os Empr&#xe9;stimos"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jmiListarEmprestimosActionPerformed"/>
+              </Events>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="jmiListarPendentes">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Listar Empr&#xe9;stimos Pendentes"/>
+              </Properties>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="jmiListarEquipamentos">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Listar Equipamentos"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jmiListarEquipamentosActionPerformed"/>
+              </Events>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="jmiListarResponsaveis">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Listar Respons&#xe1;veis"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jmiListarResponsaveisActionPerformed"/>
+              </Events>
+            </MenuItem>
+          </SubComponents>
+        </Menu>
+        <Menu class="javax.swing.JMenu" name="jmSobre">
           <Properties>
             <Property name="text" type="java.lang.String" value="Sobre"/>
           </Properties>
@@ -44,14 +109,19 @@
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
           <Component id="jScrollPane1" alignment="0" pref="900" max="32767" attributes="0"/>
-          <Group type="102" attributes="0">
+          <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                  <Component id="lblCodigo" pref="200" max="32767" attributes="0"/>
-                  <Component id="txtCodigo" max="32767" attributes="0"/>
+                  <Component id="lblListando" max="32767" attributes="0"/>
+                  <Group type="102" attributes="0">
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                          <Component id="lblCodigo" pref="200" max="32767" attributes="0"/>
+                          <Component id="txtCodigo" max="32767" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="btnRegistrar" min="-2" max="-2" attributes="0"/>
+                  </Group>
               </Group>
-              <EmptySpace max="-2" attributes="0"/>
-              <Component id="btnRegistrar" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="32767" attributes="0"/>
               <Component id="btnListar" min="-2" pref="117" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
@@ -89,8 +159,10 @@
                       </Group>
                   </Group>
               </Group>
-              <EmptySpace type="separate" max="-2" attributes="0"/>
-              <Component id="jScrollPane1" pref="383" max="32767" attributes="0"/>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <Component id="lblListando" min="-2" pref="27" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="jScrollPane1" min="-2" pref="356" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -189,13 +261,10 @@
       </Events>
     </Component>
     <Component class="javax.swing.JButton" name="btnTempEmprestimo">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="3 Emprestimo"/>
-      </Properties>
     </Component>
     <Component class="javax.swing.JButton" name="btnTempResponsavel">
       <Properties>
-        <Property name="text" type="java.lang.String" value="2 Responsavel"/>
+        <Property name="text" type="java.lang.String" value="Cad. Resp"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnTempResponsavelActionPerformed"/>
@@ -203,7 +272,7 @@
     </Component>
     <Component class="javax.swing.JButton" name="btnTempEquipamento">
       <Properties>
-        <Property name="text" type="java.lang.String" value="1 Equipamento"/>
+        <Property name="text" type="java.lang.String" value="Cad. Equip"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnTempEquipamentoActionPerformed"/>
@@ -216,6 +285,14 @@
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnListarActionPerformed"/>
       </Events>
+    </Component>
+    <Component class="javax.swing.JLabel" name="lblListando">
+      <Properties>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="sansserif" size="14" style="1"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Listando empr&#xe9;stimos"/>
+      </Properties>
     </Component>
   </SubComponents>
 </Form>

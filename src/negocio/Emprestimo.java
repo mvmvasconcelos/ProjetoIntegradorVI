@@ -21,6 +21,7 @@ public class Emprestimo {
     private Timestamp retirada;
     private Timestamp devolucao;
     private int idEquipamento;
+    private String situacaoEmprestimo;
 
     public Emprestimo(int idResponsavel, Timestamp retirada, int idEquipamento) {
         this.idEmprestimo = Emprestimo.idBD;
@@ -65,6 +66,15 @@ public class Emprestimo {
     public int getIdEquipamento() {
         return idEquipamento;
     }
+
+    public String getSituacaoEmprestimo() {
+        return situacaoEmprestimo;
+    }
+
+    public void setSituacaoEmprestimo(String situacaoEmprestimo) {
+        this.situacaoEmprestimo = situacaoEmprestimo;
+    }
+    
 
     //Armazena os ids dos equipamentos dentro de um arraylist
     public void setIdEquipamento(int idEquipamento) {
