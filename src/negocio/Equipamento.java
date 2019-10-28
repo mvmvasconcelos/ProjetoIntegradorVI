@@ -10,14 +10,22 @@ package negocio;
  * @author vinicius
  */
 public class Equipamento {
+    private static int idBD = 0; //int global para controlar o ID autoincrementado
+    private int id;
     private int codigo;
     private String tipo;
     private String descricao;
 
     public Equipamento(int codigo, String tipo, String descricao) {
+        this.id = Equipamento.idBD;
         this.codigo = codigo;
         this.tipo = tipo;
         this.descricao = descricao;
+        Equipamento.idBD++;
+    }
+
+    public int getId() {
+        return id;
     }    
 
     public int getCodigo() {
@@ -42,5 +50,17 @@ public class Equipamento {
 
     public void setDescricao(String descricao) {
         this.descricao = descricao;
-    }    
+    }
+    
+    /** Retorna string com todos os dados do equipamento
+     * 
+     * @return String
+     */
+    public String getTudo(){
+        return "IDBD: " + idBD 
+             + "\nID:" + id
+             + "\nCÓDIGO:" + codigo
+             + "\nTIPO:" + tipo
+             + "\nDESCRIÇÃO:" + descricao;
+    }
 }

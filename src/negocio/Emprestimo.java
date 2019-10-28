@@ -5,7 +5,8 @@
  */
 package negocio;
 
-import java.security.Timestamp;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 /**
@@ -13,17 +14,20 @@ import java.util.ArrayList;
  * @author Vinicius
  */
 public class Emprestimo {
+    
+    private static int idBD = 0; //int global para controlar o ID autoincrementado
     private int idEmprestimo;
     private int idResponsavel;
     private Timestamp retirada;
     private Timestamp devolucao;
-    private ArrayList equipamento;
+    private int idEquipamento;
 
-    public Emprestimo(int idEmprestimo, int idResponsavel, Timestamp retirada, ArrayList equipamento) {
-        this.idEmprestimo = idEmprestimo;
+    public Emprestimo(int idResponsavel, Timestamp retirada, int idEquipamento) {
+        this.idEmprestimo = Emprestimo.idBD;
         this.idResponsavel = idResponsavel;
         this.retirada = retirada;
-        this.equipamento = equipamento;
+        this.idEquipamento = idEquipamento;
+        Emprestimo.idBD++;
     }
 
     public int getIdEmprestimo() {
@@ -58,11 +62,66 @@ public class Emprestimo {
         this.devolucao = devolucao;
     }
 
-    public ArrayList getEquipamento() {
-        return equipamento;
+    public int getIdEquipamento() {
+        return idEquipamento;
     }
 
-    public void setEquipamento(ArrayList equipamento) {
-        this.equipamento = equipamento;
+    //Armazena os ids dos equipamentos dentro de um arraylist
+    public void setIdEquipamento(int idEquipamento) {
+        this.idEquipamento = idEquipamento;
     }
+    
+    /**
+     * Formata a hora da retirada de acordo com o timestamp
+     * @return String - hora da retirada
+     */
+    public String getHoraRetirada(){
+        String hora = formataHora(retirada);
+        return hora;
+    }
+    /**
+     * Formata a hora da devolução de acordo com o timestamp
+     * @return String - hora da devolução
+     */
+    public String getHoraDevolucao(){
+        String hora = formataHora(devolucao);
+        return hora;
+    }
+    /**
+     * Formata a data da retirada de acordo com o timestamp
+     * @return String - data da retirada
+     */
+    public String getDataRetirada(){
+        String data = formataData(retirada);
+        return data;
+    }
+    /**
+     * Formata a data da devolução de acordo com o timestamp
+     * @return String - data da devolução
+     */
+    public String getDataDevolucao(){
+        String data = formataData(devolucao);
+        return data;
+    }
+    
+    /**
+     * Formata a hora a partir de um timestamp
+     * @param ts
+     * @return String
+     */
+    private String formataHora(Timestamp ts){
+        SimpleDateFormat hf = new SimpleDateFormat("HH:mm");
+        String horaFormatada = hf.format(ts);
+        return horaFormatada;
+    }
+    /**
+     * Formata data a partir de um timestamp
+     * @param ts
+     * @return String
+     */
+    private String formataData(Timestamp ts){
+        SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+        String dataFormatada = df.format(ts);
+        return dataFormatada;
+    }    
 }

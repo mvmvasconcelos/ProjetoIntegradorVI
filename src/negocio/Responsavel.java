@@ -11,26 +11,24 @@ package negocio;
  */
 public class Responsavel {
     
-    private int id;
+    private static int idBD = 0; //int global para controlar o ID autoincrementado
+    private int id; //id do objeto
     private String nome;
     private int codigo;
     private String telefone;
     private String email;
 
-    public Responsavel(int id, String nome, int codigo, String telefone, String email) {
-        this.id = id;
+    public Responsavel(String nome, int codigo, String telefone, String email) {
+        this.id = Responsavel.idBD;
         this.nome = nome;
         this.codigo = codigo;
         this.telefone = telefone;
         this.email = email;
+        Responsavel.idBD++; //Auto-incrementa o id que será armazenado no BD
     }
 
     public int getId() {
         return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getNome() {
@@ -63,6 +61,19 @@ public class Responsavel {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+    
+    /** Retorna string com todos os dados do equipamento
+     * 
+     * @return String
+     */
+    public String getTudo(){
+        return "IDBD: " + idBD 
+             + "\nID:" + id
+             + "\nNOME:" + nome
+             + "\nCÓDIGO:" + codigo
+             + "\nTELEFONE:" + telefone
+             + "\nDESCRIÇÃO:" + email;
     }
         
 }
