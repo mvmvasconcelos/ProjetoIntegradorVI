@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <Form version="1.5" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
+  <NonVisualComponents>
+    <Component class="javax.swing.ButtonGroup" name="btnGrupoSituacao">
+    </Component>
+  </NonVisualComponents>
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="2"/>
   </Properties>
@@ -40,7 +44,7 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Component id="lblTitulo" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="32767" attributes="0"/>
+              <EmptySpace pref="14" max="32767" attributes="0"/>
               <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -78,15 +82,13 @@
                           </Group>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                  <Component id="lblIdEmprestimo" min="-2" max="-2" attributes="0"/>
-                                  <Component id="txtRetirada" max="32767" attributes="0"/>
-                                  <Component id="txtDevolucao" alignment="0" max="32767" attributes="0"/>
-                              </Group>
+                              <Component id="lblIdEmprestimo" min="-2" max="-2" attributes="0"/>
+                              <Component id="txtDevolucao" max="32767" attributes="0"/>
+                              <Component id="txtRetirada" alignment="0" max="32767" attributes="0"/>
                               <Component id="txtFulano" max="32767" attributes="0"/>
-                              <Component id="jTextField1" alignment="0" pref="150" max="32767" attributes="0"/>
+                              <Component id="txtTelefone" alignment="0" pref="150" max="32767" attributes="0"/>
                           </Group>
-                          <EmptySpace pref="46" max="32767" attributes="0"/>
+                          <EmptySpace pref="109" max="32767" attributes="0"/>
                           <Component id="jPanel2" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="1" attributes="0">
@@ -113,12 +115,12 @@
                           <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="lblDataRetirada" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="txtDevolucao" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="txtRetirada" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="lblDataDevolucao" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="txtRetirada" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="txtDevolucao" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
@@ -128,7 +130,7 @@
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="lblTelefone" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="jTextField1" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="txtTelefone" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
@@ -136,7 +138,7 @@
                           <Component id="jPanel2" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
-                  <EmptySpace pref="215" max="32767" attributes="0"/>
+                  <EmptySpace pref="172" max="32767" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="btnCancelar" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="btnAcao" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -162,17 +164,17 @@
             <Property name="text" type="java.lang.String" value="Data de Devolu&#xe7;&#xe3;o:"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JFormattedTextField" name="txtRetirada">
+        <Component class="javax.swing.JFormattedTextField" name="txtDevolucao">
           <Properties>
-            <Property name="text" type="java.lang.String" value="29/10/2019"/>
+            <Property name="text" type="java.lang.String" value="00/00/0000"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JFormattedTextField" name="txtDevolucao">
+        <Component class="javax.swing.JFormattedTextField" name="txtRetirada">
           <Properties>
             <Property name="formatterFactory" type="javax.swing.JFormattedTextField$AbstractFormatterFactory" editor="org.netbeans.modules.form.editors.AbstractFormatterFactoryEditor">
               <Format format="dd/MM/yyyy" subtype="-1" type="1"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="29/10/2019"/>
+            <Property name="text" type="java.lang.String" value="00/00/0000"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="lblIdEmprestimo">
@@ -187,7 +189,7 @@
         </Component>
         <Component class="javax.swing.JTextField" name="txtFulano">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Fulano"/>
+            <Property name="text" type="java.lang.String" value="XXXXXXXX"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="lblTelefone">
@@ -195,9 +197,9 @@
             <Property name="text" type="java.lang.String" value="Telefone:"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JTextField" name="jTextField1">
+        <Component class="javax.swing.JTextField" name="txtTelefone">
           <Properties>
-            <Property name="text" type="java.lang.String" value="51-3743-0000"/>
+            <Property name="text" type="java.lang.String" value="0000000000"/>
           </Properties>
         </Component>
         <Container class="javax.swing.JPanel" name="jPanel2">
@@ -228,17 +230,15 @@
                               </Group>
                               <EmptySpace type="separate" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="txtDescricao" max="32767" attributes="0"/>
+                                  <Component id="txtDescricao" pref="165" max="32767" attributes="0"/>
                                   <Group type="102" attributes="0">
-                                      <Group type="103" groupAlignment="0" attributes="0">
-                                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                              <Component id="txtCodigo" max="32767" attributes="0"/>
-                                              <Component id="txtTipo" pref="90" max="32767" attributes="0"/>
-                                          </Group>
-                                          <Component id="txtSituacao" alignment="0" min="-2" pref="90" max="-2" attributes="0"/>
+                                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                          <Component id="txtCodigo" max="32767" attributes="0"/>
+                                          <Component id="txtTipo" pref="90" max="32767" attributes="0"/>
                                       </Group>
-                                      <EmptySpace min="0" pref="75" max="32767" attributes="0"/>
+                                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                                   </Group>
+                                  <Component id="jPanel3" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                       </Group>
@@ -267,11 +267,11 @@
                           <Component id="txtDescricao" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="lblSituacao" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="txtSituacao" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="lblSituacao" min="-2" max="-2" attributes="0"/>
+                          <Component id="jPanel3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace pref="43" max="32767" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -290,7 +290,7 @@
             </Component>
             <Component class="javax.swing.JTextField" name="txtCodigo">
               <Properties>
-                <Property name="text" type="java.lang.String" value="123456"/>
+                <Property name="text" type="java.lang.String" value="00000"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JLabel" name="lblTipo">
@@ -300,7 +300,7 @@
             </Component>
             <Component class="javax.swing.JTextField" name="txtTipo">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Notebook"/>
+                <Property name="text" type="java.lang.String" value="XXXXXX"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JLabel" name="lblDescricao">
@@ -310,7 +310,7 @@
             </Component>
             <Component class="javax.swing.JTextField" name="txtDescricao">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Notebook HP"/>
+                <Property name="text" type="java.lang.String" value="XXXXX"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JLabel" name="lblSituacao">
@@ -318,11 +318,64 @@
                 <Property name="text" type="java.lang.String" value="Situa&#xe7;&#xe3;o:"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JTextField" name="txtSituacao">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Emprestado"/>
-              </Properties>
-            </Component>
+            <Container class="javax.swing.JPanel" name="jPanel3">
+
+              <Layout>
+                <DimensionLayout dim="0">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" attributes="0">
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="radioEmprestado" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="radioDisponivel" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="radioIndisponivel" alignment="0" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace max="32767" attributes="0"/>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+                <DimensionLayout dim="1">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="radioEmprestado" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="radioDisponivel" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="radioIndisponivel" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace pref="28" max="32767" attributes="0"/>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+              </Layout>
+              <SubComponents>
+                <Component class="javax.swing.JRadioButton" name="radioEmprestado">
+                  <Properties>
+                    <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+                      <ComponentRef name="btnGrupoSituacao"/>
+                    </Property>
+                    <Property name="selected" type="boolean" value="true"/>
+                    <Property name="text" type="java.lang.String" value="Emprestado"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JRadioButton" name="radioDisponivel">
+                  <Properties>
+                    <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+                      <ComponentRef name="btnGrupoSituacao"/>
+                    </Property>
+                    <Property name="text" type="java.lang.String" value="Dispon&#xed;vel"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JRadioButton" name="radioIndisponivel">
+                  <Properties>
+                    <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+                      <ComponentRef name="btnGrupoSituacao"/>
+                    </Property>
+                    <Property name="text" type="java.lang.String" value="Indispon&#xed;vel"/>
+                  </Properties>
+                </Component>
+              </SubComponents>
+            </Container>
           </SubComponents>
         </Container>
         <Component class="javax.swing.JButton" name="btnCancelar">

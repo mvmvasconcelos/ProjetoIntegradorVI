@@ -28,6 +28,7 @@ public class Emprestimo {
         this.idResponsavel = idResponsavel;
         this.retirada = retirada;
         this.idEquipamento = idEquipamento;
+        this.situacaoEmprestimo = "P";
         Emprestimo.idBD++;
     }
 

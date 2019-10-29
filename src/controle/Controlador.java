@@ -52,7 +52,7 @@ public class Controlador {
     /**
      * Busca na lista de equipamentos pelo Código e retorna apenas o objeto.
      * É necessário pois nem sempre o índice do arraylist será igual ao id
-     * @param id
+     * @param codigo
      * @return equipamento
      */
     public Equipamento getEquipamentoPeloCodigo(int codigo){
@@ -157,38 +157,29 @@ public class Controlador {
         
     /**
      * Checa se o objeto existe de acordo com o tipo buscado
-     * 1 - idResponsavel
-     * 2 - idEquipamento
-     * 3 - idEmprestimo
-     * 4 - codigoEquipamento
-     * @param valor id ou código
+     * IDRESP - idResponsavel
+     * IDEQP - idEquipamento
+     * IDEQP - idEmprestimo
+     * IDEMP - codigoEquipamento
+     * @param id identificador do objeto
      * @param tipo conforme acima
      * @return bool se houver ou não houver o item na lista
      */
-    public boolean existeObjeto(int id, int tipo){
-        switch(tipo){
-            case 1:
+    public boolean existeObjeto(int id, String tipo){
+        switch(tipo.toUpperCase()){
+            case "IDRESP":
                 if (listaDeResponsaveis.contains(this.getResponsavelPeloID(id))) {
                     return true;
                 }
-                /*for (int i = 0; i < listaDeResponsaveis.size(); i++) {
-                    if (listaDeResponsaveis.get(i).getIdResponsavel() == id) {
-                        return true;
-                    }            
-                }*/
-            case 2:
-                for (int i = 0; i < listaDeEquipamentos.size(); i++) {
-                    if (listaDeEquipamentos.get(i).getIdEquipamento()== id) {
-                        return true;
-                    }            
+            case "IDEQP":
+                if (listaDeEquipamentos.contains(this.getEquipamentoPeloCodigo(id))) {
+                    return true;
                 }
-            case 3:
-                for (int i = 0; i < listaDeEmprestimos.size(); i++) {
-                    if (listaDeEmprestimos.get(i).getIdEmprestimo()== id) {
-                        return true;
-                    }            
+            case "IDEMP":
+                if (listaDeEmprestimos.contains(this.getEmprestimoPeloEquipamento(id))) {
+                    return true;
                 }
-            case 4:
+            case "CODEQP":
                 if (listaDeEquipamentos.contains(this.getEquipamentoPeloCodigo(id))) {
                     return true;
                 }
@@ -196,6 +187,7 @@ public class Controlador {
                 return false;
         }                
     }
+    
     /**
      * Verifica a situação do equipamento de acordo com o id
      * @param codigo
@@ -203,6 +195,18 @@ public class Controlador {
      */
     public boolean estaEmprestado(int codigo){        
         return "E".equals(listaDeEquipamentos.get(getEquipamentoPeloCodigo(codigo).getIdEquipamento()).getSituacao());
+    }
+    public String situacao(String situacao){
+        switch (situacao.toUpperCase()){
+            case "D":
+                return "Disponível";
+            case "E":
+                return "Emprestado";
+            case "I":
+                return "Indisponível";
+            
+        }
+        return "";
     }
     
     //Adiciona o objeto à lista correspondente

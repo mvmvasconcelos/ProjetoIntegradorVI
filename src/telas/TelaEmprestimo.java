@@ -7,6 +7,8 @@ package telas;
 
 import controle.Controlador;
 import negocio.Emprestimo;
+import controle.DataHora;
+import negocio.Equipamento;
 
 /**
  *
@@ -24,14 +26,57 @@ public class TelaEmprestimo extends javax.swing.JFrame {
     }
     
     public TelaEmprestimo(int codigo){
-        estaEmprestado = ctl.estaEmprestado(codigo);        
+        estaEmprestado = ctl.estaEmprestado(codigo);
         initComponents();
+        if (estaEmprestado) {
+            preencheFormSeEmprestado(codigo);
+        } else {
+            preencheFormSeDisponivel(codigo);
+        }
     }
     
-    public void equipamentoEmprestado(int codigo){
-        Emprestimo informacaoEmprestimo = ctl.equipamentoEmprestado(codigo);
-        lblIdEmprestimo.setText(String.valueOf(informacaoEmprestimo.getIdEmprestimo()));
-        
+    /**
+     * Se o código for de um equipamento já emprestado, atualiza os campos
+     * com as informações correspondentes
+     * 
+     * @param codigo 
+     */
+    public void preencheFormSeEmprestado(int codigo){
+        Emprestimo emprestimo = ctl.equipamentoEmprestado(codigo);
+        System.out.println("ID EMPRE "+codigo);
+        lblIdEmprestimo.setText(String.valueOf(emprestimo.getIdEmprestimo()));
+        System.out.println("data " + emprestimo.getDataRetirada());
+        txtDevolucao.setText(emprestimo.getDataRetirada());
+        String responsavel = ctl.getNomeResponsavel(emprestimo.getIdResponsavel());
+        txtFulano.setText(responsavel);
+        String telefone = ctl.getResponsavelPeloID(emprestimo.getIdResponsavel()).getTelefone();
+        txtTelefone.setText(telefone);
+        preencheDadosEquipamento(codigo);
+        btnAcao.setText("Devolver");
+    }
+    
+    private void preencheFormSeDisponivel(int codigo){
+        txtRetirada.setText(DataHora.dataFormatada(System.currentTimeMillis()));
+        preencheDadosEquipamento(codigo);
+        btnAcao.setText("Emprestar");
+    }
+    
+    private void preencheDadosEquipamento(int codigo){
+        Equipamento equipamento = ctl.getEquipamentoPeloCodigo(codigo);
+        txtCodigo.setText(String.valueOf(equipamento.getCodigo()));
+        txtTipo.setText(equipamento.getTipo());
+        txtDescricao.setText(equipamento.getDescricao());
+        switch(equipamento.getSituacao()){
+            case "E":
+                radioEmprestado.setSelected(true);
+                break;
+            case "D":
+                radioDisponivel.setSelected(true);
+                break;
+            case "I":
+                radioIndisponivel.setSelected(true);
+                break;
+        }
     }
 
     /**
@@ -43,18 +88,19 @@ public class TelaEmprestimo extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        btnGrupoSituacao = new javax.swing.ButtonGroup();
         lblTitulo = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         lblId = new javax.swing.JLabel();
         lblDataRetirada = new javax.swing.JLabel();
         lblDataDevolucao = new javax.swing.JLabel();
-        txtRetirada = new javax.swing.JFormattedTextField();
         txtDevolucao = new javax.swing.JFormattedTextField();
+        txtRetirada = new javax.swing.JFormattedTextField();
         lblIdEmprestimo = new javax.swing.JLabel();
         lblResponsavel = new javax.swing.JLabel();
         txtFulano = new javax.swing.JTextField();
         lblTelefone = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        txtTelefone = new javax.swing.JTextField();
         jPanel2 = new javax.swing.JPanel();
         lblInformacoes = new javax.swing.JLabel();
         lblCodigo = new javax.swing.JLabel();
@@ -64,7 +110,10 @@ public class TelaEmprestimo extends javax.swing.JFrame {
         lblDescricao = new javax.swing.JLabel();
         txtDescricao = new javax.swing.JTextField();
         lblSituacao = new javax.swing.JLabel();
-        txtSituacao = new javax.swing.JTextField();
+        jPanel3 = new javax.swing.JPanel();
+        radioEmprestado = new javax.swing.JRadioButton();
+        radioDisponivel = new javax.swing.JRadioButton();
+        radioIndisponivel = new javax.swing.JRadioButton();
         btnCancelar = new javax.swing.JButton();
         btnAcao = new javax.swing.JButton();
 
@@ -80,20 +129,20 @@ public class TelaEmprestimo extends javax.swing.JFrame {
 
         lblDataDevolucao.setText("Data de Devolução:");
 
-        txtRetirada.setText("29/10/2019");
+        txtDevolucao.setText("00/00/0000");
 
-        txtDevolucao.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.DateFormatter(new java.text.SimpleDateFormat("dd/MM/yyyy"))));
-        txtDevolucao.setText("29/10/2019");
+        txtRetirada.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.DateFormatter(new java.text.SimpleDateFormat("dd/MM/yyyy"))));
+        txtRetirada.setText("00/00/0000");
 
         lblIdEmprestimo.setText("123");
 
         lblResponsavel.setText("Responsável:");
 
-        txtFulano.setText("Fulano");
+        txtFulano.setText("XXXXXXXX");
 
         lblTelefone.setText("Telefone:");
 
-        jTextField1.setText("51-3743-0000");
+        txtTelefone.setText("0000000000");
 
         jPanel2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
@@ -102,19 +151,51 @@ public class TelaEmprestimo extends javax.swing.JFrame {
 
         lblCodigo.setText("Código:");
 
-        txtCodigo.setText("123456");
+        txtCodigo.setText("00000");
 
         lblTipo.setText("Tipo:");
 
-        txtTipo.setText("Notebook");
+        txtTipo.setText("XXXXXX");
 
         lblDescricao.setText("Descrição:");
 
-        txtDescricao.setText("Notebook HP");
+        txtDescricao.setText("XXXXX");
 
         lblSituacao.setText("Situação:");
 
-        txtSituacao.setText("Emprestado");
+        btnGrupoSituacao.add(radioEmprestado);
+        radioEmprestado.setSelected(true);
+        radioEmprestado.setText("Emprestado");
+
+        btnGrupoSituacao.add(radioDisponivel);
+        radioDisponivel.setText("Disponível");
+
+        btnGrupoSituacao.add(radioIndisponivel);
+        radioIndisponivel.setText("Indisponível");
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(radioEmprestado)
+                    .addComponent(radioDisponivel)
+                    .addComponent(radioIndisponivel))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(radioEmprestado)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(radioDisponivel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(radioIndisponivel)
+                .addContainerGap(28, Short.MAX_VALUE))
+        );
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -134,14 +215,13 @@ public class TelaEmprestimo extends javax.swing.JFrame {
                             .addComponent(lblSituacao))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtDescricao)
+                            .addComponent(txtDescricao, javax.swing.GroupLayout.DEFAULT_SIZE, 165, Short.MAX_VALUE)
                             .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(txtCodigo)
-                                        .addComponent(txtTipo, javax.swing.GroupLayout.DEFAULT_SIZE, 90, Short.MAX_VALUE))
-                                    .addComponent(txtSituacao, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(0, 75, Short.MAX_VALUE)))))
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(txtCodigo)
+                                    .addComponent(txtTipo, javax.swing.GroupLayout.DEFAULT_SIZE, 90, Short.MAX_VALUE))
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap(50, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
@@ -162,10 +242,10 @@ public class TelaEmprestimo extends javax.swing.JFrame {
                     .addComponent(lblDescricao)
                     .addComponent(txtDescricao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lblSituacao)
-                    .addComponent(txtSituacao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(43, Short.MAX_VALUE))
+                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         btnCancelar.setText("Cancelar");
@@ -193,13 +273,12 @@ public class TelaEmprestimo extends javax.swing.JFrame {
                             .addComponent(lblTelefone))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(lblIdEmprestimo)
-                                .addComponent(txtRetirada)
-                                .addComponent(txtDevolucao))
+                            .addComponent(lblIdEmprestimo)
+                            .addComponent(txtDevolucao)
+                            .addComponent(txtRetirada)
                             .addComponent(txtFulano)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 46, Short.MAX_VALUE)
+                            .addComponent(txtTelefone, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 109, Short.MAX_VALUE)
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -220,11 +299,11 @@ public class TelaEmprestimo extends javax.swing.JFrame {
                         .addGap(12, 12, 12)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(lblDataRetirada)
-                            .addComponent(txtDevolucao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(txtRetirada, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(6, 6, 6)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(lblDataDevolucao)
-                            .addComponent(txtRetirada, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(txtDevolucao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(lblResponsavel)
@@ -232,11 +311,11 @@ public class TelaEmprestimo extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(lblTelefone)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(txtTelefone, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 215, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 172, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnCancelar)
                     .addComponent(btnAcao))
@@ -261,7 +340,7 @@ public class TelaEmprestimo extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(lblTitulo)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 14, Short.MAX_VALUE)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -311,9 +390,10 @@ public class TelaEmprestimo extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAcao;
     private javax.swing.JButton btnCancelar;
+    private javax.swing.ButtonGroup btnGrupoSituacao;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JLabel lblCodigo;
     private javax.swing.JLabel lblDataDevolucao;
     private javax.swing.JLabel lblDataRetirada;
@@ -326,12 +406,15 @@ public class TelaEmprestimo extends javax.swing.JFrame {
     private javax.swing.JLabel lblTelefone;
     private javax.swing.JLabel lblTipo;
     private javax.swing.JLabel lblTitulo;
+    private javax.swing.JRadioButton radioDisponivel;
+    private javax.swing.JRadioButton radioEmprestado;
+    private javax.swing.JRadioButton radioIndisponivel;
     private javax.swing.JTextField txtCodigo;
     private javax.swing.JTextField txtDescricao;
     private javax.swing.JFormattedTextField txtDevolucao;
     private javax.swing.JTextField txtFulano;
     private javax.swing.JFormattedTextField txtRetirada;
-    private javax.swing.JTextField txtSituacao;
+    private javax.swing.JTextField txtTelefone;
     private javax.swing.JTextField txtTipo;
     // End of variables declaration//GEN-END:variables
 }

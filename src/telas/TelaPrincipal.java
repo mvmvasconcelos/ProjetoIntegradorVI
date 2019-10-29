@@ -6,6 +6,7 @@
 package telas;
 
 import controle.Controlador;
+import controle.DataHora;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -23,7 +24,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
     //Carrega o controlador
     Controlador controlador = new Controlador();
     //Cria lista de emprestimos
-    ArrayList<Emprestimo> listaDeEmprestimos =  controlador.getListaDeEmprestimos();
+    ArrayList<Emprestimo> listaDeEmprestimos =  Controlador.getListaDeEmprestimos();
     
     /** Tipos de listagem para abrir a janela correta ao clicar duas vezes na tabela
      * 1 - Emprestimos
@@ -44,6 +45,8 @@ public class TelaPrincipal extends javax.swing.JFrame {
      */
     public TelaPrincipal() {
         initComponents();
+        cadastrosTemporarios();
+        consultarTodosEmprestimos();
     }
     
     private void consultarTodosEmprestimos(){
@@ -58,7 +61,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
             tabelaPrincipal.setModel(new javax.swing.table.DefaultTableModel(
                 new Object [][] {},
                 new String [] {
-                     "Descrição", "Código / Patrimônio", "Responsável", "Data", "Hora", "Data", "Hora", "idEmprestimo"
+                     "Tipo", "Código / Patrimônio", "Responsável", "Data", "Hora", "Data", "Hora", "idEmprestimo"
                 })
                 {
                 boolean[] canEdit = new boolean [] {
@@ -79,9 +82,9 @@ public class TelaPrincipal extends javax.swing.JFrame {
             for (int i = 0; i < listaDeEmprestimos.size(); i++) {               
                 
                 //Busca na lista de equipamentos o idEquipamento do emprestimo atual
-                dadosDaLinhaNaColuna[0] = controlador.getListaDeEquipamentos().get(listaDeEmprestimos.get(i).getIdEquipamento()).getDescricao();
+                dadosDaLinhaNaColuna[0] = Controlador.getListaDeEquipamentos().get(listaDeEmprestimos.get(i).getIdEquipamento()).getTipo();
                 
-                dadosDaLinhaNaColuna[1] = controlador.getListaDeEquipamentos().get(listaDeEmprestimos.get(i).getIdEquipamento()).getCodigo();
+                dadosDaLinhaNaColuna[1] = Controlador.getListaDeEquipamentos().get(listaDeEmprestimos.get(i).getIdEquipamento()).getCodigo();
                 
                 //Pega o nome do responsável de acordo com o id do empréstimo atual
                 String nomeResponsavel = controlador.getNomeResponsavel(listaDeEmprestimos.get(i).getIdResponsavel());
@@ -209,7 +212,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
                 dadosDaLinhaNaColuna[0] = listaDeEquipamentos.get(i).getCodigo();
                 dadosDaLinhaNaColuna[1] = listaDeEquipamentos.get(i).getTipo();
                 dadosDaLinhaNaColuna[2] = listaDeEquipamentos.get(i).getDescricao();
-                dadosDaLinhaNaColuna[3] = listaDeEquipamentos.get(i).getSituacao();
+                dadosDaLinhaNaColuna[3] = controlador.situacao(listaDeEquipamentos.get(i).getSituacao());
                 dadosDaLinhaNaColuna[4] = listaDeEquipamentos.get(i).getIdEquipamento();
                 
                 //Adiciona os dados à linha na tabela
@@ -228,35 +231,30 @@ public class TelaPrincipal extends javax.swing.JFrame {
         }    
     }
     
-    void cadastraResponsavelTemporario(){
-        controlador.cadastraResponsavel("Nome" + conta, 123456 + conta, "5112345678", "email@email.com");
-        conta++;
-    }
-    void cadastraEquipamentoTemporario(){
-        controlador.cadastraEquipamento(123456 + conta, "Projetor", "Descrição do Projetor", "D");
-        conta++;
+    private void cadastrosTemporarios(){
+        controlador.cadastraResponsavel("Vinicius Vasconcelos", 123456, "5112345678", "email@email.com");
+        controlador.cadastraResponsavel("Fulano de Tal", 853456, "5390909090", "email2@email.com.br");
+        controlador.cadastraResponsavel("Bertrano de Quem", 753159, "6170708060", "email32@gemail.com.br");
+        controlador.cadastraEquipamento(123456, "Projetor", "Projetor EPSON X13", "E");
+        controlador.cadastraEquipamento(123457, "Projetor", "Projetor EPSON X12", "D");
+        controlador.cadastraEquipamento(123458, "Notebook", "Notebook HP Probook", "D");
+        controlador.cadastraEquipamento(123459, "Notebook", "Notebook Dell M179", "D");
+        controlador.cadastraEquipamento(123460, "Tablet", "Tablet Motorolla Xoom", "D");
+        
+        controlador.cadastraEmprestimo(2, DataHora.converteParaTimestamp("2019-10-28 10:00:00"), 0);
     }
     
     void cadastraEmprestimo(int cod){
-        //Registra se existe ou não
-        boolean existe = false;
-        //Percorre a lista buscando se o código do equipamento atual existe 
-        for (int i = 0; i < controlador.getListaDeEquipamentos().size(); i++) {
-            //Se houver o equipamento com o id passado
-            if (controlador.getListaDeEquipamentos().get(i).getCodigo() == cod) {
-                //Cadastra o empréstimo, diz que existe e sai do for
-                controlador.cadastraEmprestimo(0, new Timestamp(System.currentTimeMillis()), controlador.getListaDeEquipamentos().get(i).getIdEquipamento());
-                existe = true;
-                break;
-            } else {
-                //Se não existe
-                existe = false;
-            }
-        }
-        //Se não existe o código passado, mostra mensagem
-        if (!existe) {
-            JOptionPane.showMessageDialog(this, "Não há o número atual");
-        }            
+        //Se existe o equipamento cadastrado
+        if (controlador.existeObjeto(cod, "CodEqp")) {
+            TelaEmprestimo novaTela = new TelaEmprestimo(cod);
+            novaTela.setVisible(true);
+            //Cadastra o empréstimo, diz que existe e sai do for
+            //controlador.cadastraEmprestimo(0, new Timestamp(System.currentTimeMillis()), Controlador.getListaDeEquipamentos().get(i).getIdEquipamento());
+            System.out.println("cadastrando");
+        } else {
+            JOptionPane.showMessageDialog(this, "Não existe o código digitado"); 
+        } 
     }
 
     /**
@@ -323,21 +321,21 @@ public class TelaPrincipal extends javax.swing.JFrame {
             }
         });
 
-        btnTempResponsavel.setText("Cad. Resp");
+        btnTempResponsavel.setText("Responsaveis");
         btnTempResponsavel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnTempResponsavelActionPerformed(evt);
             }
         });
 
-        btnTempEquipamento.setText("Cad. Equip");
+        btnTempEquipamento.setText("Equipamentos");
         btnTempEquipamento.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnTempEquipamentoActionPerformed(evt);
             }
         });
 
-        btnListar.setText("Listar");
+        btnListar.setText("Emprestimos");
         btnListar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnListarActionPerformed(evt);
@@ -432,7 +430,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnTempEquipamento)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnTempResponsavel, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnTempResponsavel, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnTempEmprestimo)
                 .addGap(16, 16, 16))
@@ -467,34 +465,16 @@ public class TelaPrincipal extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnTempResponsavelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTempResponsavelActionPerformed
-        cadastraResponsavelTemporario();
-        for (int i = 0; i < Controlador.listaDeResponsaveis.size(); i++) {
-            System.out.println("RESPONSAVEL " + i + "\n"+ Controlador.listaDeResponsaveis.get(i).getTudo()+ "\n");
-        }
+        consultarResponsaveis();
     }//GEN-LAST:event_btnTempResponsavelActionPerformed
 
     private void btnTempEquipamentoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTempEquipamentoActionPerformed
-        cadastraEquipamentoTemporario();
-        for (int i = 0; i < Controlador.getListaDeEquipamentos().size(); i++) {
-            System.out.println("EQUIPAMENTO " + i + "\n"+ Controlador.getListaDeEquipamentos().get(i).getTudo()+ "\n");
-        }
+        consultarEquipamentos();
     }//GEN-LAST:event_btnTempEquipamentoActionPerformed
 
     private void btnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarActionPerformed
-        
-        //Se existir o código digitado, abre a tela de empréstimo
-        if (controlador.existeObjeto(Integer.parseInt(txtCodigo.getText()), 4)) {
-            System.out.println("Existe o código!");
-        
-            TelaEmprestimo novaTela = new TelaEmprestimo(Integer.parseInt(txtCodigo.getText()));
-            /*System.out.println("EQUIPA: " + Integer.parseInt(txtCodigo.getText()));
-            cadastraEmprestimo(Integer.parseInt(txtCodigo.getText()));
-            System.out.println(Controlador.listaDeEmprestimos.size());*/
-        
-        } else {
-            JOptionPane.showMessageDialog(this, "Não existe o código digitado");
-        }
-
+        int cod = Integer.parseInt(txtCodigo.getText());
+        cadastraEmprestimo(cod); 
     }//GEN-LAST:event_btnRegistrarActionPerformed
 
     private void btnListarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnListarActionPerformed

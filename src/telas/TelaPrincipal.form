@@ -127,7 +127,7 @@
               <EmptySpace max="-2" attributes="0"/>
               <Component id="btnTempEquipamento" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="btnTempResponsavel" min="-2" pref="103" max="-2" attributes="0"/>
+              <Component id="btnTempResponsavel" min="-2" pref="119" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="btnTempEmprestimo" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" pref="16" max="-2" attributes="0"/>
@@ -264,7 +264,7 @@
     </Component>
     <Component class="javax.swing.JButton" name="btnTempResponsavel">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Cad. Resp"/>
+        <Property name="text" type="java.lang.String" value="Responsaveis"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnTempResponsavelActionPerformed"/>
@@ -272,7 +272,7 @@
     </Component>
     <Component class="javax.swing.JButton" name="btnTempEquipamento">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Cad. Equip"/>
+        <Property name="text" type="java.lang.String" value="Equipamentos"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnTempEquipamentoActionPerformed"/>
@@ -280,7 +280,7 @@
     </Component>
     <Component class="javax.swing.JButton" name="btnListar">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Listar"/>
+        <Property name="text" type="java.lang.String" value="Emprestimos"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnListarActionPerformed"/>
