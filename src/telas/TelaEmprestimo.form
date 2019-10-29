@@ -10,7 +10,7 @@
   </Properties>
   <SyntheticProperties>
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
-    <SyntheticProperty name="generateCenter" type="boolean" value="false"/>
+    <SyntheticProperty name="generateCenter" type="boolean" value="true"/>
   </SyntheticProperties>
   <AuxValues>
     <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
@@ -88,7 +88,13 @@
                               <Component id="txtFulano" max="32767" attributes="0"/>
                               <Component id="txtTelefone" alignment="0" pref="150" max="32767" attributes="0"/>
                           </Group>
-                          <EmptySpace pref="109" max="32767" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                              <Component id="btnBuscarResponsavel" max="32767" attributes="0"/>
+                              <Component id="btnAgoraDev" max="32767" attributes="0"/>
+                              <Component id="btnAgoraRet" alignment="0" max="32767" attributes="0"/>
+                          </Group>
+                          <EmptySpace pref="37" max="32767" attributes="0"/>
                           <Component id="jPanel2" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="1" attributes="0">
@@ -116,16 +122,19 @@
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="lblDataRetirada" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="txtRetirada" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="btnAgoraRet" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="lblDataDevolucao" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="txtDevolucao" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="btnAgoraDev" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="lblResponsavel" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="txtFulano" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="btnBuscarResponsavel" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
@@ -199,6 +208,7 @@
         </Component>
         <Component class="javax.swing.JTextField" name="txtTelefone">
           <Properties>
+            <Property name="editable" type="boolean" value="false"/>
             <Property name="text" type="java.lang.String" value="0000000000"/>
           </Properties>
         </Component>
@@ -300,6 +310,7 @@
             </Component>
             <Component class="javax.swing.JTextField" name="txtTipo">
               <Properties>
+                <Property name="editable" type="boolean" value="false"/>
                 <Property name="text" type="java.lang.String" value="XXXXXX"/>
               </Properties>
             </Component>
@@ -310,6 +321,7 @@
             </Component>
             <Component class="javax.swing.JTextField" name="txtDescricao">
               <Properties>
+                <Property name="editable" type="boolean" value="false"/>
                 <Property name="text" type="java.lang.String" value="XXXXX"/>
               </Properties>
             </Component>
@@ -356,6 +368,7 @@
                     </Property>
                     <Property name="selected" type="boolean" value="true"/>
                     <Property name="text" type="java.lang.String" value="Emprestado"/>
+                    <Property name="enabled" type="boolean" value="false"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JRadioButton" name="radioDisponivel">
@@ -364,6 +377,7 @@
                       <ComponentRef name="btnGrupoSituacao"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="Dispon&#xed;vel"/>
+                    <Property name="enabled" type="boolean" value="false"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JRadioButton" name="radioIndisponivel">
@@ -372,6 +386,7 @@
                       <ComponentRef name="btnGrupoSituacao"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="Indispon&#xed;vel"/>
+                    <Property name="enabled" type="boolean" value="false"/>
                   </Properties>
                 </Component>
               </SubComponents>
@@ -390,6 +405,27 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="Devolver"/>
           </Properties>
+        </Component>
+        <Component class="javax.swing.JButton" name="btnBuscarResponsavel">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Buscar"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JButton" name="btnAgoraDev">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Agora"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnAgoraDevActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JButton" name="btnAgoraRet">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Agora"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnAgoraRetActionPerformed"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>

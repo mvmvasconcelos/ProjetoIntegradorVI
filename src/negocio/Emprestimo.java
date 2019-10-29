@@ -15,7 +15,7 @@ import java.util.ArrayList;
  */
 public class Emprestimo {
     
-    private static int idBD = 0; //int global para controlar o ID autoincrementado
+    public static int idBD = 0; //int global para controlar o ID autoincrementado
     private int idEmprestimo;
     private int idResponsavel;
     private Timestamp retirada;
