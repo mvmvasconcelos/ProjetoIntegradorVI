@@ -12,23 +12,23 @@ package negocio;
 public class Responsavel {
     
     private static int idBD = 0; //int global para controlar o ID autoincrementado
-    private int id; //id do objeto
+    private int idResponsavel; //id do objeto
     private String nome;
     private int codigo;
     private String telefone;
     private String email;
 
     public Responsavel(String nome, int codigo, String telefone, String email) {
-        this.id = Responsavel.idBD;
+        this.idResponsavel = Responsavel.idBD;
         this.nome = nome;
         this.codigo = codigo;
         this.telefone = telefone;
         this.email = email;
-        Responsavel.idBD++; //Auto-incrementa o id que será armazenado no BD
+        Responsavel.idBD++; //Auto-incrementa o idResponsavel que será armazenado no BD
     }
 
-    public int getId() {
-        return id;
+    public int getIdResponsavel() {
+        return idResponsavel;
     }
 
     public String getNome() {
@@ -69,7 +69,7 @@ public class Responsavel {
      */
     public String getTudo(){
         return "IDBD: " + idBD 
-             + "\nID:" + id
+             + "\nID:" + idResponsavel
              + "\nNOME:" + nome
              + "\nCÓDIGO:" + codigo
              + "\nTELEFONE:" + telefone
