@@ -101,7 +101,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
                     dadosDaLinhaNaColuna[6] = "";                        
                 }           
                 
-                System.out.println("\n\nidEmpretimo "+ listaDeEmprestimos.get(i).getIdEmprestimo());
+                System.out.println("\n\nidEmprestimo "+ listaDeEmprestimos.get(i).getIdEmprestimo());
                 dadosDaLinhaNaColuna[7] = listaDeEmprestimos.get(i).getIdEmprestimo();
                 
                 //Adiciona os dados à linha na tabela

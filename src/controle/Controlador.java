@@ -80,6 +80,36 @@ public class Controlador {
     }
     
     /**
+     * Recebe o id e percorre a lista de responsáveis para pegar o nome
+     * correspondente ao id
+     * @param id id do responsavel
+     * @return String
+     */
+    public String getNomeResponsavel(int id){
+        for (int i = 0; i < listaDeResponsaveis.size(); i++) {
+            if (listaDeResponsaveis.get(i).getIdResponsavel() == id) {
+                return listaDeResponsaveis.get(i).getNome();
+            }            
+        }
+        return null;
+    }
+    
+    /**
+     * Recebe o id e percorre a lista de responsáveis para pegar o nome
+     * correspondente ao id
+     * @param id id do responsavel
+     * @return String
+     */
+    public String getTelefoneResponsavel(int id){
+        for (int i = 0; i < listaDeResponsaveis.size(); i++) {
+            if (listaDeResponsaveis.get(i).getIdResponsavel() == id) {
+                return listaDeResponsaveis.get(i).getTelefone();
+            }            
+        }
+        return null;
+    }
+    
+    /**
      * Cria um array com todos os empréstimos que contenham o equipamento
      * relacionado
      * @param id id do equipamento
@@ -121,21 +151,6 @@ public class Controlador {
     public void cadastraEmprestimo(int idResponsavel, Timestamp retirada, int idEquipamento){
         Emprestimo novo = new Emprestimo(idResponsavel, retirada, idEquipamento);
         salvaObjeto(novo);
-    }
-    
-    /**
-     * Recebe o id e percorre a lista de responsáveis para pegar o nome
-     * correspondente ao id
-     * @param id id do responsavel
-     * @return String
-     */
-    public String getNomeResponsavel(int id){
-        for (int i = 0; i < listaDeResponsaveis.size(); i++) {
-            if (listaDeResponsaveis.get(i).getIdResponsavel() == id) {
-                return listaDeResponsaveis.get(i).getNome();
-            }            
-        }
-        return null;
     }
     
     /**

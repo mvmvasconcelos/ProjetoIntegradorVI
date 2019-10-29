@@ -16,6 +16,7 @@ import negocio.Equipamento;
  */
 public class TelaEmprestimo extends javax.swing.JFrame {
     Controlador ctl = new Controlador();
+    TelaBuscaResponsavel telaBusca;
     boolean estaEmprestado;
 
     /**
@@ -45,10 +46,7 @@ public class TelaEmprestimo extends javax.swing.JFrame {
         Emprestimo emprestimo = ctl.equipamentoEmprestado(codigo);
         lblIdEmprestimo.setText(String.valueOf(emprestimo.getIdEmprestimo()));
         txtRetirada.setText(emprestimo.getDataRetirada());
-        String responsavel = ctl.getNomeResponsavel(emprestimo.getIdResponsavel());
-        txtFulano.setText(responsavel);
-        String telefone = ctl.getResponsavelPeloID(emprestimo.getIdResponsavel()).getTelefone();
-        txtTelefone.setText(telefone);
+        preencheDadosResponsavel(emprestimo.getIdResponsavel());
         preencheDadosEquipamento(codigo);
         btnAcao.setText("Devolver");
     }
@@ -77,6 +75,26 @@ public class TelaEmprestimo extends javax.swing.JFrame {
                 break;
         }
     }
+    
+    /**
+     * Preenche os dados do responsável de acordo com o ID pego da busca
+     * @param id 
+     */
+    private void preencheDadosResponsavel(int id){
+        txtNome.setText(ctl.getNomeResponsavel(id));
+        txtTelefone.setText(ctl.getTelefoneResponsavel(id));
+    }
+    
+    private void abreBusca(){
+        this.telaBusca = new TelaBuscaResponsavel(this, true);
+        //Abre a janela de busca e fica aguardando
+        telaBusca.setVisible(true);
+        
+        //Se o usuário tiver escolhido um responsável, atualiza
+        if (this.telaBusca.isSelecionado()) {
+            preencheDadosResponsavel(this.telaBusca.getIdResponsavel());
+        }           
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -97,7 +115,7 @@ public class TelaEmprestimo extends javax.swing.JFrame {
         txtRetirada = new javax.swing.JFormattedTextField();
         lblIdEmprestimo = new javax.swing.JLabel();
         lblResponsavel = new javax.swing.JLabel();
-        txtFulano = new javax.swing.JTextField();
+        txtNome = new javax.swing.JTextField();
         lblTelefone = new javax.swing.JLabel();
         txtTelefone = new javax.swing.JTextField();
         jPanel2 = new javax.swing.JPanel();
@@ -140,7 +158,7 @@ public class TelaEmprestimo extends javax.swing.JFrame {
 
         lblResponsavel.setText("Responsável:");
 
-        txtFulano.setText("XXXXXXXX");
+        txtNome.setText("XXXXXXXX");
 
         lblTelefone.setText("Telefone:");
 
@@ -266,6 +284,11 @@ public class TelaEmprestimo extends javax.swing.JFrame {
         btnAcao.setText("Devolver");
 
         btnBuscarResponsavel.setText("Buscar");
+        btnBuscarResponsavel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBuscarResponsavelActionPerformed(evt);
+            }
+        });
 
         btnAgoraDev.setText("Agora");
         btnAgoraDev.addActionListener(new java.awt.event.ActionListener() {
@@ -300,7 +323,7 @@ public class TelaEmprestimo extends javax.swing.JFrame {
                             .addComponent(lblIdEmprestimo)
                             .addComponent(txtDevolucao)
                             .addComponent(txtRetirada)
-                            .addComponent(txtFulano)
+                            .addComponent(txtNome)
                             .addComponent(txtTelefone, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -338,7 +361,7 @@ public class TelaEmprestimo extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(lblResponsavel)
-                            .addComponent(txtFulano, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtNome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btnBuscarResponsavel))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -392,6 +415,11 @@ public class TelaEmprestimo extends javax.swing.JFrame {
     private void btnAgoraRetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgoraRetActionPerformed
         txtRetirada.setText(DataHora.dataFormatada(System.currentTimeMillis()));
     }//GEN-LAST:event_btnAgoraRetActionPerformed
+
+    private void btnBuscarResponsavelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarResponsavelActionPerformed
+        //TelaBuscaResponsavel novaTela = new FrameBuscaResponsavel();
+        abreBusca();
+    }//GEN-LAST:event_btnBuscarResponsavelActionPerformed
 
     /**
      * @param args the command line arguments
@@ -456,7 +484,7 @@ public class TelaEmprestimo extends javax.swing.JFrame {
     private javax.swing.JTextField txtCodigo;
     private javax.swing.JTextField txtDescricao;
     private javax.swing.JFormattedTextField txtDevolucao;
-    private javax.swing.JTextField txtFulano;
+    private javax.swing.JTextField txtNome;
     private javax.swing.JFormattedTextField txtRetirada;
     private javax.swing.JTextField txtTelefone;
     private javax.swing.JTextField txtTipo;

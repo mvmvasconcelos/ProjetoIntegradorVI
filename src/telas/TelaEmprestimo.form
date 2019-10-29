@@ -85,7 +85,7 @@
                               <Component id="lblIdEmprestimo" min="-2" max="-2" attributes="0"/>
                               <Component id="txtDevolucao" max="32767" attributes="0"/>
                               <Component id="txtRetirada" alignment="0" max="32767" attributes="0"/>
-                              <Component id="txtFulano" max="32767" attributes="0"/>
+                              <Component id="txtNome" max="32767" attributes="0"/>
                               <Component id="txtTelefone" alignment="0" pref="150" max="32767" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
@@ -133,7 +133,7 @@
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="lblResponsavel" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="txtFulano" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="txtNome" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="btnBuscarResponsavel" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
@@ -196,7 +196,7 @@
             <Property name="text" type="java.lang.String" value="Respons&#xe1;vel:"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JTextField" name="txtFulano">
+        <Component class="javax.swing.JTextField" name="txtNome">
           <Properties>
             <Property name="text" type="java.lang.String" value="XXXXXXXX"/>
           </Properties>
@@ -410,6 +410,9 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="Buscar"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnBuscarResponsavelActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="btnAgoraDev">
           <Properties>
