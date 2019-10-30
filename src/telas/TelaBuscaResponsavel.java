@@ -24,7 +24,7 @@ public class TelaBuscaResponsavel extends javax.swing.JDialog {
     /**
      * Creates new form TelaBuscaResponsavel
      */
-    public TelaBuscaResponsavel(java.awt.Frame parent, boolean modal) {
+    public TelaBuscaResponsavel(javax.swing.JDialog parent, boolean modal) {
         super(parent, modal);
         initComponents();
         consultarResponsaveis();
@@ -255,7 +255,7 @@ public class TelaBuscaResponsavel extends javax.swing.JDialog {
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                TelaBuscaResponsavel dialog = new TelaBuscaResponsavel(new javax.swing.JFrame(), true);
+                TelaBuscaResponsavel dialog = new TelaBuscaResponsavel(new javax.swing.JDialog(), true);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {

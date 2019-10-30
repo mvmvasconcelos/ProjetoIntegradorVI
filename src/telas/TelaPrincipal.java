@@ -26,6 +26,8 @@ public class TelaPrincipal extends javax.swing.JFrame {
     //Cria lista de emprestimos
     ArrayList<Emprestimo> listaDeEmprestimos =  Controlador.getListaDeEmprestimos();
     
+    TelaEmprestimo telaEmprestimo;
+    
     /** Tipos de listagem para abrir a janela correta ao clicar duas vezes na tabela
      * 1 - Emprestimos
      * 2 - Responsáveis
@@ -241,17 +243,15 @@ public class TelaPrincipal extends javax.swing.JFrame {
         controlador.cadastraEquipamento(123459, "Notebook", "Notebook Dell M179", "D");
         controlador.cadastraEquipamento(123460, "Tablet", "Tablet Motorolla Xoom", "D");
         
-        controlador.cadastraEmprestimo(2, DataHora.converteParaTimestamp("2019-10-28 10:00:00"), 0);
+        controlador.cadastraEmprestimo(2, DataHora.converteParaTimestamp(1572392211 ), 0);
     }
     
-    void cadastraEmprestimo(int cod){
+    void acionaEmprestimo(int cod){
         //Se existe o equipamento cadastrado
         if (controlador.existeObjeto(cod, "CodEqp")) {
-            TelaEmprestimo novaTela = new TelaEmprestimo(cod);
-            novaTela.setVisible(true);
-            //Cadastra o empréstimo, diz que existe e sai do for
-            //controlador.cadastraEmprestimo(0, new Timestamp(System.currentTimeMillis()), Controlador.getListaDeEquipamentos().get(i).getIdEquipamento());
-            System.out.println("cadastrando");
+            this.telaEmprestimo = new TelaEmprestimo(this, true, cod);
+            this.telaEmprestimo.setVisible(true);
+            consultarTodosEmprestimos();
         } else {
             JOptionPane.showMessageDialog(this, "Não existe o código digitado"); 
         } 
@@ -314,7 +314,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
         txtCodigo.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txtCodigo.setText("123456");
 
-        btnRegistrar.setText("Registrar");
+        btnRegistrar.setText("Empréstimo");
         btnRegistrar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnRegistrarActionPerformed(evt);
@@ -474,7 +474,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
 
     private void btnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarActionPerformed
         int cod = Integer.parseInt(txtCodigo.getText());
-        cadastraEmprestimo(cod); 
+        acionaEmprestimo(cod); 
     }//GEN-LAST:event_btnRegistrarActionPerformed
 
     private void btnListarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnListarActionPerformed
