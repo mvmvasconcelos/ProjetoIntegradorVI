@@ -6,29 +6,36 @@
 package telas;
 
 import controle.Controlador;
-import negocio.Emprestimo;
 import controle.DataHora;
+import negocio.Emprestimo;
 import negocio.Equipamento;
 
 /**
  *
  * @author Vinicius
  */
-public class TelaEmprestimo extends javax.swing.JFrame {
+public class TelaEmprestimo extends javax.swing.JDialog {
     Controlador ctl = new Controlador();
+    Emprestimo emprestimo;
+    Equipamento equipamento;
     TelaBuscaResponsavel telaBusca;
-    boolean estaEmprestado;
+    private boolean estaEmprestado;
+    private long dataHoraAgora;
+    private int idResponsavel;
+    private int idEmprestimo;
+    private int idEquipamento;
+    
+    public TelaEmprestimo(java.awt.Frame parent, boolean modal) {
+        super(parent, modal);
+        initComponents();    }
 
     /**
      * Creates new form TelaEmprestimo
      */
-    public TelaEmprestimo() {
+    public TelaEmprestimo(java.awt.Frame parent, boolean modal, int codigo) {
+        super(parent, modal);
         initComponents();
-    }
-    
-    public TelaEmprestimo(int codigo){
         estaEmprestado = ctl.estaEmprestado(codigo);
-        initComponents();
         if (estaEmprestado) {
             preencheFormSeEmprestado(codigo);
         } else {
@@ -42,9 +49,11 @@ public class TelaEmprestimo extends javax.swing.JFrame {
      * 
      * @param codigo 
      */
-    public void preencheFormSeEmprestado(int codigo){
-        Emprestimo emprestimo = ctl.equipamentoEmprestado(codigo);
-        lblIdEmprestimo.setText(String.valueOf(emprestimo.getIdEmprestimo()));
+    private void preencheFormSeEmprestado(int codigo){
+        emprestimo = ctl.getEmprestimoPeloCodigoDoEquipamento(codigo);
+        idEmprestimo = emprestimo.getIdEmprestimo();
+        System.out.println("ae adfadf " + idEmprestimo);
+        lblIdEmprestimo.setText(String.valueOf(idEmprestimo));
         txtRetirada.setText(emprestimo.getDataRetirada());
         preencheDadosResponsavel(emprestimo.getIdResponsavel());
         preencheDadosEquipamento(codigo);
@@ -53,13 +62,15 @@ public class TelaEmprestimo extends javax.swing.JFrame {
     
     private void preencheFormSeDisponivel(int codigo){
         lblIdEmprestimo.setText(String.valueOf(Emprestimo.idBD));
-        txtRetirada.setText(DataHora.dataFormatada(System.currentTimeMillis()));
+        dataHoraAgora = System.currentTimeMillis();
+        txtRetirada.setText(DataHora.dataFormatada(dataHoraAgora));
         preencheDadosEquipamento(codigo);
         btnAcao.setText("Emprestar");
     }
     
     private void preencheDadosEquipamento(int codigo){
-        Equipamento equipamento = ctl.getEquipamentoPeloCodigo(codigo);
+        equipamento = ctl.getEquipamentoPeloCodigo(codigo);
+        idEquipamento = equipamento.getIdEquipamento();
         txtCodigo.setText(String.valueOf(equipamento.getCodigo()));
         txtTipo.setText(equipamento.getTipo());
         txtDescricao.setText(equipamento.getDescricao());
@@ -92,8 +103,23 @@ public class TelaEmprestimo extends javax.swing.JFrame {
         
         //Se o usuário tiver escolhido um responsável, atualiza
         if (this.telaBusca.isSelecionado()) {
-            preencheDadosResponsavel(this.telaBusca.getIdResponsavel());
+            idResponsavel = this.telaBusca.getIdResponsavel();
+            preencheDadosResponsavel(idResponsavel);
+            
         }           
+    }
+    
+    private void devolverEquipamento(){
+        emprestimo.setDevolucao(DataHora.converteParaTimestamp(dataHoraAgora));
+        emprestimo.setSituacaoEmprestimo("C");
+        equipamento.setSituacao("D");
+        this.dispose();
+    }
+    
+    private void retirarEquipamento(){
+        ctl.cadastraEmprestimo(idResponsavel, DataHora.converteParaTimestamp(dataHoraAgora), idEquipamento);
+        equipamento.setSituacao("E");
+        this.dispose();
     }
 
     /**
@@ -282,6 +308,11 @@ public class TelaEmprestimo extends javax.swing.JFrame {
         });
 
         btnAcao.setText("Devolver");
+        btnAcao.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAcaoActionPerformed(evt);
+            }
+        });
 
         btnBuscarResponsavel.setText("Buscar");
         btnBuscarResponsavel.addActionListener(new java.awt.event.ActionListener() {
@@ -330,7 +361,7 @@ public class TelaEmprestimo extends javax.swing.JFrame {
                             .addComponent(btnBuscarResponsavel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(btnAgoraDev, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(btnAgoraRet, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 37, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -395,7 +426,7 @@ public class TelaEmprestimo extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(lblTitulo)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 14, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -408,18 +439,28 @@ public class TelaEmprestimo extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_btnCancelarActionPerformed
 
-    private void btnAgoraDevActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgoraDevActionPerformed
-        txtDevolucao.setText(DataHora.dataFormatada(System.currentTimeMillis()));
-    }//GEN-LAST:event_btnAgoraDevActionPerformed
-
-    private void btnAgoraRetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgoraRetActionPerformed
-        txtRetirada.setText(DataHora.dataFormatada(System.currentTimeMillis()));
-    }//GEN-LAST:event_btnAgoraRetActionPerformed
+    private void btnAcaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAcaoActionPerformed
+        if (estaEmprestado) {
+            devolverEquipamento();
+        } else {
+            retirarEquipamento();
+        }
+    }//GEN-LAST:event_btnAcaoActionPerformed
 
     private void btnBuscarResponsavelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarResponsavelActionPerformed
         //TelaBuscaResponsavel novaTela = new FrameBuscaResponsavel();
         abreBusca();
     }//GEN-LAST:event_btnBuscarResponsavelActionPerformed
+
+    private void btnAgoraDevActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgoraDevActionPerformed
+        dataHoraAgora = System.currentTimeMillis();
+        txtDevolucao.setText(DataHora.dataFormatada(dataHoraAgora));
+    }//GEN-LAST:event_btnAgoraDevActionPerformed
+
+    private void btnAgoraRetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgoraRetActionPerformed
+        dataHoraAgora = System.currentTimeMillis();
+        txtDevolucao.setText(DataHora.dataFormatada(dataHoraAgora));
+    }//GEN-LAST:event_btnAgoraRetActionPerformed
 
     /**
      * @param args the command line arguments
@@ -448,10 +489,17 @@ public class TelaEmprestimo extends javax.swing.JFrame {
         }
         //</editor-fold>
 
-        /* Create and display the form */
+        /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new TelaEmprestimo().setVisible(true);
+                TelaEmprestimo dialog = new TelaEmprestimo(new javax.swing.JFrame(), true);
+                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                    @Override
+                    public void windowClosing(java.awt.event.WindowEvent e) {
+                        System.exit(0);
+                    }
+                });
+                dialog.setVisible(true);
             }
         });
     }

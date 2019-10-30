@@ -41,9 +41,8 @@ public class DataHora {
         }
     }
     
-    public static Timestamp converteParaTimestamp(String data){
-        Timestamp ts;
-        ts = java.sql.Timestamp.valueOf(data);
+    public static Timestamp converteParaTimestamp(long data){
+        Timestamp ts = new Timestamp(data);
         return ts;
     }
 }

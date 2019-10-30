@@ -115,7 +115,7 @@ public class Controlador {
      * @param id id do equipamento
      * @return lista de emprestimos
      */
-    public ArrayList<Emprestimo> getEmprestimoPeloEquipamento(int id){
+    public ArrayList<Emprestimo> getEmprestimosPeloIdEquipamento(int id){
         ArrayList<Emprestimo> emprestimoPorEquipamento = new ArrayList<>();
         for (int i = 0; i < listaDeEmprestimos.size(); i++) {
             if (listaDeEmprestimos.get(i).getIdEquipamento() == id) {
@@ -159,9 +159,9 @@ public class Controlador {
      * @param codigo
      * @return o objeto emprestimo
      */
-    public Emprestimo equipamentoEmprestado(int codigo){
+    public Emprestimo getEmprestimoPeloCodigoDoEquipamento(int codigo){
         int idEqp = getEquipamentoPeloCodigo(codigo).getIdEquipamento();
-        ArrayList<Emprestimo> temp = getEmprestimoPeloEquipamento(idEqp);
+        ArrayList<Emprestimo> temp = getEmprestimosPeloIdEquipamento(idEqp);
         for (int i = 0; i < temp.size(); i++) {
             if ("P".equals(temp.get(i).getSituacaoEmprestimo())) {
                 return temp.get(i);
@@ -191,7 +191,7 @@ public class Controlador {
                     return true;
                 }
             case "IDEMP":
-                if (listaDeEmprestimos.contains(this.getEmprestimoPeloEquipamento(id))) {
+                if (listaDeEmprestimos.contains(this.getEmprestimosPeloIdEquipamento(id))) {
                     return true;
                 }
             case "CODEQP":
