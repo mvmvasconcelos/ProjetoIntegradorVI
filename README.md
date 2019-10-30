@@ -9,12 +9,15 @@
  Ao final da atividade, o grupo deverá compactar o projeto do Netbeans que contém as interfaces e postar no Ambiente Virtual.
 
 
-###A fazer:
- Aprontar a aplicação para a entrega da atividade II
+### A fazer:
+ Aprontar a aplicação para a entrega da atividade II (logo, cores, fontes, etc)
 
  Cadastro/edição de equipamento
+ 
  Cadastro/edição de responsavel
+ 
  Implementar busca por equipamento da tela de emprestimo
+ 
  Edição de emprestimo com dois cliques no item da tabela
  
  Integração com banco de dados
