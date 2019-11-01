@@ -5,95 +5,18 @@
  */
 package telas;
 
-import controle.Controlador;
-import java.util.ArrayList;
-import javax.swing.JOptionPane;
-import javax.swing.table.DefaultTableModel;
-import negocio.Responsavel;
-
 /**
  *
- * @author Vinicius
+ * @author vinicius
  */
-public class TelaBuscaResponsavel extends javax.swing.JDialog {
-    private boolean selecionado = false;
-    //Cria modelo de tabela, será usado na manipulação da mesma
-    DefaultTableModel tabela;
-    private int idResponsavel;
-    
+public class TelaBuscarEquipamento extends javax.swing.JDialog {
+    private int idEquipamento;
     /**
-     * Creates new form TelaBuscaResponsavel
+     * Creates new form TelaBuscarEquipamento
      */
-    public TelaBuscaResponsavel(javax.swing.JDialog parent, boolean modal) {
+    public TelaBuscarEquipamento(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-        consultarResponsaveis();
-    }
-
-    public int getIdResponsavel() {
-        return idResponsavel;
-    }
-
-    public boolean isSelecionado() {
-        return selecionado;
-    }
-    
-    /**
-     * Ao selecionar um responsavel, atualiza idSelecionado, o verificador e
-     * fecha a janela
-     */
-    private void selecionaResponsavel(){
-        selecionado = true;
-        this.dispose();
-    }
-    private void consultarResponsaveis(){
-        ArrayList<Responsavel> listaDeResponsaveis = Controlador.getListaDeResponsaveis();
-        if (listaDeResponsaveis.size() > 0) {
-            //Recria a tabela caso ela tenha sido modificada            
-            tabelaResponsavel.setModel(new javax.swing.table.DefaultTableModel(
-                new Object [][] {},
-                new String [] {
-                     "Nome", "Código", "Telefone", "E-Mail", "idResponsavel"
-                })
-                {
-                boolean[] canEdit = new boolean [] {
-                    false, false, false, false, false
-                };
-
-                @Override
-                public boolean isCellEditable(int rowIndex, int columnIndex) {
-                    return canEdit [columnIndex];
-                }}
-            );
-            //define a tabela com o mesmo modelo da tabelaResponsavel
-            tabela = (DefaultTableModel) tabelaResponsavel.getModel();
-
-            //Cria um objeto dadosDaLinhaNaColuna, onde cada posição é será coluna
-            Object dadosDaLinhaNaColuna[] = new Object[5];
-            //percorre o lista e popula as colunas de acordo com a posicao
-            for (int i = 0; i < listaDeResponsaveis.size(); i++) {               
-                
-                //Busca na lista de equipamentos o idEquipamento do emprestimo atual
-                dadosDaLinhaNaColuna[0] = listaDeResponsaveis.get(i).getNome();
-                dadosDaLinhaNaColuna[1] = listaDeResponsaveis.get(i).getCodigo();
-                dadosDaLinhaNaColuna[2] = listaDeResponsaveis.get(i).getTelefone();
-                dadosDaLinhaNaColuna[3] = listaDeResponsaveis.get(i).getEmail();
-                dadosDaLinhaNaColuna[4] = listaDeResponsaveis.get(i).getIdResponsavel();
-                
-                //Adiciona os dados à linha na tabela
-                tabela.addRow(dadosDaLinhaNaColuna);                
-
-            }
-            //Define o autoresize pra 3, não lembro qual o motivo.
-            tabelaResponsavel.setAutoResizeMode(3);
-            //Oculta última coluna que é apenas para passar referência
-            tabelaResponsavel.getColumnModel().getColumn(4).setMinWidth(0);
-            tabelaResponsavel.getColumnModel().getColumn(4).setMaxWidth(0);
-            jScrollPane1.getVerticalScrollBar().setValue(0);
-        } else { //Se estiver vazia, avisa o usuário
-            //exibirMensagem();
-            JOptionPane.showMessageDialog(this, "Nenhum responsável cadastrado.");
-        }        
     }
 
     /**
@@ -105,7 +28,7 @@ public class TelaBuscaResponsavel extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        lblTitulo = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
         txtBuscar = new javax.swing.JTextField();
         btnBuscar = new javax.swing.JButton();
         btnCancelar = new javax.swing.JButton();
@@ -115,7 +38,7 @@ public class TelaBuscaResponsavel extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        lblTitulo.setText("Tela busca responsavel");
+        jLabel1.setText("Tela buscar equipamento");
 
         txtBuscar.setText("Fulano");
 
@@ -140,7 +63,7 @@ public class TelaBuscaResponsavel extends javax.swing.JDialog {
                 {null, null, null, null, null}
             },
             new String [] {
-                "Nome", "Código", "Telefone", "E-Mail", "idResponsavel"
+                "Tipo", "Código", "Descrição", "Situação", "idEquipamento"
             }
         ));
         tabelaResponsavel.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -160,7 +83,10 @@ public class TelaBuscaResponsavel extends javax.swing.JDialog {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(226, 226, 226)
+                .addComponent(jLabel1)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lblBuscar)
@@ -170,18 +96,14 @@ public class TelaBuscaResponsavel extends javax.swing.JDialog {
                         .addComponent(btnBuscar)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnCancelar)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(lblTitulo)
-                .addGap(128, 128, 128))
+                .addGap(0, 56, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(9, 9, 9)
-                .addComponent(lblTitulo)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(16, 16, 16)
+                .addComponent(jLabel1)
+                .addGap(10, 10, 10)
                 .addComponent(lblBuscar)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -189,33 +111,31 @@ public class TelaBuscaResponsavel extends javax.swing.JDialog {
                     .addComponent(btnBuscar)
                     .addComponent(btnCancelar))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 58, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         pack();
-        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnBuscarActionPerformed
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
         this.dispose();
     }//GEN-LAST:event_btnCancelarActionPerformed
 
     private void tabelaResponsavelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabelaResponsavelMouseClicked
-        //Armazena o id presente na coluna 4 da linha clicada em idResponsavel
-        idResponsavel = (int) tabelaResponsavel.getValueAt(tabelaResponsavel.getSelectedRow(), 4);
+        //Armazena o id presente na coluna 4 da linha clicada em idEquipamento
+        idEquipamento = (int) tabelaResponsavel.getValueAt(tabelaResponsavel.getSelectedRow(), 4);
         if (evt.getClickCount() == 2) {
-            System.out.println("2 cliques no ID:" + idResponsavel);
-            selecionaResponsavel();
+            System.out.println("2 cliques no ID:" + idEquipamento);
+            //selecionaEquipamento();
         } else {
             //selecionaTermo(idTermoSelecionado);
-            System.out.println("1 clique no ID " + idResponsavel);
+            System.out.println("1 clique no ID " + idEquipamento);
         }
     }//GEN-LAST:event_tabelaResponsavelMouseClicked
-
-    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnBuscarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -234,20 +154,20 @@ public class TelaBuscaResponsavel extends javax.swing.JDialog {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(TelaBuscaResponsavel.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TelaBuscarEquipamento.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(TelaBuscaResponsavel.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TelaBuscarEquipamento.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(TelaBuscaResponsavel.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TelaBuscarEquipamento.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(TelaBuscaResponsavel.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TelaBuscarEquipamento.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                TelaBuscaResponsavel dialog = new TelaBuscaResponsavel(new javax.swing.JDialog(), true);
+                TelaBuscarEquipamento dialog = new TelaBuscarEquipamento(new javax.swing.JFrame(), true);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -262,9 +182,9 @@ public class TelaBuscaResponsavel extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBuscar;
     private javax.swing.JButton btnCancelar;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblBuscar;
-    private javax.swing.JLabel lblTitulo;
     private javax.swing.JTable tabelaResponsavel;
     private javax.swing.JTextField txtBuscar;
     // End of variables declaration//GEN-END:variables
