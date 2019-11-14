@@ -7,6 +7,7 @@ package telas;
 
 import controle.Controlador;
 import controle.DataHora;
+import java.awt.Color;
 import negocio.Emprestimo;
 import negocio.Equipamento;
 
@@ -57,6 +58,8 @@ public class TelaEmprestimo extends javax.swing.JDialog {
         txtRetirada.setText(emprestimo.getDataRetirada());
         preencheDadosResponsavel(emprestimo.getIdResponsavel());
         preencheDadosEquipamento(codigo);
+        txtRetirada.setEnabled(false);
+        btnAgoraRet.setEnabled(false);
         btnAcao.setText("Devolver");
     }
     
@@ -64,6 +67,8 @@ public class TelaEmprestimo extends javax.swing.JDialog {
         lblIdEmprestimo.setText(String.valueOf(Emprestimo.idBD));
         dataHoraAgora = System.currentTimeMillis();
         txtRetirada.setText(DataHora.dataFormatada(dataHoraAgora));
+        txtDevolucao.setEnabled(false);
+        btnAgoraDev.setEnabled(false);
         preencheDadosEquipamento(codigo);
         btnAcao.setText("Emprestar");
     }
@@ -76,13 +81,16 @@ public class TelaEmprestimo extends javax.swing.JDialog {
         txtDescricao.setText(equipamento.getDescricao());
         switch(equipamento.getSituacao()){
             case "E":
-                radioEmprestado.setSelected(true);
+                lblStatus.setText("Emprestado");
+                lblStatus.setForeground(new Color(190, 20, 0));
                 break;
             case "D":
-                radioDisponivel.setSelected(true);
+                lblStatus.setText("Disponível");
+                lblStatus.setForeground(new Color(10, 150, 50));
                 break;
             case "I":
-                radioIndisponivel.setSelected(true);
+                lblStatus.setText("Indisponível");
+                lblStatus.setForeground(new Color(180, 190, 0));
                 break;
         }
     }
@@ -153,11 +161,8 @@ public class TelaEmprestimo extends javax.swing.JDialog {
         lblDescricao = new javax.swing.JLabel();
         txtDescricao = new javax.swing.JTextField();
         lblSituacao = new javax.swing.JLabel();
-        jPanel3 = new javax.swing.JPanel();
-        radioEmprestado = new javax.swing.JRadioButton();
-        radioDisponivel = new javax.swing.JRadioButton();
-        radioIndisponivel = new javax.swing.JRadioButton();
         btnBuscarEquipamento = new javax.swing.JButton();
+        lblStatus = new javax.swing.JLabel();
         btnCancelar = new javax.swing.JButton();
         btnAcao = new javax.swing.JButton();
         btnBuscarResponsavel = new javax.swing.JButton();
@@ -165,12 +170,15 @@ public class TelaEmprestimo extends javax.swing.JDialog {
         btnAgoraRet = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Empréstimos");
 
-        lblTitulo.setText("Tela de Empréstimo");
+        lblTitulo.setFont(new java.awt.Font("sansserif", 1, 18)); // NOI18N
+        lblTitulo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblTitulo.setText("Empréstimo de Equipamento");
 
         jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        lblId.setText("Número ID:");
+        lblId.setText("ID do Empréstimo:");
 
         lblDataRetirada.setText("Data de Retirada:");
 
@@ -181,6 +189,7 @@ public class TelaEmprestimo extends javax.swing.JDialog {
         txtRetirada.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.DateFormatter(new java.text.SimpleDateFormat("dd/MM/yyyy"))));
         txtRetirada.setText("00/00/0000");
 
+        lblIdEmprestimo.setFont(new java.awt.Font("sansserif", 1, 12)); // NOI18N
         lblIdEmprestimo.setText("123");
 
         lblResponsavel.setText("Responsável:");
@@ -194,6 +203,7 @@ public class TelaEmprestimo extends javax.swing.JDialog {
 
         jPanel2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
+        lblInformacoes.setFont(new java.awt.Font("sansserif", 1, 12)); // NOI18N
         lblInformacoes.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lblInformacoes.setText("Informações sobre o equipamento");
 
@@ -213,44 +223,10 @@ public class TelaEmprestimo extends javax.swing.JDialog {
 
         lblSituacao.setText("Situação:");
 
-        btnGrupoSituacao.add(radioEmprestado);
-        radioEmprestado.setSelected(true);
-        radioEmprestado.setText("Emprestado");
-        radioEmprestado.setEnabled(false);
-
-        btnGrupoSituacao.add(radioDisponivel);
-        radioDisponivel.setText("Disponível");
-        radioDisponivel.setEnabled(false);
-
-        btnGrupoSituacao.add(radioIndisponivel);
-        radioIndisponivel.setText("Indisponível");
-        radioIndisponivel.setEnabled(false);
-
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(radioEmprestado)
-                    .addComponent(radioDisponivel)
-                    .addComponent(radioIndisponivel))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(radioEmprestado)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(radioDisponivel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(radioIndisponivel)
-                .addContainerGap(28, Short.MAX_VALUE))
-        );
-
         btnBuscarEquipamento.setText("Buscar");
+
+        lblStatus.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
+        lblStatus.setText("Disponível");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -271,14 +247,14 @@ public class TelaEmprestimo extends javax.swing.JDialog {
                         .addGap(18, 18, 18)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(txtDescricao, javax.swing.GroupLayout.DEFAULT_SIZE, 175, Short.MAX_VALUE)
-                            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(txtCodigo)
                                     .addComponent(txtTipo, javax.swing.GroupLayout.DEFAULT_SIZE, 90, Short.MAX_VALUE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(btnBuscarEquipamento)
-                                .addGap(0, 0, Short.MAX_VALUE)))))
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addComponent(lblStatus, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap(40, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
@@ -299,11 +275,11 @@ public class TelaEmprestimo extends javax.swing.JDialog {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblDescricao)
                     .addComponent(txtDescricao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGap(18, 18, 18)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblSituacao)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(lblStatus))
+                .addContainerGap(13, Short.MAX_VALUE))
         );
 
         btnCancelar.setText("Cancelar");
@@ -367,8 +343,9 @@ public class TelaEmprestimo extends javax.swing.JDialog {
                             .addComponent(btnBuscarResponsavel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(btnAgoraDev, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(btnAgoraRet, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnAcao)
@@ -379,9 +356,9 @@ public class TelaEmprestimo extends javax.swing.JDialog {
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(29, 29, 29)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(29, 29, 29)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(lblId)
                             .addComponent(lblIdEmprestimo))
@@ -404,10 +381,8 @@ public class TelaEmprestimo extends javax.swing.JDialog {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(lblTelefone)
                             .addComponent(txtTelefone, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 172, Short.MAX_VALUE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnCancelar)
                     .addComponent(btnAcao))
@@ -419,20 +394,18 @@ public class TelaEmprestimo extends javax.swing.JDialog {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(269, 269, 269)
-                .addComponent(lblTitulo)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblTitulo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(lblTitulo)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(lblTitulo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -465,7 +438,7 @@ public class TelaEmprestimo extends javax.swing.JDialog {
 
     private void btnAgoraRetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgoraRetActionPerformed
         dataHoraAgora = System.currentTimeMillis();
-        txtDevolucao.setText(DataHora.dataFormatada(dataHoraAgora));
+        txtRetirada.setText(DataHora.dataFormatada(dataHoraAgora));
     }//GEN-LAST:event_btnAgoraRetActionPerformed
 
     /**
@@ -484,15 +457,11 @@ public class TelaEmprestimo extends javax.swing.JDialog {
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(TelaEmprestimo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(TelaEmprestimo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(TelaEmprestimo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(TelaEmprestimo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        
         //</editor-fold>
 
         /* Create and display the dialog */
@@ -520,7 +489,6 @@ public class TelaEmprestimo extends javax.swing.JDialog {
     private javax.swing.ButtonGroup btnGrupoSituacao;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
     private javax.swing.JLabel lblCodigo;
     private javax.swing.JLabel lblDataDevolucao;
     private javax.swing.JLabel lblDataRetirada;
@@ -530,12 +498,10 @@ public class TelaEmprestimo extends javax.swing.JDialog {
     private javax.swing.JLabel lblInformacoes;
     private javax.swing.JLabel lblResponsavel;
     private javax.swing.JLabel lblSituacao;
+    private javax.swing.JLabel lblStatus;
     private javax.swing.JLabel lblTelefone;
     private javax.swing.JLabel lblTipo;
     private javax.swing.JLabel lblTitulo;
-    private javax.swing.JRadioButton radioDisponivel;
-    private javax.swing.JRadioButton radioEmprestado;
-    private javax.swing.JRadioButton radioIndisponivel;
     private javax.swing.JTextField txtCodigo;
     private javax.swing.JTextField txtDescricao;
     private javax.swing.JFormattedTextField txtDevolucao;

@@ -8,11 +8,13 @@ package telas;
 import controle.Controlador;
 import controle.DataHora;
 import java.util.ArrayList;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import negocio.Emprestimo;
 import negocio.Equipamento;
-import java.sql.Timestamp;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
 import negocio.Responsavel;
 
 
@@ -51,6 +53,9 @@ public class TelaPrincipal extends javax.swing.JFrame {
         consultarTodosEmprestimos();
     }
     
+    /**
+     * Consulta todos os empréstimos
+     */
     private void consultarTodosEmprestimos(){
         if (listaDeEmprestimos.size() > 0) {
             //Muda título da tabela
@@ -84,8 +89,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
             for (int i = 0; i < listaDeEmprestimos.size(); i++) {               
                 
                 //Busca na lista de equipamentos o idEquipamento do emprestimo atual
-                dadosDaLinhaNaColuna[0] = Controlador.getListaDeEquipamentos().get(listaDeEmprestimos.get(i).getIdEquipamento()).getTipo();
-                
+                dadosDaLinhaNaColuna[0] = Controlador.getListaDeEquipamentos().get(listaDeEmprestimos.get(i).getIdEquipamento()).getTipo();                
                 dadosDaLinhaNaColuna[1] = Controlador.getListaDeEquipamentos().get(listaDeEmprestimos.get(i).getIdEquipamento()).getCodigo();
                 
                 //Pega o nome do responsável de acordo com o id do empréstimo atual
@@ -101,23 +105,28 @@ public class TelaPrincipal extends javax.swing.JFrame {
                 } else {
                     dadosDaLinhaNaColuna[5] = "";
                     dadosDaLinhaNaColuna[6] = "";                        
-                }           
-                
-                System.out.println("\n\nidEmprestimo "+ listaDeEmprestimos.get(i).getIdEmprestimo());
+                } 
                 dadosDaLinhaNaColuna[7] = listaDeEmprestimos.get(i).getIdEmprestimo();
                 
                 //Adiciona os dados à linha na tabela
                 tabela.addRow(dadosDaLinhaNaColuna);                
 
             }
-            //Define o autoresize pra 3, não lembro qual o motivo.
-            tabelaPrincipal.setAutoResizeMode(3);
-            //Oculta última coluna que é apenas para passar referência
-            tabelaPrincipal.getColumnModel().getColumn(7).setMinWidth(0);
-            tabelaPrincipal.getColumnModel().getColumn(7).setMaxWidth(0);
+            
+            alteraTamanhoColuna(0, 120);
+            alteraTamanhoColuna(1, 150);
+            alteraTamanhoColuna(2, -1);
+            alteraTamanhoColuna(3, 100);
+            alteraTamanhoColuna(4, 80);
+            alteraTamanhoColuna(5, 100);
+            alteraTamanhoColuna(6, 80);
+            alteraTamanhoColuna(7, 0);
+            alinhaColunas(new int[]{0,1,3,4,5,6}, "C");
             jScrollPane1.getVerticalScrollBar().setValue(0);
+            
+            lblListando.setText("Lista de Empréstimos");
+
         } else { //Se estiver vazia, avisa o usuário
-            //exibirMensagem();
             JOptionPane.showMessageDialog(this, "Nenhum empréstimo");
         }
     }
@@ -166,12 +175,14 @@ public class TelaPrincipal extends javax.swing.JFrame {
                 tabela.addRow(dadosDaLinhaNaColuna);                
 
             }
-            //Define o autoresize pra 3, não lembro qual o motivo.
-            tabelaPrincipal.setAutoResizeMode(3);
-            //Oculta última coluna que é apenas para passar referência
-            tabelaPrincipal.getColumnModel().getColumn(4).setMinWidth(0);
-            tabelaPrincipal.getColumnModel().getColumn(4).setMaxWidth(0);
+            alteraTamanhoColuna(0, -1);
+            alteraTamanhoColuna(1, 120);
+            alteraTamanhoColuna(2, 100);
+            alteraTamanhoColuna(3, 200);
+            alteraTamanhoColuna(4, 0);
+            alinhaColunas(new int[]{1}, "C");
             jScrollPane1.getVerticalScrollBar().setValue(0);
+            lblListando.setText("Lista de Responsáveis");
         } else { //Se estiver vazia, avisa o usuário
             //exibirMensagem();
             JOptionPane.showMessageDialog(this, "Nenhum responsável cadastrado.");
@@ -221,16 +232,43 @@ public class TelaPrincipal extends javax.swing.JFrame {
                 tabela.addRow(dadosDaLinhaNaColuna);                
 
             }
-            //Define o autoresize pra 3, não lembro qual o motivo.
-            tabelaPrincipal.setAutoResizeMode(3);
-            //Oculta última coluna que é apenas para passar referência
-            tabelaPrincipal.getColumnModel().getColumn(4).setMinWidth(0);
-            tabelaPrincipal.getColumnModel().getColumn(4).setMaxWidth(0);
-            jScrollPane1.getVerticalScrollBar().setValue(0);
+            alteraTamanhoColuna(0, 100);
+            alteraTamanhoColuna(1, 100);
+            alteraTamanhoColuna(2, -1);
+            alteraTamanhoColuna(3, 120);
+            alteraTamanhoColuna(4, 0);
+            alinhaColunas(new int[]{0,1,3}, "C");
+            lblListando.setText("Lista de Equipamentos");            
         } else { //Se estiver vazia, avisa o usuário
             //exibirMensagem();
             JOptionPane.showMessageDialog(this, "Nenhum equipamento cadastrado.");
         }    
+    }
+    
+    private void alteraTamanhoColuna(int coluna, int largura){
+        tabelaPrincipal.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+        if (largura > -1) {
+            tabelaPrincipal.getColumnModel().getColumn(coluna).setMinWidth(largura);
+            tabelaPrincipal.getColumnModel().getColumn(coluna).setPreferredWidth(largura);
+            tabelaPrincipal.getColumnModel().getColumn(coluna).setMaxWidth(largura);
+        }        
+    }
+    private void alinhaColunas(int[] coluna, String alinha){
+        DefaultTableCellRenderer alinhamento = new DefaultTableCellRenderer();
+        for (int i = 0; i < coluna.length; i++) {
+            switch (alinha){
+                case "C":
+                    alinhamento.setHorizontalAlignment( JLabel.CENTER );
+                    break;
+                case "E":
+                    alinhamento.setHorizontalAlignment( JLabel.LEFT );
+                    break;
+                case "D":
+                    alinhamento.setHorizontalAlignment( JLabel.RIGHT );
+                    break;
+            }
+            tabelaPrincipal.getColumnModel().getColumn(coluna[i]).setCellRenderer(alinhamento);
+        }
     }
     
     private void cadastrosTemporarios(){
@@ -268,14 +306,15 @@ public class TelaPrincipal extends javax.swing.JFrame {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         tabelaPrincipal = new javax.swing.JTable();
+        jPanelItens = new javax.swing.JPanel();
         lblCodigo = new javax.swing.JLabel();
         txtCodigo = new javax.swing.JTextField();
         btnRegistrar = new javax.swing.JButton();
-        btnTempEmprestimo = new javax.swing.JButton();
-        btnTempResponsavel = new javax.swing.JButton();
-        btnTempEquipamento = new javax.swing.JButton();
-        btnListar = new javax.swing.JButton();
         lblListando = new javax.swing.JLabel();
+        btnEquipa = new javax.swing.JButton();
+        btnRespon = new javax.swing.JButton();
+        btnEmprest = new javax.swing.JButton();
+        lblCodigo1 = new javax.swing.JLabel();
         menuPrincipal = new javax.swing.JMenuBar();
         jmArquivo = new javax.swing.JMenu();
         jmiNovoResponsavel = new javax.swing.JMenuItem();
@@ -287,11 +326,11 @@ public class TelaPrincipal extends javax.swing.JFrame {
         jmiListarEquipamentos = new javax.swing.JMenuItem();
         jmiListarResponsaveis = new javax.swing.JMenuItem();
         jmSobre = new javax.swing.JMenu();
+        jmiPendente = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Controle de Empréstimos");
         setName("framePrincipal"); // NOI18N
-        setResizable(false);
 
         tabelaPrincipal.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -321,29 +360,85 @@ public class TelaPrincipal extends javax.swing.JFrame {
             }
         });
 
-        btnTempResponsavel.setText("Responsaveis");
-        btnTempResponsavel.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnTempResponsavelActionPerformed(evt);
-            }
-        });
-
-        btnTempEquipamento.setText("Equipamentos");
-        btnTempEquipamento.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnTempEquipamentoActionPerformed(evt);
-            }
-        });
-
-        btnListar.setText("Emprestimos");
-        btnListar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnListarActionPerformed(evt);
-            }
-        });
-
         lblListando.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
         lblListando.setText("Listando empréstimos");
+
+        btnEquipa.setText("Equipamentos");
+        btnEquipa.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEquipaActionPerformed(evt);
+            }
+        });
+
+        btnRespon.setText("Responsáveis");
+        btnRespon.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnResponActionPerformed(evt);
+            }
+        });
+
+        btnEmprest.setText("Empréstimos");
+        btnEmprest.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEmprestActionPerformed(evt);
+            }
+        });
+
+        lblCodigo1.setFont(new java.awt.Font("sansserif", 1, 18)); // NOI18N
+        lblCodigo1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblCodigo1.setText("Listar");
+
+        javax.swing.GroupLayout jPanelItensLayout = new javax.swing.GroupLayout(jPanelItens);
+        jPanelItens.setLayout(jPanelItensLayout);
+        jPanelItensLayout.setHorizontalGroup(
+            jPanelItensLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelItensLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanelItensLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanelItensLayout.createSequentialGroup()
+                        .addComponent(lblListando, javax.swing.GroupLayout.PREFERRED_SIZE, 299, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelItensLayout.createSequentialGroup()
+                        .addComponent(txtCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(27, 27, 27)
+                        .addComponent(btnRegistrar, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 197, Short.MAX_VALUE)
+                        .addGroup(jPanelItensLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(lblCodigo1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(jPanelItensLayout.createSequentialGroup()
+                                .addComponent(btnEmprest, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnRespon, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnEquipa, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addContainerGap())
+            .addGroup(jPanelItensLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanelItensLayout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(lblCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(682, Short.MAX_VALUE)))
+        );
+        jPanelItensLayout.setVerticalGroup(
+            jPanelItensLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelItensLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(lblCodigo1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanelItensLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnRegistrar, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnEquipa, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnRespon, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnEmprest, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblListando, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+            .addGroup(jPanelItensLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanelItensLayout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(lblCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(85, Short.MAX_VALUE)))
+        );
 
         jmArquivo.setText("Arquivo");
 
@@ -406,6 +501,15 @@ public class TelaPrincipal extends javax.swing.JFrame {
         menuPrincipal.add(jmListagens);
 
         jmSobre.setText("Sobre");
+
+        jmiPendente.setText("Pendências");
+        jmiPendente.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmiPendenteActionPerformed(evt);
+            }
+        });
+        jmSobre.add(jmiPendente);
+
         menuPrincipal.add(jmSobre);
 
         setJMenuBar(menuPrincipal);
@@ -414,72 +518,30 @@ public class TelaPrincipal extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 900, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(lblListando, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(lblCodigo, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
-                            .addComponent(txtCodigo))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnRegistrar)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnListar, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnTempEquipamento)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnTempResponsavel, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnTempEmprestimo)
-                .addGap(16, 16, 16))
+                .addGap(6, 6, 6)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanelItens, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(lblCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnRegistrar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(btnTempEmprestimo, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(btnTempResponsavel, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(btnTempEquipamento, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(btnListar, javax.swing.GroupLayout.Alignment.TRAILING))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(lblListando, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanelItens, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 356, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 267, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnTempResponsavelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTempResponsavelActionPerformed
-        consultarResponsaveis();
-    }//GEN-LAST:event_btnTempResponsavelActionPerformed
-
-    private void btnTempEquipamentoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTempEquipamentoActionPerformed
-        consultarEquipamentos();
-    }//GEN-LAST:event_btnTempEquipamentoActionPerformed
-
     private void btnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarActionPerformed
         int cod = Integer.parseInt(txtCodigo.getText());
         acionaEmprestimo(cod); 
     }//GEN-LAST:event_btnRegistrarActionPerformed
-
-    private void btnListarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnListarActionPerformed
-        consultarTodosEmprestimos();
-    }//GEN-LAST:event_btnListarActionPerformed
 
     private void jmiSairActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiSairActionPerformed
         System.exit(0);
@@ -506,6 +568,44 @@ public class TelaPrincipal extends javax.swing.JFrame {
     private void jmiListarEquipamentosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiListarEquipamentosActionPerformed
         consultarEquipamentos();
     }//GEN-LAST:event_jmiListarEquipamentosActionPerformed
+
+    private void btnEquipaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEquipaActionPerformed
+        consultarEquipamentos();
+    }//GEN-LAST:event_btnEquipaActionPerformed
+
+    private void btnResponActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResponActionPerformed
+        consultarResponsaveis();
+    }//GEN-LAST:event_btnResponActionPerformed
+
+    private void btnEmprestActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEmprestActionPerformed
+        consultarTodosEmprestimos();
+    }//GEN-LAST:event_btnEmprestActionPerformed
+
+    private void jmiPendenteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiPendenteActionPerformed
+        JOptionPane.showMessageDialog(this, 
+                                        "<html>"
+                                            + "<p><b>Objetivos:</b></p>"
+                                            + "<p>Interface limpa e funcional</p><br>"
+                                            + "<p><b>Usabilidade:</b></p>"
+                                            + "<p>O básico será o usuário escanear o equipamento com um</p>"
+                                            + "<p>leitor de código de barras e automaticamente abrir a </p>"
+                                            + "<p>tela de empréstimos correspondente, sem precisar digitar</br>"
+                                            + "<p> ou mesmo pressionar enter.</p><br>"
+                                            + "<p><b>Pendências:</b></p>"
+                                            + "<ul>"
+                                                + "<li>Criação BD</li>"
+                                                + "<li>Integração com BD</li>"
+                                                + "<li>Clique duplo item na tabela</li>"
+                                                + "<li>Implementação cadastro de equipamento</li>"
+                                                + "<li>Implementação cadastro de responsáveis</li>"
+                                                + "<li>Listagem apenas emprestados</li>"
+                                                + "<li>Ordenação por data/situção/nome/etc</li>"
+                                                + "<li>Validações</li>"
+                                                + "<li>Busca equipamento no empréstimo</li>"
+                                            + "</ul>"
+                                       +"</html>"
+                                    );
+    }//GEN-LAST:event_jmiPendenteActionPerformed
 
     /**
      * @param args the command line arguments
@@ -543,11 +643,11 @@ public class TelaPrincipal extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnListar;
+    private javax.swing.JButton btnEmprest;
+    private javax.swing.JButton btnEquipa;
     private javax.swing.JButton btnRegistrar;
-    private javax.swing.JButton btnTempEmprestimo;
-    private javax.swing.JButton btnTempEquipamento;
-    private javax.swing.JButton btnTempResponsavel;
+    private javax.swing.JButton btnRespon;
+    private javax.swing.JPanel jPanelItens;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JMenu jmArquivo;
     private javax.swing.JMenu jmListagens;
@@ -558,8 +658,10 @@ public class TelaPrincipal extends javax.swing.JFrame {
     private javax.swing.JMenuItem jmiListarResponsaveis;
     private javax.swing.JMenuItem jmiNovoEquipamento;
     private javax.swing.JMenuItem jmiNovoResponsavel;
+    private javax.swing.JMenuItem jmiPendente;
     private javax.swing.JMenuItem jmiSair;
     private javax.swing.JLabel lblCodigo;
+    private javax.swing.JLabel lblCodigo1;
     private javax.swing.JLabel lblListando;
     private javax.swing.JMenuBar menuPrincipal;
     private javax.swing.JTable tabelaPrincipal;
