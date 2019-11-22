@@ -17,6 +17,8 @@ import negocio.Responsavel;
  * @author vinicius
  */
 public class Controlador {
+    
+    
     /* Listas temporária para armazenar os objetos criados    
        posteriormente serão substituídas pelo banco de dados */    
     public static ArrayList<Equipamento> listaDeEquipamentos = new ArrayList<>();

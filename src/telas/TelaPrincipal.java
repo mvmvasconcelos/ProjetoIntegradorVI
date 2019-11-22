@@ -5,8 +5,11 @@
  */
 package telas;
 
+import controle.ConexaoBD;
 import controle.Controlador;
 import controle.DataHora;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.ArrayList;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -16,6 +19,7 @@ import negocio.Equipamento;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import negocio.Responsavel;
+import java.sql.*;
 
 
 /**
@@ -23,6 +27,12 @@ import negocio.Responsavel;
  * @author vinicius
  */
 public class TelaPrincipal extends javax.swing.JFrame {
+    Connection conecta = null;
+    PreparedStatement pst = null;
+    ResultSet resultado = null;
+    
+    
+    
     //Carrega o controlador
     Controlador controlador = new Controlador();
     //Cria lista de emprestimos
@@ -47,10 +57,11 @@ public class TelaPrincipal extends javax.swing.JFrame {
     /**
      * Creates new form TelaPrincipal
      */
-    public TelaPrincipal() {
+    public TelaPrincipal() throws ClassNotFoundException{
         initComponents();
         cadastrosTemporarios();
         consultarTodosEmprestimos();
+        conecta = ConexaoBD.ConectaBancoDados();
     }
     
     /**
@@ -637,7 +648,12 @@ public class TelaPrincipal extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new TelaPrincipal().setVisible(true);
+                //new TelaPrincipal().setVisible(true);
+                try {
+                    new TelaPrincipal().setVisible(true);
+                } catch (ClassNotFoundException ex) {
+                    Logger.getLogger(TelaPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
     }
