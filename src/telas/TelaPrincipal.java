@@ -5,7 +5,6 @@
  */
 package telas;
 
-import controle.ConexaoBD;
 import controle.Controlador;
 import controle.DataHora;
 import java.util.logging.Level;
@@ -19,7 +18,6 @@ import negocio.Equipamento;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import negocio.Responsavel;
-import java.sql.*;
 
 
 /**
@@ -27,14 +25,7 @@ import java.sql.*;
  * @author vinicius
  */
 public class TelaPrincipal extends javax.swing.JFrame {
-    Connection conecta = null;
-    PreparedStatement pst = null;
-    ResultSet resultado = null;
-    
-    
-    
-    //Carrega o controlador
-    Controlador controlador = new Controlador();
+    Controlador controlador;
     //Cria lista de emprestimos
     ArrayList<Emprestimo> listaDeEmprestimos =  Controlador.getListaDeEmprestimos();
     
@@ -57,11 +48,16 @@ public class TelaPrincipal extends javax.swing.JFrame {
     /**
      * Creates new form TelaPrincipal
      */
-    public TelaPrincipal() throws ClassNotFoundException{
+    public TelaPrincipal(){
+        try {
+            controlador = new Controlador();
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+        }
         initComponents();
         cadastrosTemporarios();
         consultarTodosEmprestimos();
-        conecta = ConexaoBD.ConectaBancoDados();
+        controlador.teste();
     }
     
     /**
@@ -283,16 +279,16 @@ public class TelaPrincipal extends javax.swing.JFrame {
     }
     
     private void cadastrosTemporarios(){
-        controlador.cadastraResponsavel("Vinicius Vasconcelos", 123456, "5112345678", "email@email.com");
+        /*controlador.cadastraResponsavel("Vinicius Vasconcelos", 123456, "5112345678", "email@email.com");
         controlador.cadastraResponsavel("Fulano de Tal", 853456, "5390909090", "email2@email.com.br");
-        controlador.cadastraResponsavel("Bertrano de Quem", 753159, "6170708060", "email32@gemail.com.br");
+        controlador.cadastraResponsavel("Bertrano de Quem", 753159, "6170708060", "email32@gemail.com.br");*/
         controlador.cadastraEquipamento(123456, "Projetor", "Projetor EPSON X13", "E");
         controlador.cadastraEquipamento(123457, "Projetor", "Projetor EPSON X12", "D");
         controlador.cadastraEquipamento(123458, "Notebook", "Notebook HP Probook", "D");
         controlador.cadastraEquipamento(123459, "Notebook", "Notebook Dell M179", "D");
         controlador.cadastraEquipamento(123460, "Tablet", "Tablet Motorolla Xoom", "D");
         
-        controlador.cadastraEmprestimo(2, DataHora.converteParaTimestamp(1572392211 ), 0);
+       // controlador.cadastraEmprestimo(2, DataHora.converteParaTimestamp(1572392211 ), 0);
     }
     
     void acionaEmprestimo(int cod){
@@ -649,11 +645,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 //new TelaPrincipal().setVisible(true);
-                try {
-                    new TelaPrincipal().setVisible(true);
-                } catch (ClassNotFoundException ex) {
-                    Logger.getLogger(TelaPrincipal.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                new TelaPrincipal().setVisible(true);
             }
         });
     }

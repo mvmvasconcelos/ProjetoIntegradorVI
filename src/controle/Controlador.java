@@ -5,7 +5,7 @@
  */
 package controle;
 
-import java.sql.Timestamp;
+import java.sql.*;
 import java.util.ArrayList;
 import negocio.Emprestimo;
 import negocio.Equipamento;
@@ -18,6 +18,13 @@ import negocio.Responsavel;
  */
 public class Controlador {
     
+    Connection conecta = null;
+    PreparedStatement pst = null;
+    ResultSet resultado = null;
+    
+    public Controlador() throws ClassNotFoundException{
+        conecta = ConexaoBD.ConectaBancoDados();
+    }
     
     /* Listas temporária para armazenar os objetos criados    
        posteriormente serão substituídas pelo banco de dados */    
@@ -25,8 +32,52 @@ public class Controlador {
     public static ArrayList<Responsavel> listaDeResponsaveis = new ArrayList<>();
     public static ArrayList<Emprestimo> listaDeEmprestimos = new ArrayList<>();
     
-    public static ArrayList<Emprestimo> getListaDeEmprestimos(){
+    public static ArrayList<Emprestimo> getListaDeEmprestimos(){        
         return listaDeEmprestimos;
+    }
+    
+    public void teste(){
+        String sql = "select * from responsaveis";
+        try{
+            pst = conecta.prepareStatement(sql);
+            resultado = pst.executeQuery();
+            //if (resultado.next()){
+                System.out.println("CERTO");
+                ResultSetMetaData rsmd = resultado.getMetaData();
+                int nrDeColunas = rsmd.getColumnCount();
+                int id = 0; String nome = null; String email = null; String telefone = null; int codigo = 0;
+                
+                while (resultado.next()) {
+                    for (int i = 1; i <= nrDeColunas; i++) {
+                        switch(i){
+                            case 1:
+                                id = Integer.parseInt(resultado.getString(i));
+                                break;
+                            case 2:
+                                nome = resultado.getString(i);
+                                break;
+                            case 3:
+                                email = resultado.getString(i);
+                                break;
+                            case 4:
+                                telefone = resultado.getString(i);
+                                break;
+                            case 5:
+                                codigo = Integer.parseInt(resultado.getString(i));
+                                break;
+                        }
+                        //System.out.print(resultado.getString(i));
+                    }
+                    cadastraResponsavel(id, nome, email,telefone, codigo);
+                }
+           /* }
+            else{
+                System.out.println("ERRO");
+            }*/
+        }
+        catch(SQLException error){
+            System.out.println("ERRO SQL: " + error);
+        }
     }
 
     public static ArrayList<Responsavel> getListaDeResponsaveis() {
@@ -145,8 +196,8 @@ public class Controlador {
      * @param telefone
      * @param email
      */
-    public void cadastraResponsavel ( String nome, int codigo, String telefone, String email){
-        Responsavel novo = new Responsavel(nome, codigo, telefone, email);
+    public void cadastraResponsavel (int id, String nome, String email, String telefone, int codigo){
+        Responsavel novo = new Responsavel(id, nome, email,telefone, codigo);
         salvaObjeto(novo);
     }
     

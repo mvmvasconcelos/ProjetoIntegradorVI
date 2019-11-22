@@ -17,9 +17,9 @@ public class Responsavel {
     private int codigo;
     private String telefone;
     private String email;
-
-    public Responsavel(String nome, int codigo, String telefone, String email) {
-        this.idResponsavel = Responsavel.idBD;
+    
+    public Responsavel(int id, String nome, String email, String telefone, int codigo) {
+        this.idResponsavel = id;
         this.nome = nome;
         this.codigo = codigo;
         this.telefone = telefone;
