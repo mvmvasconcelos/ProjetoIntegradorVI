@@ -30,6 +30,8 @@ public class TelaPrincipal extends javax.swing.JFrame {
     ArrayList<Emprestimo> listaDeEmprestimos =  Controlador.getListaDeEmprestimos();
     
     TelaEmprestimo telaEmprestimo;
+    TelaEquipamento telaEquipamento;
+    TelaResponsavel telaResponsavel;
     
     /** Tipos de listagem para abrir a janela correta ao clicar duas vezes na tabela
      * 1 - Emprestimos
@@ -57,7 +59,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
         initComponents();
         cadastrosTemporarios();
         consultarTodosEmprestimos();
-        controlador.teste();
+        controlador.selectListaResponsaveis();
     }
     
     /**
@@ -281,12 +283,12 @@ public class TelaPrincipal extends javax.swing.JFrame {
     private void cadastrosTemporarios(){
         /*controlador.cadastraResponsavel("Vinicius Vasconcelos", 123456, "5112345678", "email@email.com");
         controlador.cadastraResponsavel("Fulano de Tal", 853456, "5390909090", "email2@email.com.br");
-        controlador.cadastraResponsavel("Bertrano de Quem", 753159, "6170708060", "email32@gemail.com.br");*/
+        controlador.cadastraResponsavel("Bertrano de Quem", 753159, "6170708060", "email32@gemail.com.br");
         controlador.cadastraEquipamento(123456, "Projetor", "Projetor EPSON X13", "E");
         controlador.cadastraEquipamento(123457, "Projetor", "Projetor EPSON X12", "D");
         controlador.cadastraEquipamento(123458, "Notebook", "Notebook HP Probook", "D");
         controlador.cadastraEquipamento(123459, "Notebook", "Notebook Dell M179", "D");
-        controlador.cadastraEquipamento(123460, "Tablet", "Tablet Motorolla Xoom", "D");
+        controlador.cadastraEquipamento(123460, "Tablet", "Tablet Motorolla Xoom", "D");*/
         
        // controlador.cadastraEmprestimo(2, DataHora.converteParaTimestamp(1572392211 ), 0);
     }
@@ -300,6 +302,23 @@ public class TelaPrincipal extends javax.swing.JFrame {
         } else {
             JOptionPane.showMessageDialog(this, "Não existe o código digitado"); 
         } 
+    }
+    
+    void abreTelaEquipamento(int cod){
+        //Se existe o equipamento cadastrado
+        if (controlador.existeObjeto(cod, "IDRESP")) {
+            this.telaEquipamento = new TelaEquipamento(this, true, cod);
+            this.telaEquipamento.setVisible(true);
+            consultarEquipamentos();
+        } else {
+            JOptionPane.showMessageDialog(this, "Não existe o equipamento selecionado");
+            consultarEquipamentos(); 
+        } 
+    }
+    void abreTelaEquipamento(){
+            this.telaEquipamento = new TelaEquipamento(this, true);
+            this.telaEquipamento.setVisible(true);
+            consultarEquipamentos();
     }
 
     /**
@@ -560,8 +579,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_jmiNovoResponsavelActionPerformed
 
     private void jmiNovoEquipamentoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiNovoEquipamentoActionPerformed
-        TelaEquipamento novaTela = new TelaEquipamento();
-        novaTela.setVisible(true);
+        abreTelaEquipamento();
     }//GEN-LAST:event_jmiNovoEquipamentoActionPerformed
 
     private void jmiListarEmprestimosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiListarEmprestimosActionPerformed

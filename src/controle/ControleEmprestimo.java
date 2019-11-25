@@ -10,6 +10,6 @@ package controle;
  * @author Vinicius
  */
 public class ControleEmprestimo {
-    Controlador ctl = new Controlador();
+   // Controlador ctl = new Controlador();
     
 }

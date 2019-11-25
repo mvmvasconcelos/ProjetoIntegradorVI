@@ -17,13 +17,17 @@ public class Equipamento {
     private String descricao;
     private String situacao;   
 
-    public Equipamento(int codigo, String tipo, String descricao, String situacao) {
+    public Equipamento(int id, int codigo, String tipo, String descricao, String situacao) {
         this.idEquipamento = Equipamento.idBD;
         this.codigo = codigo;
         this.tipo = tipo;
         this.descricao = descricao;
         this.situacao = situacao;
         Equipamento.idBD++;
+    }
+    
+    public static void setidBD(int id){
+        idBD = id;
     }
     
     public static int getIdEquipamentoBD(){

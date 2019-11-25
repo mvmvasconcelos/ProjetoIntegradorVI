@@ -22,15 +22,17 @@ public class Emprestimo {
     private int idEquipamento;
     private String situacaoEmprestimo;
 
-    public Emprestimo(int idResponsavel, Timestamp retirada, int idEquipamento) {
-        this.idEmprestimo = Emprestimo.idBD;
+    public Emprestimo(int id, Timestamp retirada, int idResponsavel, int idEquipamento) {
+        this.idEmprestimo = id;
         this.idResponsavel = idResponsavel;
         this.retirada = retirada;
         this.idEquipamento = idEquipamento;
         this.situacaoEmprestimo = "P";
         Emprestimo.idBD++;
     }
-
+    public static void setidBD(int id){
+        idBD = id;
+    }
     public int getIdEmprestimo() {
         return idEmprestimo;
     }

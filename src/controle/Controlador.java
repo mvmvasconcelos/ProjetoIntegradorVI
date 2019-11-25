@@ -7,6 +7,7 @@ package controle;
 
 import java.sql.*;
 import java.util.ArrayList;
+import javax.swing.JOptionPane;
 import negocio.Emprestimo;
 import negocio.Equipamento;
 import negocio.Responsavel;
@@ -36,47 +37,144 @@ public class Controlador {
         return listaDeEmprestimos;
     }
     
-    public void teste(){
+    /**
+     * Faz select na tabela responsaveis e armazena na lista
+     */
+    public void selectListaResponsaveis(){
         String sql = "select * from responsaveis";
         try{
+            //Prepara a query
             pst = conecta.prepareStatement(sql);
+            //executa a query
             resultado = pst.executeQuery();
-            //if (resultado.next()){
-                System.out.println("CERTO");
-                ResultSetMetaData rsmd = resultado.getMetaData();
-                int nrDeColunas = rsmd.getColumnCount();
-                int id = 0; String nome = null; String email = null; String telefone = null; int codigo = 0;
-                
-                while (resultado.next()) {
-                    for (int i = 1; i <= nrDeColunas; i++) {
-                        switch(i){
-                            case 1:
-                                id = Integer.parseInt(resultado.getString(i));
-                                break;
-                            case 2:
-                                nome = resultado.getString(i);
-                                break;
-                            case 3:
-                                email = resultado.getString(i);
-                                break;
-                            case 4:
-                                telefone = resultado.getString(i);
-                                break;
-                            case 5:
-                                codigo = Integer.parseInt(resultado.getString(i));
-                                break;
-                        }
-                        //System.out.print(resultado.getString(i));
+            //pega os metadados do resultado
+            ResultSetMetaData rsmd = resultado.getMetaData();
+            //armazena número de colunas da tabela
+            int nrDeColunas = rsmd.getColumnCount();
+            //variáveis que serão gravadas com os dados
+            int id = 0; String nome = null; String email = null; String telefone = null; int codigo = 0;
+            //Percorre resultado enquanto houver registros
+            while (resultado.next()) {
+                //Para cada coluna no registro, salva o dado correspondente de acordo com a coluna
+                for (int i = 1; i <= nrDeColunas; i++) {
+                    switch(i){
+                        case 1:
+                            id = Integer.parseInt(resultado.getString(i));
+                            Responsavel.setidBD(id);
+                            break;
+                        case 2:
+                            nome = resultado.getString(i);
+                            break;
+                        case 3:
+                            email = resultado.getString(i);
+                            break;
+                        case 4:
+                            telefone = resultado.getString(i);
+                            break;
+                        case 5:
+                            codigo = Integer.parseInt(resultado.getString(i));
+                            break;
                     }
-                    cadastraResponsavel(id, nome, email,telefone, codigo);
                 }
-           /* }
-            else{
-                System.out.println("ERRO");
-            }*/
+                //Armazena o registro na listaDeResponsaveis
+                cadastraResponsavel(id, nome, email,telefone, codigo);
+            }
         }
         catch(SQLException error){
-            System.out.println("ERRO SQL: " + error);
+            JOptionPane.showMessageDialog(null, "ERRO SQL: " + error);
+        }
+    }
+    
+    /**
+     * Faz select na tabela equipamentos e armazena na lista
+     */
+    public void selectListaEquipamentos(){
+        String sql = "select * from equipamentos";
+        try{
+            //Prepara a query
+            pst = conecta.prepareStatement(sql);
+            //executa a query
+            resultado = pst.executeQuery();
+            //pega os metadados do resultado
+            ResultSetMetaData rsmd = resultado.getMetaData();
+            //armazena número de colunas da tabela
+            int nrDeColunas = rsmd.getColumnCount();
+            //variáveis que serão gravadas com os dados
+            int id = 0; int codigo = 0; String tipo = null; String descricao = null; String situacao = null;
+            //Percorre resultado enquanto houver registros
+            while (resultado.next()) {
+                //Para cada coluna no registro, salva o dado correspondente de acordo com a coluna
+                for (int i = 1; i <= nrDeColunas; i++) {
+                    switch(i){
+                        case 1:
+                            id = Integer.parseInt(resultado.getString(i));
+                            Equipamento.setidBD(id);
+                            break;
+                        case 2:
+                            codigo = Integer.parseInt(resultado.getString(i));
+                            break;
+                        case 3:
+                            tipo = resultado.getString(i);
+                            break;
+                        case 4:
+                            descricao = resultado.getString(i);
+                            break;
+                        case 5:
+                            situacao = resultado.getString(i);
+                            break;
+                    }
+                }
+                //Armazena o registro na listaDeEmprestimos
+                cadastraEquipamento(id, codigo, tipo, descricao, situacao);
+            }
+        }
+        catch(SQLException error){
+            JOptionPane.showMessageDialog(null, "ERRO SQL: " + error);
+        }
+    }
+    
+    /**
+     * Faz select na tabela emprestimos e armazena na lista
+     */
+    public void selectListaEmprestimos(){
+        String sql = "select * from emprestimos";
+        try{
+            //Prepara a query
+            pst = conecta.prepareStatement(sql);
+            //executa a query
+            resultado = pst.executeQuery();
+            //pega os metadados do resultado
+            ResultSetMetaData rsmd = resultado.getMetaData();
+            //armazena número de colunas da tabela
+            int nrDeColunas = rsmd.getColumnCount();
+            //variáveis que serão gravadas com os dados
+            int id = 0; Timestamp retirada = null; int idResponsavel = 0; int idEquipamento = 0;
+            //Percorre resultado enquanto houver registros
+            while (resultado.next()) {
+                //Para cada coluna no registro, salva o dado correspondente de acordo com a coluna
+                for (int i = 1; i <= nrDeColunas; i++) {
+                    switch(i){
+                        case 1:
+                            id = Integer.parseInt(resultado.getString(i));
+                            Emprestimo.setidBD(id);
+                            break;
+                        case 2:
+                            retirada = Timestamp.valueOf(resultado.getString(i));
+                            break;
+                        case 4:
+                            idResponsavel = Integer.parseInt(resultado.getString(i));
+                            break;
+                        case 5:
+                            idEquipamento = Integer.parseInt(resultado.getString(i));
+                            break;
+                    }
+                }
+                //Armazena o registro na listaDeEmprestimos
+                cadastraEmprestimo(id, retirada, idResponsavel,idEquipamento);
+            }
+        }
+        catch(SQLException error){
+            JOptionPane.showMessageDialog(null, "ERRO SQL: " + error);
         }
     }
 
@@ -178,16 +276,43 @@ public class Controlador {
         return emprestimoPorEquipamento;
     }
     
+    /**
+     * 
+     */
+    public void cadastraEquipamento(int id, int codigo, String tipo, String descricao, String situacao){
+        String sql = "insert into equipamentos (idequipamento, patrimonio, tipo, descricao, situacao)"
+                        + "values (?, ?, ?, ?, ?)";
+        try{
+             //Prepara a query
+            pst = conecta.prepareStatement(sql);
+            //executa a query
+            resultado = pst.executeQuery();
+            
+            pst.setInt(1, id);
+            pst.setInt(2, codigo);
+            pst.setString(3, tipo);
+            pst.setString(4, descricao);
+            pst.setString(5, situacao);
+            
+            pst.execute();
+            pst.close();
+            
+        }
+        catch(SQLException error){
+            JOptionPane.showMessageDialog(null, "ERRO SQL: " + error);
+        }
+    }
+    
     /** 
      * Cria um novo equipamento e adiciona ele à lista
      * @param codigo
      * @param tipo
      * @param descricao
      */
-    public void cadastraEquipamento(int codigo, String tipo, String descricao, String situacao){
-        Equipamento novo = new Equipamento(codigo, tipo, descricao, situacao);
+    /*public void cadastraEquipamento(int id, int codigo, String tipo, String descricao, String situacao){
+        Equipamento novo = new Equipamento(id, codigo, tipo, descricao, situacao);
         salvaObjeto(novo);
-    }
+    }*/
     
     /** 
      * Cria um novo responsavel e adiciona ele à lista
@@ -201,8 +326,8 @@ public class Controlador {
         salvaObjeto(novo);
     }
     
-    public void cadastraEmprestimo(int idResponsavel, Timestamp retirada, int idEquipamento){
-        Emprestimo novo = new Emprestimo(idResponsavel, retirada, idEquipamento);
+    public void cadastraEmprestimo(int id, Timestamp retirada, int idResponsavel,int idEquipamento){
+        Emprestimo novo = new Emprestimo(id, retirada, idResponsavel, idEquipamento);
         salvaObjeto(novo);
     }
     

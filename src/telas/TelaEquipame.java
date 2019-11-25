@@ -12,20 +12,19 @@ import negocio.Equipamento;
  *
  * @author vinicius
  */
-public class TelaEquipamento extends javax.swing.JDialog {
+public class TelaEquipame extends javax.swing.JFrame {
     Controlador ctl;
     /**
-     * Creates new form TelaEquipamento
+     * Creates new form TelaCadastroEquipamento
      */
-    public TelaEquipamento(java.awt.Frame parent, boolean modal) {
-        super(parent, modal);
+    public TelaEquipame() {
         initComponents();
+        txtIdEquipamento.setText(String.valueOf(Equipamento.getIdEquipamentoBD()));
     }
     
-    public TelaEquipamento(java.awt.Frame parent, boolean modal, int codigo) {
-        super(parent, modal);
+    public TelaEquipame(int idEquipamento){
         initComponents();
-        preencheFormulario(codigo);
+        preencheFormulario(idEquipamento);
     }
     private void preencheFormulario(int idEquipamento){
         //Armazena o objeto pego da lista do controlador em um objeto local para facilitar
@@ -55,6 +54,7 @@ public class TelaEquipamento extends javax.swing.JDialog {
                 break;
         }
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -64,6 +64,7 @@ public class TelaEquipamento extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        btnGrupoSitucao = new javax.swing.ButtonGroup();
         lblTitulo = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         lblNumeroID = new javax.swing.JLabel();
@@ -84,6 +85,7 @@ public class TelaEquipamento extends javax.swing.JDialog {
         btnVoltar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Cadastro de Equipamento");
 
         lblTitulo.setFont(new java.awt.Font("sansserif", 1, 18)); // NOI18N
         lblTitulo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -110,13 +112,16 @@ public class TelaEquipamento extends javax.swing.JDialog {
 
         jPanel2.setLayout(new javax.swing.BoxLayout(jPanel2, javax.swing.BoxLayout.Y_AXIS));
 
+        btnGrupoSitucao.add(radioDisponivel);
         radioDisponivel.setSelected(true);
         radioDisponivel.setText("Disponível");
         jPanel2.add(radioDisponivel);
 
+        btnGrupoSitucao.add(radioEmprestado);
         radioEmprestado.setText("Emprestado");
         jPanel2.add(radioEmprestado);
 
+        btnGrupoSitucao.add(radioIndisponivel);
         radioIndisponivel.setText("Indisponível");
         jPanel2.add(radioIndisponivel);
 
@@ -162,7 +167,7 @@ public class TelaEquipamento extends javax.swing.JDialog {
                                 .addComponent(txtDescricao)
                                 .addGap(93, 93, 93)))
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 8, Short.MAX_VALUE))
+                        .addGap(0, 12, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(btnLimpar)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -194,7 +199,7 @@ public class TelaEquipamento extends javax.swing.JDialog {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(lblDescricao)
                             .addComponent(txtDescricao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 133, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 70, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnLimpar)
                     .addComponent(btnCadastrar)
@@ -224,6 +229,7 @@ public class TelaEquipamento extends javax.swing.JDialog {
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnVoltarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVoltarActionPerformed
@@ -247,33 +253,30 @@ public class TelaEquipamento extends javax.swing.JDialog {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(TelaEquipamento.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TelaEquipame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(TelaEquipamento.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TelaEquipame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(TelaEquipamento.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TelaEquipame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(TelaEquipamento.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TelaEquipame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
 
-        /* Create and display the dialog */
+        /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                TelaEquipamento dialog = new TelaEquipamento(new javax.swing.JFrame(), true);
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-                dialog.setVisible(true);
+                new TelaEquipame().setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCadastrar;
+    private javax.swing.ButtonGroup btnGrupoSitucao;
     private javax.swing.JButton btnLimpar;
     private javax.swing.JButton btnVoltar;
     private javax.swing.JPanel jPanel1;

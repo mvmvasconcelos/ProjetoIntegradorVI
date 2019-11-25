@@ -19,12 +19,16 @@ public class Responsavel {
     private String email;
     
     public Responsavel(int id, String nome, String email, String telefone, int codigo) {
-        this.idResponsavel = id;
+        this.idResponsavel = Responsavel.idBD;
         this.nome = nome;
         this.codigo = codigo;
         this.telefone = telefone;
         this.email = email;
-        Responsavel.idBD++; //Auto-incrementa o idResponsavel que será armazenado no BD
+        Responsavel.idBD++; //incrementa o idResponsavel que será armazenado no BD
+    }
+    
+    public static void setidBD(int id){
+        idBD = id;
     }
 
     public int getIdResponsavel() {

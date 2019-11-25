@@ -16,7 +16,7 @@ import negocio.Equipamento;
  * @author Vinicius
  */
 public class TelaEmprestimo extends javax.swing.JDialog {
-    Controlador ctl = new Controlador();
+    Controlador ctl;
     Emprestimo emprestimo;
     Equipamento equipamento;
     TelaBuscaResponsavel telaBusca;
@@ -125,7 +125,7 @@ public class TelaEmprestimo extends javax.swing.JDialog {
     }
     
     private void retirarEquipamento(){
-        ctl.cadastraEmprestimo(idResponsavel, DataHora.converteParaTimestamp(dataHoraAgora), idEquipamento);
+        //ctl.cadastraEmprestimo(idResponsavel, DataHora.converteParaTimestamp(dataHoraAgora), idEquipamento);
         equipamento.setSituacao("E");
         this.dispose();
     }
