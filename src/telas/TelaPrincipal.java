@@ -39,6 +39,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
      * 3 - Equipamentos
      */
     int tipoListagem;
+    int idSelecionado;
     
     //Cria modelo de tabela, será usado na manipulação da mesma
     DefaultTableModel tabela; 
@@ -60,12 +61,15 @@ public class TelaPrincipal extends javax.swing.JFrame {
         cadastrosTemporarios();
         consultarTodosEmprestimos();
         controlador.selectListaResponsaveis();
+        controlador.selectListaEquipamentos();
+        controlador.selectListaEmprestimos();
     }
     
     /**
      * Consulta todos os empréstimos
      */
     private void consultarTodosEmprestimos(){
+        controlador.selectListaEmprestimos();
         if (listaDeEmprestimos.size() > 0) {
             //Muda título da tabela
             lblListando.setText("Listando todos os empréstimos");
@@ -77,7 +81,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
             tabelaPrincipal.setModel(new javax.swing.table.DefaultTableModel(
                 new Object [][] {},
                 new String [] {
-                     "Tipo", "Código / Patrimônio", "Responsável", "Data", "Hora", "Data", "Hora", "idEmprestimo"
+                      "idEmprestimo", "Tipo", "Código / Patrimônio", "Responsável", "Data", "Hora", "Data", "Hora"
                 })
                 {
                 boolean[] canEdit = new boolean [] {
@@ -98,39 +102,39 @@ public class TelaPrincipal extends javax.swing.JFrame {
             for (int i = 0; i < listaDeEmprestimos.size(); i++) {               
                 
                 //Busca na lista de equipamentos o idEquipamento do emprestimo atual
-                dadosDaLinhaNaColuna[0] = Controlador.getListaDeEquipamentos().get(listaDeEmprestimos.get(i).getIdEquipamento()).getTipo();                
-                dadosDaLinhaNaColuna[1] = Controlador.getListaDeEquipamentos().get(listaDeEmprestimos.get(i).getIdEquipamento()).getCodigo();
+                dadosDaLinhaNaColuna[1] = Controlador.getListaDeEquipamentos().get(listaDeEmprestimos.get(i).getIdEquipamento()).getTipo();                
+                dadosDaLinhaNaColuna[2] = Controlador.getListaDeEquipamentos().get(listaDeEmprestimos.get(i).getIdEquipamento()).getCodigo();
                 
                 //Pega o nome do responsável de acordo com o id do empréstimo atual
                 String nomeResponsavel = controlador.getNomeResponsavel(listaDeEmprestimos.get(i).getIdResponsavel());
-                dadosDaLinhaNaColuna[2] = nomeResponsavel;
+                dadosDaLinhaNaColuna[3] = nomeResponsavel;
                 
-                dadosDaLinhaNaColuna[3] = listaDeEmprestimos.get(i).getDataRetirada();
-                dadosDaLinhaNaColuna[4] = listaDeEmprestimos.get(i).getHoraRetirada();
+                dadosDaLinhaNaColuna[4] = listaDeEmprestimos.get(i).getDataRetirada();
+                dadosDaLinhaNaColuna[5] = listaDeEmprestimos.get(i).getHoraRetirada();
                 //Se já tiver sido devolvido
                 if (listaDeEmprestimos.get(i).getDevolucao() != null) {
-                    dadosDaLinhaNaColuna[5] = listaDeEmprestimos.get(i).getDataDevolucao();
-                    dadosDaLinhaNaColuna[6] = listaDeEmprestimos.get(i).getHoraDevolucao();
+                    dadosDaLinhaNaColuna[6] = listaDeEmprestimos.get(i).getDataDevolucao();
+                    dadosDaLinhaNaColuna[7] = listaDeEmprestimos.get(i).getHoraDevolucao();
                 } else {
-                    dadosDaLinhaNaColuna[5] = "";
-                    dadosDaLinhaNaColuna[6] = "";                        
+                    dadosDaLinhaNaColuna[6] = "";
+                    dadosDaLinhaNaColuna[7] = "";                        
                 } 
-                dadosDaLinhaNaColuna[7] = listaDeEmprestimos.get(i).getIdEmprestimo();
+                dadosDaLinhaNaColuna[0] = listaDeEmprestimos.get(i).getIdEmprestimo();
                 
                 //Adiciona os dados à linha na tabela
                 tabela.addRow(dadosDaLinhaNaColuna);                
 
             }
             
-            alteraTamanhoColuna(0, 120);
-            alteraTamanhoColuna(1, 150);
-            alteraTamanhoColuna(2, -1);
-            alteraTamanhoColuna(3, 100);
-            alteraTamanhoColuna(4, 80);
-            alteraTamanhoColuna(5, 100);
-            alteraTamanhoColuna(6, 80);
-            alteraTamanhoColuna(7, 0);
-            alinhaColunas(new int[]{0,1,3,4,5,6}, "C");
+            alteraTamanhoColuna(1, 120);
+            alteraTamanhoColuna(2, 150);
+            alteraTamanhoColuna(3, -1);
+            alteraTamanhoColuna(4, 100);
+            alteraTamanhoColuna(5, 80);
+            alteraTamanhoColuna(6, 100);
+            alteraTamanhoColuna(7, 80);
+            alteraTamanhoColuna(0, 0);
+            alinhaColunas(new int[]{1,2,4,5,6,7}, "C");
             jScrollPane1.getVerticalScrollBar().setValue(0);
             
             lblListando.setText("Lista de Empréstimos");
@@ -141,6 +145,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
     }
     
     private void consultarResponsaveis(){
+        controlador.selectListaResponsaveis();
         ArrayList<Responsavel> listaDeResponsaveis = controlador.getListaDeResponsaveis();
         if (listaDeResponsaveis.size() > 0) {
             //Muda título da tabela
@@ -153,7 +158,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
             tabelaPrincipal.setModel(new javax.swing.table.DefaultTableModel(
                 new Object [][] {},
                 new String [] {
-                     "Nome", "Código", "Telefone", "E-Mail", "idResponsavel"
+                     "idResponsavel", "Nome", "Código", "Telefone", "E-Mail"
                 })
                 {
                 boolean[] canEdit = new boolean [] {
@@ -174,22 +179,22 @@ public class TelaPrincipal extends javax.swing.JFrame {
             for (int i = 0; i < listaDeResponsaveis.size(); i++) {               
                 
                 //Busca na lista de equipamentos o idEquipamento do emprestimo atual
-                dadosDaLinhaNaColuna[0] = listaDeResponsaveis.get(i).getNome();
-                dadosDaLinhaNaColuna[1] = listaDeResponsaveis.get(i).getCodigo();
-                dadosDaLinhaNaColuna[2] = listaDeResponsaveis.get(i).getTelefone();
-                dadosDaLinhaNaColuna[3] = listaDeResponsaveis.get(i).getEmail();
-                dadosDaLinhaNaColuna[4] = listaDeResponsaveis.get(i).getIdResponsavel();
+                dadosDaLinhaNaColuna[1] = listaDeResponsaveis.get(i).getNome();
+                dadosDaLinhaNaColuna[2] = listaDeResponsaveis.get(i).getCodigo();
+                dadosDaLinhaNaColuna[3] = listaDeResponsaveis.get(i).getTelefone();
+                dadosDaLinhaNaColuna[4] = listaDeResponsaveis.get(i).getEmail();
+                dadosDaLinhaNaColuna[0] = listaDeResponsaveis.get(i).getIdResponsavel();
                 
                 //Adiciona os dados à linha na tabela
                 tabela.addRow(dadosDaLinhaNaColuna);                
 
             }
-            alteraTamanhoColuna(0, -1);
-            alteraTamanhoColuna(1, 120);
-            alteraTamanhoColuna(2, 100);
-            alteraTamanhoColuna(3, 200);
-            alteraTamanhoColuna(4, 0);
-            alinhaColunas(new int[]{1}, "C");
+            alteraTamanhoColuna(1, -1);
+            alteraTamanhoColuna(2, 120);
+            alteraTamanhoColuna(3, 100);
+            alteraTamanhoColuna(4, 200);
+            alteraTamanhoColuna(0, 0);
+            alinhaColunas(new int[]{2}, "C");
             jScrollPane1.getVerticalScrollBar().setValue(0);
             lblListando.setText("Lista de Responsáveis");
         } else { //Se estiver vazia, avisa o usuário
@@ -199,6 +204,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
     }
     
     private void consultarEquipamentos(){
+        controlador.selectListaEquipamentos();
         ArrayList<Equipamento> listaDeEquipamentos = Controlador.getListaDeEquipamentos();
         if (listaDeEquipamentos.size() > 0) {
             //Muda título da tabela
@@ -210,7 +216,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
             tabelaPrincipal.setModel(new javax.swing.table.DefaultTableModel(
                 new Object [][] {},
                 new String [] {
-                     "Código", "Tipo", "Descrição", "Situação", "idEquipamento"
+                     "idEquipamento", "Código", "Tipo", "Descrição", "Situação"
                 })
                 {
                 boolean[] canEdit = new boolean [] {
@@ -231,22 +237,22 @@ public class TelaPrincipal extends javax.swing.JFrame {
             for (int i = 0; i < listaDeEquipamentos.size(); i++) {               
                 
                 //Busca na lista de equipamentos o idEquipamento do emprestimo atual
-                dadosDaLinhaNaColuna[0] = listaDeEquipamentos.get(i).getCodigo();
-                dadosDaLinhaNaColuna[1] = listaDeEquipamentos.get(i).getTipo();
-                dadosDaLinhaNaColuna[2] = listaDeEquipamentos.get(i).getDescricao();
-                dadosDaLinhaNaColuna[3] = controlador.situacao(listaDeEquipamentos.get(i).getSituacao());
-                dadosDaLinhaNaColuna[4] = listaDeEquipamentos.get(i).getIdEquipamento();
+                dadosDaLinhaNaColuna[1] = listaDeEquipamentos.get(i).getCodigo();
+                dadosDaLinhaNaColuna[2] = listaDeEquipamentos.get(i).getTipo();
+                dadosDaLinhaNaColuna[3] = listaDeEquipamentos.get(i).getDescricao();
+                dadosDaLinhaNaColuna[4] = controlador.situacao(listaDeEquipamentos.get(i).getSituacao());
+                dadosDaLinhaNaColuna[0] = listaDeEquipamentos.get(i).getIdEquipamento();
                 
                 //Adiciona os dados à linha na tabela
                 tabela.addRow(dadosDaLinhaNaColuna);                
 
             }
-            alteraTamanhoColuna(0, 100);
             alteraTamanhoColuna(1, 100);
-            alteraTamanhoColuna(2, -1);
-            alteraTamanhoColuna(3, 120);
-            alteraTamanhoColuna(4, 0);
-            alinhaColunas(new int[]{0,1,3}, "C");
+            alteraTamanhoColuna(2, 100);
+            alteraTamanhoColuna(3, -1);
+            alteraTamanhoColuna(4, 120);
+            alteraTamanhoColuna(0, 0);
+            alinhaColunas(new int[]{1,2,4}, "C");
             lblListando.setText("Lista de Equipamentos");            
         } else { //Se estiver vazia, avisa o usuário
             //exibirMensagem();
@@ -281,16 +287,16 @@ public class TelaPrincipal extends javax.swing.JFrame {
     }
     
     private void cadastrosTemporarios(){
-        /*controlador.cadastraResponsavel("Vinicius Vasconcelos", 123456, "5112345678", "email@email.com");
-        controlador.cadastraResponsavel("Fulano de Tal", 853456, "5390909090", "email2@email.com.br");
-        controlador.cadastraResponsavel("Bertrano de Quem", 753159, "6170708060", "email32@gemail.com.br");
+        /*controlador.adicionaResponsavelNaLista("Vinicius Vasconcelos", 123456, "5112345678", "email@email.com");
+        controlador.adicionaResponsavelNaLista("Fulano de Tal", 853456, "5390909090", "email2@email.com.br");
+        controlador.adicionaResponsavelNaLista("Bertrano de Quem", 753159, "6170708060", "email32@gemail.com.br");
         controlador.cadastraEquipamento(123456, "Projetor", "Projetor EPSON X13", "E");
         controlador.cadastraEquipamento(123457, "Projetor", "Projetor EPSON X12", "D");
         controlador.cadastraEquipamento(123458, "Notebook", "Notebook HP Probook", "D");
         controlador.cadastraEquipamento(123459, "Notebook", "Notebook Dell M179", "D");
         controlador.cadastraEquipamento(123460, "Tablet", "Tablet Motorolla Xoom", "D");*/
         
-       // controlador.cadastraEmprestimo(2, DataHora.converteParaTimestamp(1572392211 ), 0);
+       // controlador.adicionaEmprestimoNaLista(2, DataHora.converteParaTimestamp(1572392211 ), 0);
     }
     
     void acionaEmprestimo(int cod){
@@ -307,7 +313,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
     void abreTelaEquipamento(int cod){
         //Se existe o equipamento cadastrado
         if (controlador.existeObjeto(cod, "IDRESP")) {
-            this.telaEquipamento = new TelaEquipamento(this, true, cod);
+            this.telaEquipamento = new TelaEquipamento(this, true, cod, controlador);
             this.telaEquipamento.setVisible(true);
             consultarEquipamentos();
         } else {
@@ -316,7 +322,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
         } 
     }
     void abreTelaEquipamento(){
-            this.telaEquipamento = new TelaEquipamento(this, true);
+            this.telaEquipamento = new TelaEquipamento(this, true, controlador);
             this.telaEquipamento.setVisible(true);
             consultarEquipamentos();
     }
@@ -369,6 +375,11 @@ public class TelaPrincipal extends javax.swing.JFrame {
                 "Descrição", "Código / Patrimônio", "Responsável", "Data", "Hora", "Data", "Hora"
             }
         ));
+        tabelaPrincipal.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tabelaPrincipalMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tabelaPrincipal);
 
         lblCodigo.setFont(new java.awt.Font("sansserif", 1, 18)); // NOI18N
@@ -631,6 +642,25 @@ public class TelaPrincipal extends javax.swing.JFrame {
                                        +"</html>"
                                     );
     }//GEN-LAST:event_jmiPendenteActionPerformed
+
+    private void tabelaPrincipalMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabelaPrincipalMouseClicked
+        if (evt.getClickCount() == 2) {
+            idSelecionado = (int) tabelaPrincipal.getValueAt(tabelaPrincipal.getSelectedRow(), 0);
+            System.out.println("LINHA: " + idSelecionado);
+            switch (tipoListagem){
+                case 1: //emprestimo
+                    break;
+                case 2://responsavel
+                    break;
+                case 3://equipamento
+                    break;
+            }
+            //System.out.println("2 cliques " + idTermoSelecionado);            
+        } else {
+           // selecionaTermo(idTermoSelecionado);
+            //System.out.println("1 só " + idTermoSelecionado);
+        }
+    }//GEN-LAST:event_tabelaPrincipalMouseClicked
 
     /**
      * @param args the command line arguments

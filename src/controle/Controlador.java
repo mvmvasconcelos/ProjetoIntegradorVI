@@ -41,6 +41,7 @@ public class Controlador {
      * Faz select na tabela responsaveis e armazena na lista
      */
     public void selectListaResponsaveis(){
+        listaDeResponsaveis.clear();
         String sql = "select * from responsaveis";
         try{
             //Prepara a query
@@ -77,8 +78,9 @@ public class Controlador {
                     }
                 }
                 //Armazena o registro na listaDeResponsaveis
-                cadastraResponsavel(id, nome, email,telefone, codigo);
+                adicionaResponsavelNaLista(id, nome, email,telefone, codigo);
             }
+            pst.close();
         }
         catch(SQLException error){
             JOptionPane.showMessageDialog(null, "ERRO SQL: " + error);
@@ -89,6 +91,7 @@ public class Controlador {
      * Faz select na tabela equipamentos e armazena na lista
      */
     public void selectListaEquipamentos(){
+        listaDeEquipamentos.clear();
         String sql = "select * from equipamentos";
         try{
             //Prepara a query
@@ -125,8 +128,9 @@ public class Controlador {
                     }
                 }
                 //Armazena o registro na listaDeEmprestimos
-                cadastraEquipamento(id, codigo, tipo, descricao, situacao);
+                adicionaEquipamentoNaLista(id, codigo, tipo, descricao, situacao);
             }
+            pst.close();
         }
         catch(SQLException error){
             JOptionPane.showMessageDialog(null, "ERRO SQL: " + error);
@@ -137,6 +141,7 @@ public class Controlador {
      * Faz select na tabela emprestimos e armazena na lista
      */
     public void selectListaEmprestimos(){
+        listaDeEmprestimos.clear();
         String sql = "select * from emprestimos";
         try{
             //Prepara a query
@@ -170,8 +175,9 @@ public class Controlador {
                     }
                 }
                 //Armazena o registro na listaDeEmprestimos
-                cadastraEmprestimo(id, retirada, idResponsavel,idEquipamento);
+                adicionaEmprestimoNaLista(id, retirada, idResponsavel,idEquipamento);
             }
+            pst.close();
         }
         catch(SQLException error){
             JOptionPane.showMessageDialog(null, "ERRO SQL: " + error);
@@ -277,42 +283,37 @@ public class Controlador {
     }
     
     /**
-     * 
+     * Insere o novo equipamento no banco de dados
      */
     public void cadastraEquipamento(int id, int codigo, String tipo, String descricao, String situacao){
+        System.out.println("Entrou no método");
         String sql = "insert into equipamentos (idequipamento, patrimonio, tipo, descricao, situacao)"
                         + "values (?, ?, ?, ?, ?)";
         try{
+                    System.out.println("Tentou");
+
              //Prepara a query
             pst = conecta.prepareStatement(sql);
-            //executa a query
-            resultado = pst.executeQuery();
             
             pst.setInt(1, id);
             pst.setInt(2, codigo);
             pst.setString(3, tipo);
             pst.setString(4, descricao);
             pst.setString(5, situacao);
+            //executa a query
+            //resultado = pst.executeQuery();
             
             pst.execute();
             pst.close();
+            adicionaEquipamentoNaLista(id, codigo, tipo, descricao, situacao);
             
         }
         catch(SQLException error){
+            System.out.println("Errou");
             JOptionPane.showMessageDialog(null, "ERRO SQL: " + error);
+
         }
     }
-    
-    /** 
-     * Cria um novo equipamento e adiciona ele à lista
-     * @param codigo
-     * @param tipo
-     * @param descricao
-     */
-    /*public void cadastraEquipamento(int id, int codigo, String tipo, String descricao, String situacao){
-        Equipamento novo = new Equipamento(id, codigo, tipo, descricao, situacao);
-        salvaObjeto(novo);
-    }*/
     
     /** 
      * Cria um novo responsavel e adiciona ele à lista
@@ -321,14 +322,19 @@ public class Controlador {
      * @param telefone
      * @param email
      */
-    public void cadastraResponsavel (int id, String nome, String email, String telefone, int codigo){
+    public void adicionaResponsavelNaLista (int id, String nome, String email, String telefone, int codigo){
         Responsavel novo = new Responsavel(id, nome, email,telefone, codigo);
-        salvaObjeto(novo);
+        adicionaObjetoNaLista(novo);
     }
     
-    public void cadastraEmprestimo(int id, Timestamp retirada, int idResponsavel,int idEquipamento){
+    public void adicionaEmprestimoNaLista(int id, Timestamp retirada, int idResponsavel,int idEquipamento){
         Emprestimo novo = new Emprestimo(id, retirada, idResponsavel, idEquipamento);
-        salvaObjeto(novo);
+        adicionaObjetoNaLista(novo);
+    }
+    
+    public void adicionaEquipamentoNaLista(int id, int codigo, String tipo, String descricao, String situacao){
+        Equipamento novo = new Equipamento(id, codigo, tipo, descricao, situacao);
+        adicionaObjetoNaLista(novo);
     }
     
     /**
@@ -365,7 +371,7 @@ public class Controlador {
                     return true;
                 }
             case "IDEQP":
-                if (listaDeEquipamentos.contains(this.getEquipamentoPeloCodigo(id))) {
+                if (listaDeEquipamentos.contains(this.getEquipamentoPeloID(id))) {
                     return true;
                 }
             case "IDEMP":
@@ -403,13 +409,13 @@ public class Controlador {
     }
     
     //Adiciona o objeto à lista correspondente
-    public void salvaObjeto(Equipamento equipamento){
+    public void adicionaObjetoNaLista(Equipamento equipamento){
         listaDeEquipamentos.add(equipamento);
     }
-    public void salvaObjeto(Responsavel responsavel){
+    public void adicionaObjetoNaLista(Responsavel responsavel){
         listaDeResponsaveis.add(responsavel);
     }
-    public void salvaObjeto(Emprestimo emprestimo){
+    public void adicionaObjetoNaLista(Emprestimo emprestimo){
         listaDeEmprestimos.add(emprestimo);
     }
 }
