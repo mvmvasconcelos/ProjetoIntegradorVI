@@ -27,15 +27,11 @@ public class Controlador {
         conecta = ConexaoBD.ConectaBancoDados();
     }
     
-    /* Listas temporária para armazenar os objetos criados    
+    /* Listas temporárias para armazenar os objetos criados    
        posteriormente serão substituídas pelo banco de dados */    
     public static ArrayList<Equipamento> listaDeEquipamentos = new ArrayList<>();
     public static ArrayList<Responsavel> listaDeResponsaveis = new ArrayList<>();
     public static ArrayList<Emprestimo> listaDeEmprestimos = new ArrayList<>();
-    
-    public static ArrayList<Emprestimo> getListaDeEmprestimos(){        
-        return listaDeEmprestimos;
-    }
     
     /**
      * Faz select na tabela responsaveis e armazena na lista
@@ -59,7 +55,7 @@ public class Controlador {
                 //Para cada coluna no registro, salva o dado correspondente de acordo com a coluna
                 for (int i = 1; i <= nrDeColunas; i++) {
                     switch(i){
-                        case 1:
+                        case 1:                            
                             id = Integer.parseInt(resultado.getString(i));
                             Responsavel.setidBD(id);
                             break;
@@ -111,7 +107,7 @@ public class Controlador {
                     switch(i){
                         case 1:
                             id = Integer.parseInt(resultado.getString(i));
-                            Equipamento.setidBD(id);
+                            Responsavel.setidBD(id);
                             break;
                         case 2:
                             codigo = Integer.parseInt(resultado.getString(i));
@@ -183,7 +179,11 @@ public class Controlador {
             JOptionPane.showMessageDialog(null, "ERRO SQL: " + error);
         }
     }
-
+    
+    public static ArrayList<Emprestimo> getListaDeEmprestimos(){        
+        return listaDeEmprestimos;
+    }
+    
     public static ArrayList<Responsavel> getListaDeResponsaveis() {
         return listaDeResponsaveis;
     }
@@ -230,6 +230,21 @@ public class Controlador {
     public Responsavel getResponsavelPeloID(int id){
         for (int i = 0; i < listaDeResponsaveis.size(); i++) {
             if (listaDeResponsaveis.get(i).getIdResponsavel()== id) {
+                return listaDeResponsaveis.get(i);
+            }            
+        }
+        return null;
+    }
+    
+    /**
+     * Busca na lista de responsaveis pelo ID e retorna apenas o objeto.
+     * É necessário pois nem sempre o índice do arraylist será igual ao id
+     * @param id
+     * @return responsavel
+     */
+    public Responsavel getResponsavelPeloCodigo(int id){
+        for (int i = 0; i < listaDeResponsaveis.size(); i++) {
+            if (listaDeResponsaveis.get(i).getCodigo()== id) {
                 return listaDeResponsaveis.get(i);
             }            
         }
@@ -286,7 +301,7 @@ public class Controlador {
      * Insere o novo equipamento no banco de dados
      */
     public void cadastraEquipamento(int id, int codigo, String tipo, String descricao, String situacao){
-        System.out.println("Entrou no método");
+        System.out.println("Entrou no cadastraEquipamento");
         String sql = "insert into equipamentos (idequipamento, patrimonio, tipo, descricao, situacao)"
                         + "values (?, ?, ?, ?, ?)";
         try{
@@ -315,8 +330,128 @@ public class Controlador {
         }
     }
     
+    /**
+     * Faz o update no banco
+     * @param id
+     * @param codigo
+     * @param tipo
+     * @param descricao
+     * @param situacao 
+     */
+    public void modificaEquipamento(int id, int codigo, String tipo, String descricao, String situacao){
+        System.out.println("Entrou no modificaEquipamento");
+        String sql = "UPDATE equipamentos "
+                   + "SET patrimonio = ?, tipo = ?, descricao = ?, situacao = ?"
+                   + "WHERE idEquipamento = ?";
+        try{
+                    System.out.println("Tentou");
+
+             //Prepara a query
+            pst = conecta.prepareStatement(sql);
+            
+            pst.setInt(1, codigo);
+            pst.setString(2, tipo);
+            pst.setString(3, descricao);
+            pst.setString(4, situacao);
+            pst.setInt(5, id);
+            //executa a query
+            //resultado = pst.executeQuery();
+            
+            pst.execute();
+            pst.close();
+        }
+        catch(SQLException error){
+            System.out.println("Errou");
+            JOptionPane.showMessageDialog(null, "ERRO SQL: " + error);
+
+        }
+    }
+    public void deletaEquipamento(int id){
+        System.out.println("Entrou no deletaEquipamento");
+        String sql = "DELETE FROM equipamentos "
+                   + "WHERE idEquipamento = ?";
+        try{
+                    System.out.println("Tentou");
+
+             //Prepara a query
+            pst = conecta.prepareStatement(sql);
+            
+            pst.setInt(1, id);
+            //executa a query
+            //resultado = pst.executeQuery();
+            
+            pst.execute();
+            pst.close();
+        }
+        catch(SQLException error){
+            System.out.println("Errou");
+            JOptionPane.showMessageDialog(null, "ERRO SQL: " + error);
+        }
+    }
+    /**
+     * Insere o novo equipamento no banco de dados
+     */
+    public void cadastraResponsavel(int id, String nome, String email, String telefone, int codigo){
+        String sql = "insert into responsaveis (idResponsavel, nome, email, telefone, siape)"
+                        + "values (?, ?, ?, ?, ?)";
+        try{
+                    System.out.println("Tentou");
+
+             //Prepara a query
+            pst = conecta.prepareStatement(sql);
+            
+            pst.setInt(1, id);
+            pst.setString(2, nome);
+            pst.setString(3, email);
+            pst.setString(4, telefone);
+            pst.setInt(5, codigo);
+            //executa a query
+            //resultado = pst.executeQuery();
+            
+            pst.execute();
+            pst.close();
+            adicionaResponsavelNaLista(id, nome, email, telefone, codigo);
+            
+        }
+        catch(SQLException error){
+            System.out.println("Errou");
+            JOptionPane.showMessageDialog(null, "ERRO SQL: " + error);
+
+        }
+    }
+    
+    public void modificaResponsavel(int id, String nome, String email, String telefone, int codigo){
+        System.out.println("Entrou no modificaResponsavel");
+        String sql = "UPDATE responsaveis "
+                   + "SET nome = ?, email = ?, telefone = ?, codigo = ?"
+                   + "WHERE idResponsavel = ?";
+        try{
+                    System.out.println("Tentou");
+
+             //Prepara a query
+            pst = conecta.prepareStatement(sql);
+            
+            pst.setString(1, nome);
+            pst.setString(2, email);
+            pst.setString(3, telefone);
+            pst.setInt(4, codigo);
+            pst.setInt(5, id);
+            //executa a query
+            //resultado = pst.executeQuery();
+            
+            pst.execute();
+            pst.close();
+        }
+        catch(SQLException error){
+            System.out.println("Errou");
+            JOptionPane.showMessageDialog(null, "ERRO SQL: " + error);
+
+        }
+    }
+    
     /** 
      * Cria um novo responsavel e adiciona ele à lista
+     * @param id
      * @param nome
      * @param codigo
      * @param telefone
@@ -380,6 +515,10 @@ public class Controlador {
                 }
             case "CODEQP":
                 if (listaDeEquipamentos.contains(this.getEquipamentoPeloCodigo(id))) {
+                    return true;
+                }
+            case "CODRESP":
+                if (listaDeResponsaveis.contains(this.getResponsavelPeloCodigo(id))) {
                     return true;
                 }
             default:

@@ -20,6 +20,11 @@ import negocio.Equipamento;
 public class TelaEquipamento extends javax.swing.JDialog {
     Controlador ctl;
     Equipamento equipamento;
+    Boolean novoEqp; //true se for novo, false se for existente
+    int codEqp;
+    int idEquipamento;
+    String tipoEqp;
+    String situacao;
     /**
      * Creates new form TelaEquipamento
      */
@@ -33,22 +38,27 @@ public class TelaEquipamento extends javax.swing.JDialog {
         ctl = contr;
         initComponents();
         preencheFormulario();
+        novoEqp = true;
     }
     
-    public TelaEquipamento(java.awt.Frame parent, boolean modal, int codigo, Controlador contr) {
+    public TelaEquipamento(java.awt.Frame parent, boolean modal, int id, Controlador contr) {
         super(parent, modal);
         ctl = contr;
+        idEquipamento = id;
         initComponents();
-        preencheFormulario(codigo);
+        preencheFormulario(id);
+        situacao = equipamento.getSituacao();
+        novoEqp = false;
     }
     
-    private void cadastraEquipamento(){
+    private void executaEquipamento(){
         boolean camposValidados = false;
-        int id = Integer.parseInt(txtIdEquipamento.getText());
-        int codigo = Integer.parseInt(txtCodigo.getText()); 
-        String tipo = txtTipo.getText();
-        String descricao = txtDescricao.getText();
-        String situacao = pegaRadioSelecionado();
+        boolean continua = true;
+        int id = 0;
+        int codigo = 0;
+        String tipo = null;
+        String descricao = null;
+        String situacao = null;
         if (validaCampo(txtCodigo)) {
             txtCodigo.setBackground(Color.WHITE);
             if (validaCampo(txtTipo)) {
@@ -56,24 +66,62 @@ public class TelaEquipamento extends javax.swing.JDialog {
                 if (validaCampo(txtDescricao)) {
                     txtDescricao.setBackground(Color.WHITE);
                     camposValidados = true;
+                    id = Integer.parseInt(txtIdEquipamento.getText());
+                    codigo = Integer.parseInt(txtCodigo.getText()); 
+                    tipo = txtTipo.getText();
+                    descricao = txtDescricao.getText();
+                    situacao = pegaRadioSelecionado();
                 }
             }
-        }
-        if (camposValidados) {
+        }      
+        
+        //Se passou na validação de dados e o equipamento for novo
+        if (camposValidados && novoEqp) {
+            //Se já existe a id deste equipamento, algo está muito errado!
             if (ctl.existeObjeto(id, "IDEQP")) {
                 JOptionPane.showMessageDialog(null, "Já existe equipamento com esse ID");
-                //this.dispose();
+                this.dispose();
             } else {
+                //Se já existir o código, avisa o usuario
                 if (ctl.existeObjeto(codigo, "CODEQP")){
                     JOptionPane.showMessageDialog(null, "Já existe equipamento com esse CÓDIGO");
                     txtCodigo.requestFocus();
                 } else {
+                    //Se não existir, faz o cadastro
                     ctl.cadastraEquipamento(id, codigo, tipo, descricao, situacao);
                     JOptionPane.showMessageDialog(null, "Cadastrado com sucesso!");
                     this.dispose();
                 }
             }
-
+          //Se passou na validação de dados e não é um equipamento novo  
+        } else if(camposValidados && !novoEqp) {
+            //Se o usuario digitou um novo código
+            if (codigo != codEqp) {
+                //Pergunta se foi de propósito, se não for, volta pro formulario
+                if (JOptionPane.showConfirmDialog(null, "Você alterou o CÓDIGO do equipamento.\nTem certeza que deseja continuar?", "ATENÇÃO", JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) {
+                    txtCodigo.requestFocus();
+                    continua = false;
+                //Se foi, verifica se o código já existe ou não
+                } else  if (ctl.existeObjeto(codigo, "CODEQP")){
+                    JOptionPane.showMessageDialog(null, "Já existe equipamento com esse CÓDIGO");
+                    txtCodigo.requestFocus();
+                    continua = false;
+                }
+            }
+            //Se o usuario digitou um novo tipo e não precisou passar pela validação anterior
+            //Isso evita que apareça o JOPane antes de resolver o anterior
+            if (!tipo.equals(tipoEqp) && continua){
+                if (JOptionPane.showConfirmDialog(null, "Você alterou o TIPO do equipamento.\nTem certeza que deseja continuar?", "ATENÇÃO", JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) {
+                    txtTipo.requestFocus();
+                    continua = false;
+                }
+            }      
+            //Se continua ainda é true, quer dizer que ele passou pelas outras validações
+            if (continua) {
+                ctl.modificaEquipamento(id, codigo, tipo, descricao, situacao);
+                JOptionPane.showMessageDialog(null, "Modificado com sucesso!");
+                this.dispose();
+            }
         }
     }
     
@@ -87,6 +135,23 @@ public class TelaEquipamento extends javax.swing.JDialog {
         return true;
     }
     
+    private void excluiEquipamento(){
+        if (!novoEqp) {
+            if (equipamento.getSituacao().equals("E")) {
+                JOptionPane.showMessageDialog(null, "Não é possível excluir um equipamento atualmente emprestado.");
+                this.dispose();
+            } else {
+                if (JOptionPane.showConfirmDialog(null, "Tem certeza que deseja excluir o equipamento?", "ATENÇÃO", JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) {
+                    txtCodigo.requestFocus();
+                } else {
+                    ctl.deletaEquipamento(idEquipamento);
+                    JOptionPane.showMessageDialog(null, "Equipamento removido com sucesso!");
+                    this.dispose();
+                }
+            }
+        }
+    }
+    
     
     /**
      * Preenche os dados do formulário de acordo com o id do equipamento
@@ -97,17 +162,31 @@ public class TelaEquipamento extends javax.swing.JDialog {
         equipamento = ctl.getEquipamentoPeloID(idEquipamento);
         //Altera os textos no formulário
         txtIdEquipamento.setText(String.valueOf(idEquipamento));
-        txtCodigo.setText(String.valueOf(equipamento.getCodigo()));
-        txtTipo.setText(equipamento.getTipo());
+        codEqp = equipamento.getCodigo();
+        txtCodigo.setText(String.valueOf(codEqp));
+        tipoEqp = equipamento.getTipo();
+        txtTipo.setText(tipoEqp);
         txtDescricao.setText(equipamento.getDescricao());
         marcaRadioButton(equipamento.getSituacao());
-        btnCadastrar.setText("Salvar Modificações");
+        if (equipamento.getSituacao().equals("E")) {
+            Enumeration<AbstractButton> enumeration = radGrupo.getElements();
+            while (enumeration.hasMoreElements()) {
+                enumeration.nextElement().setEnabled(false);
+            }
+        }
+        radioEmprestado.setEnabled(false);
+        btnExecutar.setText("Salvar Modificações");
+        lblTitulo.setText("Editar Equipamento " + String.valueOf(equipamento.getCodigo()));
     }
     private void preencheFormulario(){
         txtIdEquipamento.setText(String.valueOf(equipamento.getIdEquipamentoBD()));
         marcaRadioButton("D");
-        //limpaFormulario();
-        btnCadastrar.setText("Cadastrar Equipamento");
+        //Desativa opção de situação emprestado para o usuario não criar um equipamento já cadastrado
+        radioEmprestado.setEnabled(false);
+        //Desabilita o botão de excluir
+        btnExcluir.setEnabled(false);
+        limpaFormulario();
+        btnExecutar.setText("Cadastrar Equipamento");
     }
     private void limpaFormulario(){
         txtCodigo.setText("");
@@ -169,8 +248,9 @@ public class TelaEquipamento extends javax.swing.JDialog {
         radioIndisponivel = new javax.swing.JRadioButton();
         txtTipo = new javax.swing.JTextField();
         btnLimpar = new javax.swing.JButton();
-        btnCadastrar = new javax.swing.JButton();
+        btnExecutar = new javax.swing.JButton();
         btnVoltar = new javax.swing.JButton();
+        btnExcluir = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -224,10 +304,10 @@ public class TelaEquipamento extends javax.swing.JDialog {
             }
         });
 
-        btnCadastrar.setText("Cadastrar Equipamento");
-        btnCadastrar.addActionListener(new java.awt.event.ActionListener() {
+        btnExecutar.setText("Cadastrar Equipamento");
+        btnExecutar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCadastrarActionPerformed(evt);
+                btnExecutarActionPerformed(evt);
             }
         });
 
@@ -235,6 +315,13 @@ public class TelaEquipamento extends javax.swing.JDialog {
         btnVoltar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnVoltarActionPerformed(evt);
+            }
+        });
+
+        btnExcluir.setText("Excluir Equipamento");
+        btnExcluir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnExcluirActionPerformed(evt);
             }
         });
 
@@ -269,10 +356,12 @@ public class TelaEquipamento extends javax.swing.JDialog {
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(btnCadastrar)
-                        .addGap(133, 133, 133)
+                        .addComponent(btnExecutar)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnLimpar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnExcluir, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnVoltar)))
                 .addContainerGap())
         );
@@ -302,8 +391,9 @@ public class TelaEquipamento extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 133, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnLimpar)
-                    .addComponent(btnCadastrar)
-                    .addComponent(btnVoltar))
+                    .addComponent(btnExecutar)
+                    .addComponent(btnVoltar)
+                    .addComponent(btnExcluir))
                 .addContainerGap())
         );
 
@@ -340,9 +430,13 @@ public class TelaEquipamento extends javax.swing.JDialog {
         limpaFormulario();
     }//GEN-LAST:event_btnLimparActionPerformed
 
-    private void btnCadastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadastrarActionPerformed
-        cadastraEquipamento();
-    }//GEN-LAST:event_btnCadastrarActionPerformed
+    private void btnExecutarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExecutarActionPerformed
+        executaEquipamento();
+    }//GEN-LAST:event_btnExecutarActionPerformed
+
+    private void btnExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirActionPerformed
+        excluiEquipamento();
+    }//GEN-LAST:event_btnExcluirActionPerformed
 
     /**
      * @param args the command line arguments
@@ -387,7 +481,8 @@ public class TelaEquipamento extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnCadastrar;
+    private javax.swing.JButton btnExcluir;
+    private javax.swing.JButton btnExecutar;
     private javax.swing.JButton btnLimpar;
     private javax.swing.JButton btnVoltar;
     private javax.swing.JPanel jPanel1;

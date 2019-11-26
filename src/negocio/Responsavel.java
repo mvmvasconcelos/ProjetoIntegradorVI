@@ -25,10 +25,14 @@ public class Responsavel {
         this.telefone = telefone;
         this.email = email;
         Responsavel.idBD++; //incrementa o idResponsavel que será armazenado no BD
+        System.out.println("\nID OBJETO RESP " + idBD + "\n");
     }
     
     public static void setidBD(int id){
         idBD = id;
+    }
+    public static int getIdDB() {
+        return idBD;
     }
 
     public int getIdResponsavel() {

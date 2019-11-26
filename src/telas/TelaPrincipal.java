@@ -6,7 +6,6 @@
 package telas;
 
 import controle.Controlador;
-import controle.DataHora;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.ArrayList;
@@ -310,10 +309,10 @@ public class TelaPrincipal extends javax.swing.JFrame {
         } 
     }
     
-    void abreTelaEquipamento(int cod){
+    void abreTelaEquipamento(int id){
         //Se existe o equipamento cadastrado
-        if (controlador.existeObjeto(cod, "IDRESP")) {
-            this.telaEquipamento = new TelaEquipamento(this, true, cod, controlador);
+        if (controlador.existeObjeto(id, "IDEQP")) {
+            this.telaEquipamento = new TelaEquipamento(this, true, id, controlador);
             this.telaEquipamento.setVisible(true);
             consultarEquipamentos();
         } else {
@@ -325,6 +324,23 @@ public class TelaPrincipal extends javax.swing.JFrame {
             this.telaEquipamento = new TelaEquipamento(this, true, controlador);
             this.telaEquipamento.setVisible(true);
             consultarEquipamentos();
+    }
+    
+    void abreTelaResponsavel(int id){
+        if (controlador.existeObjeto(id, "IDRESP")) {
+            this.telaResponsavel = new TelaResponsavel(this, true, id, controlador);
+            this.telaEquipamento.setVisible(true);
+            consultarResponsaveis();
+        } else {
+            JOptionPane.showMessageDialog(this, "Não existe o responsável selecionado");
+            consultarResponsaveis(); 
+        }
+    }
+    
+    void abreTelaResponsavel(){
+            this.telaResponsavel = new TelaResponsavel(this, true, controlador);
+            this.telaResponsavel.setVisible(true);
+            consultarResponsaveis();
     }
 
     /**
@@ -585,8 +601,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_jmiSairActionPerformed
 
     private void jmiNovoResponsavelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiNovoResponsavelActionPerformed
-        TelaResponsavel novaTela = new TelaResponsavel();
-        novaTela.setVisible(true);
+        abreTelaResponsavel();
     }//GEN-LAST:event_jmiNovoResponsavelActionPerformed
 
     private void jmiNovoEquipamentoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiNovoEquipamentoActionPerformed
@@ -646,19 +661,18 @@ public class TelaPrincipal extends javax.swing.JFrame {
     private void tabelaPrincipalMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabelaPrincipalMouseClicked
         if (evt.getClickCount() == 2) {
             idSelecionado = (int) tabelaPrincipal.getValueAt(tabelaPrincipal.getSelectedRow(), 0);
-            System.out.println("LINHA: " + idSelecionado);
+            System.out.println("idSelecionado " + idSelecionado);
             switch (tipoListagem){
                 case 1: //emprestimo
                     break;
                 case 2://responsavel
+                    abreTelaResponsavel(idSelecionado);
                     break;
                 case 3://equipamento
+                    abreTelaEquipamento(idSelecionado);
                     break;
             }
             //System.out.println("2 cliques " + idTermoSelecionado);            
-        } else {
-           // selecionaTermo(idTermoSelecionado);
-            //System.out.println("1 só " + idTermoSelecionado);
         }
     }//GEN-LAST:event_tabelaPrincipalMouseClicked
 
