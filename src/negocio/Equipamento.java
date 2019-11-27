@@ -10,7 +10,6 @@ package negocio;
  * @author vinicius
  */
 public class Equipamento {
-    private static int idBD = 0; //int global para controlar o ID autoincrementado
     private int idEquipamento;
     private int codigo;
     private String tipo;
@@ -18,22 +17,13 @@ public class Equipamento {
     private String situacao;   
 
     public Equipamento(int id, int codigo, String tipo, String descricao, String situacao) {
-        this.idEquipamento = Equipamento.idBD;
+        this.idEquipamento = id;
         this.codigo = codigo;
         this.tipo = tipo;
         this.descricao = descricao;
         this.situacao = situacao;
-        Equipamento.idBD++;
     }
     
-    public static void setidBD(int id){
-        idBD = id;
-    }
-    
-    public static int getIdEquipamentoBD(){
-        return Equipamento.idBD;
-    }
-
     public int getIdEquipamento() {
         return idEquipamento;
     }    
@@ -76,8 +66,7 @@ public class Equipamento {
      * @return String
      */
     public String getTudo(){
-        return "IDBD: " + idBD 
-             + "\nID:" + idEquipamento
+        return "\nID:" + idEquipamento
              + "\nCÓDIGO:" + codigo
              + "\nTIPO:" + tipo
              + "\nDESCRIÇÃO:" + descricao;

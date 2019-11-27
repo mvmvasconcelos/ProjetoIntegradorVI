@@ -16,7 +16,7 @@ public class ConexaoBD {
             try{
             Class.forName("org.postgresql.Driver");
             Connection conecta = DriverManager.getConnection("jdbc:postgresql://localhost:5432/integradorVI","postgres","123");
-            JOptionPane.showMessageDialog(null, "Conectado com sucesso");
+            //JOptionPane.showMessageDialog(null, "Conectado com sucesso");
             return conecta;
         }
         catch(SQLException error){

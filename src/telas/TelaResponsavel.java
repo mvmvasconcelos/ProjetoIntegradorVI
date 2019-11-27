@@ -25,6 +25,8 @@ public class TelaResponsavel extends javax.swing.JDialog {
     
     /**
      * Creates new form TelaResponsavel
+     * @param parent
+     * @param modal
      */
     public TelaResponsavel(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
@@ -36,24 +38,20 @@ public class TelaResponsavel extends javax.swing.JDialog {
         initComponents();
         //limpaFormulario();
         preencheFormulario();
-        novoResp = true;
-        System.out.println("ID ao abrir cadastro respon " + Responsavel.getIdDB());
-        
+        novoResp = true;        
     }
     public TelaResponsavel(java.awt.Frame parent, boolean modal, int id, Controlador cont) {
         super(parent, modal);
-        ctl = cont;
         initComponents();
+        ctl = cont;
         novoResp = false;
         idResponsavel = id;
         preencheFormulario(id);
-    }
-    
+    }    
     
     private void executaResponsavel(){
         boolean camposValidados = false;
         boolean continua = true;
-        int id = 0;
         int codigo = 0;
         String nome = null;
         String telefone = null;
@@ -66,8 +64,7 @@ public class TelaResponsavel extends javax.swing.JDialog {
                     txtTelefone.setBackground(Color.WHITE);
                     if (validaCampo(txtEmail)) {
                         txtTelefone.setBackground(Color.WHITE);
-                        camposValidados = true;                        
-                        id = Responsavel.getIdDB();
+                        camposValidados = true;
                         codigo = Integer.parseInt(txtCodigo.getText()); 
                         nome = txtNome.getText();
                         telefone = txtTelefone.getText();
@@ -77,26 +74,19 @@ public class TelaResponsavel extends javax.swing.JDialog {
             }
         }      
         
-            System.out.println("ID NO CADASTRO " + id);
         //Se passou na validação de dados e o responsavel for novo
-        if (camposValidados && novoResp) {
-            //Se já existe a id deste responsavel, algo está muito errado!
-            if (ctl.existeObjeto(id, "IDRESP")) {
-                JOptionPane.showMessageDialog(null, "Já existe responsável com esse ID");
-                this.dispose();
+        if (camposValidados && novoResp) {            
+            //Se já existir o código, avisa o usuario
+            if (ctl.existeObjeto(codigo, "CODRESP")){
+                JOptionPane.showMessageDialog(null, "Já existe responsável com esse CÓDIGO");
+                txtCodigo.requestFocus();
             } else {
-                //Se já existir o código, avisa o usuario
-                if (ctl.existeObjeto(codigo, "CODRESP")){
-                    JOptionPane.showMessageDialog(null, "Já existe responsável com esse CÓDIGO");
-                    txtCodigo.requestFocus();
-                } else {
-                    //Se não existir, faz o cadastro
-                    ctl.cadastraResponsavel(id, nome, email, telefone, codigo);
-                    JOptionPane.showMessageDialog(null, "Cadastrado com sucesso!");
-                    this.dispose();
-                }
-            }
-          //Se passou na validação de dados e não é um responsavel novo  
+                //Se não existir, faz o cadastro
+                ctl.cadastraResponsavel(nome, email, telefone, codigo);
+                JOptionPane.showMessageDialog(null, "Cadastrado com sucesso!");
+                this.dispose();
+            }            
+          //Se passou na validação de dados e não é um novo responsavel
         } else if(camposValidados && !novoResp) {
             //Se o usuario digitou um novo código
             if (codigo != codResp) {
@@ -113,7 +103,7 @@ public class TelaResponsavel extends javax.swing.JDialog {
             }  
             //Se continua ainda é true, quer dizer que ele passou pelas outras validações
             if (continua) {
-                ctl.modificaResponsavel(id, nome, email, telefone, codigo);
+                ctl.modificaResponsavel(idResponsavel, nome, email, telefone, codigo);
                 JOptionPane.showMessageDialog(null, "Modificado com sucesso!");
                 this.dispose();
             }

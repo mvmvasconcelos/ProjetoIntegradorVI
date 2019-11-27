@@ -24,9 +24,10 @@ public class TelaEquipamento extends javax.swing.JDialog {
     int codEqp;
     int idEquipamento;
     String tipoEqp;
-    String situacao;
     /**
      * Creates new form TelaEquipamento
+     * @param parent
+     * @param modal
      */
     public TelaEquipamento(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
@@ -47,14 +48,12 @@ public class TelaEquipamento extends javax.swing.JDialog {
         idEquipamento = id;
         initComponents();
         preencheFormulario(id);
-        situacao = equipamento.getSituacao();
         novoEqp = false;
     }
     
     private void executaEquipamento(){
         boolean camposValidados = false;
         boolean continua = true;
-        int id = 0;
         int codigo = 0;
         String tipo = null;
         String descricao = null;
@@ -66,7 +65,6 @@ public class TelaEquipamento extends javax.swing.JDialog {
                 if (validaCampo(txtDescricao)) {
                     txtDescricao.setBackground(Color.WHITE);
                     camposValidados = true;
-                    id = Integer.parseInt(txtIdEquipamento.getText());
                     codigo = Integer.parseInt(txtCodigo.getText()); 
                     tipo = txtTipo.getText();
                     descricao = txtDescricao.getText();
@@ -77,22 +75,16 @@ public class TelaEquipamento extends javax.swing.JDialog {
         
         //Se passou na validação de dados e o equipamento for novo
         if (camposValidados && novoEqp) {
-            //Se já existe a id deste equipamento, algo está muito errado!
-            if (ctl.existeObjeto(id, "IDEQP")) {
-                JOptionPane.showMessageDialog(null, "Já existe equipamento com esse ID");
-                this.dispose();
+            //Se já existir o código, avisa o usuario
+            if (ctl.existeObjeto(codigo, "CODEQP")){
+                JOptionPane.showMessageDialog(null, "Já existe equipamento com esse CÓDIGO");
+                txtCodigo.requestFocus();
             } else {
-                //Se já existir o código, avisa o usuario
-                if (ctl.existeObjeto(codigo, "CODEQP")){
-                    JOptionPane.showMessageDialog(null, "Já existe equipamento com esse CÓDIGO");
-                    txtCodigo.requestFocus();
-                } else {
-                    //Se não existir, faz o cadastro
-                    ctl.cadastraEquipamento(id, codigo, tipo, descricao, situacao);
-                    JOptionPane.showMessageDialog(null, "Cadastrado com sucesso!");
-                    this.dispose();
-                }
-            }
+                //Se não existir, faz o cadastro
+                ctl.cadastraEquipamento(codigo, tipo, descricao, situacao);
+                JOptionPane.showMessageDialog(null, "Cadastrado com sucesso!");
+                this.dispose();
+            }            
           //Se passou na validação de dados e não é um equipamento novo  
         } else if(camposValidados && !novoEqp) {
             //Se o usuario digitou um novo código
@@ -108,7 +100,7 @@ public class TelaEquipamento extends javax.swing.JDialog {
                     continua = false;
                 }
             }
-            //Se o usuario digitou um novo tipo e não precisou passar pela validação anterior
+            //Se o usuario alterou o tipo e não precisou passar pela validação anterior
             //Isso evita que apareça o JOPane antes de resolver o anterior
             if (!tipo.equals(tipoEqp) && continua){
                 if (JOptionPane.showConfirmDialog(null, "Você alterou o TIPO do equipamento.\nTem certeza que deseja continuar?", "ATENÇÃO", JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) {
@@ -118,8 +110,9 @@ public class TelaEquipamento extends javax.swing.JDialog {
             }      
             //Se continua ainda é true, quer dizer que ele passou pelas outras validações
             if (continua) {
-                ctl.modificaEquipamento(id, codigo, tipo, descricao, situacao);
+                ctl.modificaEquipamento(idEquipamento, codigo, tipo, descricao, situacao);
                 JOptionPane.showMessageDialog(null, "Modificado com sucesso!");
+                System.out.println("DISPONIBILIDADE: " + situacao);
                 this.dispose();
             }
         }
@@ -161,7 +154,6 @@ public class TelaEquipamento extends javax.swing.JDialog {
         //Armazena o objeto pego da lista do controlador em um objeto local para facilitar
         equipamento = ctl.getEquipamentoPeloID(idEquipamento);
         //Altera os textos no formulário
-        txtIdEquipamento.setText(String.valueOf(idEquipamento));
         codEqp = equipamento.getCodigo();
         txtCodigo.setText(String.valueOf(codEqp));
         tipoEqp = equipamento.getTipo();
@@ -179,7 +171,6 @@ public class TelaEquipamento extends javax.swing.JDialog {
         lblTitulo.setText("Editar Equipamento " + String.valueOf(equipamento.getCodigo()));
     }
     private void preencheFormulario(){
-        txtIdEquipamento.setText(String.valueOf(equipamento.getIdEquipamentoBD()));
         marcaRadioButton("D");
         //Desativa opção de situação emprestado para o usuario não criar um equipamento já cadastrado
         radioEmprestado.setEnabled(false);
@@ -234,12 +225,10 @@ public class TelaEquipamento extends javax.swing.JDialog {
         radGrupo = new javax.swing.ButtonGroup();
         lblTitulo = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
-        lblNumeroID = new javax.swing.JLabel();
         lblTipo = new javax.swing.JLabel();
         lblDescricao = new javax.swing.JLabel();
         lblSituacao = new javax.swing.JLabel();
         lblCodigo = new javax.swing.JLabel();
-        txtIdEquipamento = new javax.swing.JLabel();
         txtCodigo = new javax.swing.JTextField();
         txtDescricao = new javax.swing.JTextField();
         jPanel2 = new javax.swing.JPanel();
@@ -253,14 +242,13 @@ public class TelaEquipamento extends javax.swing.JDialog {
         btnExcluir = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Informações do Equipamento");
 
         lblTitulo.setFont(new java.awt.Font("sansserif", 1, 18)); // NOI18N
         lblTitulo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lblTitulo.setText("Cadastrar Equipamento");
 
         jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-
-        lblNumeroID.setText("Número ID:");
 
         lblTipo.setText("Tipo:");
 
@@ -270,14 +258,13 @@ public class TelaEquipamento extends javax.swing.JDialog {
 
         lblCodigo.setText("Código:");
 
-        txtIdEquipamento.setFont(new java.awt.Font("sansserif", 1, 12)); // NOI18N
-        txtIdEquipamento.setText("1234");
-
         txtCodigo.setText("123456");
         txtCodigo.setToolTipText("CÓDIGO");
+        txtCodigo.setNextFocusableComponent(txtTipo);
 
         txtDescricao.setText("Notebook HP");
         txtDescricao.setToolTipText("DESCRIÇÃO");
+        txtDescricao.setNextFocusableComponent(btnExecutar);
 
         jPanel2.setLayout(new javax.swing.BoxLayout(jPanel2, javax.swing.BoxLayout.Y_AXIS));
 
@@ -296,6 +283,7 @@ public class TelaEquipamento extends javax.swing.JDialog {
 
         txtTipo.setText("Notebook");
         txtTipo.setToolTipText("TIPO");
+        txtTipo.setNextFocusableComponent(txtDescricao);
 
         btnLimpar.setText("Limpar Campos");
         btnLimpar.addActionListener(new java.awt.event.ActionListener() {
@@ -334,25 +322,18 @@ public class TelaEquipamento extends javax.swing.JDialog {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblNumeroID)
                             .addComponent(lblTipo)
                             .addComponent(lblDescricao)
                             .addComponent(lblCodigo))
-                        .addGap(18, 18, 18)
+                        .addGap(22, 22, 22)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addComponent(txtIdEquipamento)
-                                        .addGap(195, 195, 195)
-                                        .addComponent(lblSituacao))
-                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                        .addComponent(txtCodigo, javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(txtTipo, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE)))
-                                .addGap(18, 18, 18))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(txtDescricao)
-                                .addGap(93, 93, 93)))
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(txtCodigo, javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(txtTipo, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(txtDescricao))
+                        .addGap(24, 24, 24)
+                        .addComponent(lblSituacao)
+                        .addGap(18, 18, 18)
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -369,14 +350,10 @@ public class TelaEquipamento extends javax.swing.JDialog {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(lblNumeroID)
-                            .addComponent(txtIdEquipamento)
-                            .addComponent(lblSituacao))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblSituacao)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(lblCodigo)
                             .addComponent(txtCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -489,7 +466,6 @@ public class TelaEquipamento extends javax.swing.JDialog {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JLabel lblCodigo;
     private javax.swing.JLabel lblDescricao;
-    private javax.swing.JLabel lblNumeroID;
     private javax.swing.JLabel lblSituacao;
     private javax.swing.JLabel lblTipo;
     private javax.swing.JLabel lblTitulo;
@@ -499,7 +475,6 @@ public class TelaEquipamento extends javax.swing.JDialog {
     private javax.swing.JRadioButton radioIndisponivel;
     private javax.swing.JTextField txtCodigo;
     private javax.swing.JTextField txtDescricao;
-    private javax.swing.JLabel txtIdEquipamento;
     private javax.swing.JTextField txtTipo;
     // End of variables declaration//GEN-END:variables
 }

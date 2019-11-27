@@ -13,8 +13,6 @@ import java.text.SimpleDateFormat;
  * @author Vinicius
  */
 public class Emprestimo {
-    
-    public static int idBD = 0; //int global para controlar o ID autoincrementado
     private int idEmprestimo;
     private int idResponsavel;
     private Timestamp retirada;
@@ -22,17 +20,14 @@ public class Emprestimo {
     private int idEquipamento;
     private String situacaoEmprestimo;
 
-    public Emprestimo(int id, Timestamp retirada, int idResponsavel, int idEquipamento) {
+    public Emprestimo(int id, Timestamp retirada, int idResponsavel, int idEquipamento, String situacao) {
         this.idEmprestimo = id;
         this.idResponsavel = idResponsavel;
         this.retirada = retirada;
         this.idEquipamento = idEquipamento;
-        this.situacaoEmprestimo = "P";
-        Emprestimo.idBD++;
+        this.situacaoEmprestimo = situacao;
     }
-    public static void setidBD(int id){
-        idBD = id;
-    }
+    
     public int getIdEmprestimo() {
         return idEmprestimo;
     }

@@ -57,11 +57,11 @@ public class TelaPrincipal extends javax.swing.JFrame {
             Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
         }
         initComponents();
-        cadastrosTemporarios();
-        consultarTodosEmprestimos();
         controlador.selectListaResponsaveis();
         controlador.selectListaEquipamentos();
         controlador.selectListaEmprestimos();
+        cadastrosTemporarios();
+        consultarTodosEmprestimos();
     }
     
     /**
@@ -98,11 +98,11 @@ public class TelaPrincipal extends javax.swing.JFrame {
             //Cria um objeto dadosDaLinhaNaColuna, onde cada posição é será coluna
             Object dadosDaLinhaNaColuna[] = new Object[8];
             //percorre o lista e popula as colunas de acordo com a posicao
+                
             for (int i = 0; i < listaDeEmprestimos.size(); i++) {               
                 
-                //Busca na lista de equipamentos o idEquipamento do emprestimo atual
-                dadosDaLinhaNaColuna[1] = Controlador.getListaDeEquipamentos().get(listaDeEmprestimos.get(i).getIdEquipamento()).getTipo();                
-                dadosDaLinhaNaColuna[2] = Controlador.getListaDeEquipamentos().get(listaDeEmprestimos.get(i).getIdEquipamento()).getCodigo();
+                dadosDaLinhaNaColuna[1] = controlador.getEquipamentoPeloID(listaDeEmprestimos.get(i).getIdEquipamento()).getTipo();             
+                dadosDaLinhaNaColuna[2] = controlador.getEquipamentoPeloID(listaDeEmprestimos.get(i).getIdEquipamento()).getCodigo();
                 
                 //Pega o nome do responsável de acordo com o id do empréstimo atual
                 String nomeResponsavel = controlador.getNomeResponsavel(listaDeEmprestimos.get(i).getIdResponsavel());
@@ -301,7 +301,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
     void acionaEmprestimo(int cod){
         //Se existe o equipamento cadastrado
         if (controlador.existeObjeto(cod, "CodEqp")) {
-            this.telaEmprestimo = new TelaEmprestimo(this, true, cod);
+            this.telaEmprestimo = new TelaEmprestimo(this, true, cod, controlador);
             this.telaEmprestimo.setVisible(true);
             consultarTodosEmprestimos();
         } else {
@@ -329,7 +329,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
     void abreTelaResponsavel(int id){
         if (controlador.existeObjeto(id, "IDRESP")) {
             this.telaResponsavel = new TelaResponsavel(this, true, id, controlador);
-            this.telaEquipamento.setVisible(true);
+            this.telaResponsavel.setVisible(true);
             consultarResponsaveis();
         } else {
             JOptionPane.showMessageDialog(this, "Não existe o responsável selecionado");
@@ -592,8 +592,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarActionPerformed
-        int cod = Integer.parseInt(txtCodigo.getText());
-        acionaEmprestimo(cod); 
+        acionaEmprestimo(Integer.parseInt(txtCodigo.getText())); 
     }//GEN-LAST:event_btnRegistrarActionPerformed
 
     private void jmiSairActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiSairActionPerformed
@@ -659,9 +658,9 @@ public class TelaPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_jmiPendenteActionPerformed
 
     private void tabelaPrincipalMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabelaPrincipalMouseClicked
+        idSelecionado = (int) tabelaPrincipal.getValueAt(tabelaPrincipal.getSelectedRow(), 0);
         if (evt.getClickCount() == 2) {
-            idSelecionado = (int) tabelaPrincipal.getValueAt(tabelaPrincipal.getSelectedRow(), 0);
-            System.out.println("idSelecionado " + idSelecionado);
+            System.out.println("idSelecionado na tabela " + idSelecionado);
             switch (tipoListagem){
                 case 1: //emprestimo
                     break;
@@ -670,6 +669,19 @@ public class TelaPrincipal extends javax.swing.JFrame {
                     break;
                 case 3://equipamento
                     abreTelaEquipamento(idSelecionado);
+                    break;
+            }
+            //System.out.println("2 cliques " + idTermoSelecionado);            
+        } else if (evt.getClickCount() == 1) {
+            System.out.println("idSelecionado na tabela " + idSelecionado);
+            switch (tipoListagem){
+                case 1: //emprestimo
+                    txtCodigo.setText(String.valueOf(tabelaPrincipal.getValueAt(tabelaPrincipal.getSelectedRow(), 2)));
+                    break;
+                case 2://responsavel                    
+                    break;
+                case 3://equipamento
+                    txtCodigo.setText(String.valueOf(tabelaPrincipal.getValueAt(tabelaPrincipal.getSelectedRow(), 1)));
                     break;
             }
             //System.out.println("2 cliques " + idTermoSelecionado);            

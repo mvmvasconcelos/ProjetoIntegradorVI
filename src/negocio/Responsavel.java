@@ -10,8 +10,6 @@ package negocio;
  * @author vinicius
  */
 public class Responsavel {
-    
-    private static int idBD = 0; //int global para controlar o ID autoincrementado
     private int idResponsavel; //id do objeto
     private String nome;
     private int codigo;
@@ -19,22 +17,13 @@ public class Responsavel {
     private String email;
     
     public Responsavel(int id, String nome, String email, String telefone, int codigo) {
-        this.idResponsavel = Responsavel.idBD;
+        this.idResponsavel = id;
         this.nome = nome;
         this.codigo = codigo;
         this.telefone = telefone;
         this.email = email;
-        Responsavel.idBD++; //incrementa o idResponsavel que será armazenado no BD
-        System.out.println("\nID OBJETO RESP " + idBD + "\n");
     }
     
-    public static void setidBD(int id){
-        idBD = id;
-    }
-    public static int getIdDB() {
-        return idBD;
-    }
-
     public int getIdResponsavel() {
         return idResponsavel;
     }
@@ -76,8 +65,7 @@ public class Responsavel {
      * @return String
      */
     public String getTudo(){
-        return "IDBD: " + idBD 
-             + "\nID:" + idResponsavel
+        return "\nID:" + idResponsavel
              + "\nNOME:" + nome
              + "\nCÓDIGO:" + codigo
              + "\nTELEFONE:" + telefone

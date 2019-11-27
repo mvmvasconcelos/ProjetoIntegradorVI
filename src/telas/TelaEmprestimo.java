@@ -28,15 +28,18 @@ public class TelaEmprestimo extends javax.swing.JDialog {
     
     public TelaEmprestimo(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
-        initComponents();    }
+        initComponents();    
+    }
 
     /**
      * Creates new form TelaEmprestimo
      */
-    public TelaEmprestimo(java.awt.Frame parent, boolean modal, int codigo) {
+    public TelaEmprestimo(java.awt.Frame parent, boolean modal, int codigo, Controlador cont) {
         super(parent, modal);
         initComponents();
+        ctl = cont;
         estaEmprestado = ctl.estaEmprestado(codigo);
+        System.out.println("emprestado " + estaEmprestado);
         if (estaEmprestado) {
             preencheFormSeEmprestado(codigo);
         } else {
@@ -52,9 +55,6 @@ public class TelaEmprestimo extends javax.swing.JDialog {
      */
     private void preencheFormSeEmprestado(int codigo){
         emprestimo = ctl.getEmprestimoPeloCodigoDoEquipamento(codigo);
-        idEmprestimo = emprestimo.getIdEmprestimo();
-        System.out.println("ae adfadf " + idEmprestimo);
-        lblIdEmprestimo.setText(String.valueOf(idEmprestimo));
         txtRetirada.setText(emprestimo.getDataRetirada());
         preencheDadosResponsavel(emprestimo.getIdResponsavel());
         preencheDadosEquipamento(codigo);
@@ -64,7 +64,6 @@ public class TelaEmprestimo extends javax.swing.JDialog {
     }
     
     private void preencheFormSeDisponivel(int codigo){
-        lblIdEmprestimo.setText(String.valueOf(Emprestimo.idBD));
         dataHoraAgora = System.currentTimeMillis();
         txtRetirada.setText(DataHora.dataFormatada(dataHoraAgora));
         txtDevolucao.setEnabled(false);
@@ -125,7 +124,7 @@ public class TelaEmprestimo extends javax.swing.JDialog {
     }
     
     private void retirarEquipamento(){
-        //ctl.adicionaEmprestimoNaLista(idResponsavel, DataHora.converteParaTimestamp(dataHoraAgora), idEquipamento);
+        ctl.cadastraEmprestimo(DataHora.converteParaTimestamp(dataHoraAgora), idResponsavel, idEquipamento);
         equipamento.setSituacao("E");
         this.dispose();
     }
@@ -142,12 +141,10 @@ public class TelaEmprestimo extends javax.swing.JDialog {
         btnGrupoSituacao = new javax.swing.ButtonGroup();
         lblTitulo = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
-        lblId = new javax.swing.JLabel();
         lblDataRetirada = new javax.swing.JLabel();
         lblDataDevolucao = new javax.swing.JLabel();
         txtDevolucao = new javax.swing.JFormattedTextField();
         txtRetirada = new javax.swing.JFormattedTextField();
-        lblIdEmprestimo = new javax.swing.JLabel();
         lblResponsavel = new javax.swing.JLabel();
         txtNome = new javax.swing.JTextField();
         lblTelefone = new javax.swing.JLabel();
@@ -178,8 +175,6 @@ public class TelaEmprestimo extends javax.swing.JDialog {
 
         jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        lblId.setText("ID do Empréstimo:");
-
         lblDataRetirada.setText("Data de Retirada:");
 
         lblDataDevolucao.setText("Data de Devolução:");
@@ -189,17 +184,13 @@ public class TelaEmprestimo extends javax.swing.JDialog {
         txtRetirada.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.DateFormatter(new java.text.SimpleDateFormat("dd/MM/yyyy"))));
         txtRetirada.setText("00/00/0000");
 
-        lblIdEmprestimo.setFont(new java.awt.Font("sansserif", 1, 12)); // NOI18N
-        lblIdEmprestimo.setText("123");
-
         lblResponsavel.setText("Responsável:");
 
-        txtNome.setText("XXXXXXXX");
+        txtNome.setEditable(false);
 
         lblTelefone.setText("Telefone:");
 
         txtTelefone.setEditable(false);
-        txtTelefone.setText("0000000000");
 
         jPanel2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
@@ -328,12 +319,10 @@ public class TelaEmprestimo extends javax.swing.JDialog {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(lblDataDevolucao)
                             .addComponent(lblDataRetirada)
-                            .addComponent(lblId)
                             .addComponent(lblResponsavel)
                             .addComponent(lblTelefone))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(lblIdEmprestimo)
                             .addComponent(txtDevolucao)
                             .addComponent(txtRetirada)
                             .addComponent(txtNome)
@@ -358,11 +347,8 @@ public class TelaEmprestimo extends javax.swing.JDialog {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(29, 29, 29)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(lblId)
-                            .addComponent(lblIdEmprestimo))
-                        .addGap(12, 12, 12)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(lblDataRetirada)
                             .addComponent(txtRetirada, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -380,8 +366,7 @@ public class TelaEmprestimo extends javax.swing.JDialog {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(lblTelefone)
-                            .addComponent(txtTelefone, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(txtTelefone, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnCancelar)
@@ -493,8 +478,6 @@ public class TelaEmprestimo extends javax.swing.JDialog {
     private javax.swing.JLabel lblDataDevolucao;
     private javax.swing.JLabel lblDataRetirada;
     private javax.swing.JLabel lblDescricao;
-    private javax.swing.JLabel lblId;
-    private javax.swing.JLabel lblIdEmprestimo;
     private javax.swing.JLabel lblInformacoes;
     private javax.swing.JLabel lblResponsavel;
     private javax.swing.JLabel lblSituacao;
