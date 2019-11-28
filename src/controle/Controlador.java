@@ -166,6 +166,9 @@ public class Controlador {
                         case 5:
                             idEquipamento = Integer.parseInt(resultado.getString(i));
                             break;
+                        case 6:
+                            situacao = resultado.getString(i);
+                            break;
                     }
                 }
                 //Armazena o registro na listaDeEmprestimos
@@ -177,124 +180,6 @@ public class Controlador {
             JOptionPane.showMessageDialog(null, "ERRO SQL: " + error);
         }
     }
-    
-    public static ArrayList<Emprestimo> getListaDeEmprestimos(){        
-        return listaDeEmprestimos;
-    }
-    
-    public static ArrayList<Responsavel> getListaDeResponsaveis() {
-        return listaDeResponsaveis;
-    }
-
-    public static ArrayList<Equipamento> getListaDeEquipamentos() {
-        return listaDeEquipamentos;
-    }
-
-    /**
-     * Busca na lista de equipamentos pelo ID e retorna apenas o objeto.
-     * É necessário pois nem sempre o índice do arraylist será igual ao id
-     * @param id
-     * @return equipamento
-     */
-    public Equipamento getEquipamentoPeloID(int id){
-        for (int i = 0; i < listaDeEquipamentos.size(); i++) {
-            if (listaDeEquipamentos.get(i).getIdEquipamento()== id) {
-                return listaDeEquipamentos.get(i);
-            }            
-        }
-        return null;
-    }
-    /**
-     * Busca na lista de equipamentos pelo Código e retorna apenas o objeto.
-     * É necessário pois nem sempre o índice do arraylist será igual ao id
-     * @param codigo
-     * @return equipamento
-     */
-    public Equipamento getEquipamentoPeloCodigo(int codigo){
-        for (int i = 0; i < listaDeEquipamentos.size(); i++) {
-            if (listaDeEquipamentos.get(i).getCodigo()== codigo) {
-                return listaDeEquipamentos.get(i);
-            }            
-        }
-        return null;
-    }
-    
-    /**
-     * Busca na lista de responsaveis pelo ID e retorna apenas o objeto.
-     * É necessário pois nem sempre o índice do arraylist será igual ao id
-     * @param id
-     * @return responsavel
-     */
-    public Responsavel getResponsavelPeloID(int id){
-        for (int i = 0; i < listaDeResponsaveis.size(); i++) {
-            if (listaDeResponsaveis.get(i).getIdResponsavel()== id) {
-                return listaDeResponsaveis.get(i);
-            }            
-        }
-        return null;
-    }
-    
-    /**
-     * Busca na lista de responsaveis pelo ID e retorna apenas o objeto.
-     * É necessário pois nem sempre o índice do arraylist será igual ao id
-     * @param id
-     * @return responsavel
-     */
-    public Responsavel getResponsavelPeloCodigo(int id){
-        for (int i = 0; i < listaDeResponsaveis.size(); i++) {
-            if (listaDeResponsaveis.get(i).getCodigo()== id) {
-                return listaDeResponsaveis.get(i);
-            }            
-        }
-        return null;
-    }
-    
-    /**
-     * Recebe o id e percorre a lista de responsáveis para pegar o nome
-     * correspondente ao id
-     * @param id id do responsavel
-     * @return String
-     */
-    public String getNomeResponsavel(int id){
-        for (int i = 0; i < listaDeResponsaveis.size(); i++) {
-            if (listaDeResponsaveis.get(i).getIdResponsavel() == id) {
-                return listaDeResponsaveis.get(i).getNome();
-            }            
-        }
-        return null;
-    }
-    
-    /**
-     * Recebe o id e percorre a lista de responsáveis para pegar o nome
-     * correspondente ao id
-     * @param id id do responsavel
-     * @return String
-     */
-    public String getTelefoneResponsavel(int id){
-        for (int i = 0; i < listaDeResponsaveis.size(); i++) {
-            if (listaDeResponsaveis.get(i).getIdResponsavel() == id) {
-                return listaDeResponsaveis.get(i).getTelefone();
-            }            
-        }
-        return null;
-    }
-    
-    /**
-     * Cria um array com todos os empréstimos que contenham o equipamento
-     * relacionado
-     * @param id id do equipamento
-     * @return lista de emprestimos
-     */
-    public ArrayList<Emprestimo> getEmprestimosPeloIdEquipamento(int id){
-        ArrayList<Emprestimo> emprestimoPorEquipamento = new ArrayList<>();
-        for (int i = 0; i < listaDeEmprestimos.size(); i++) {
-            if (listaDeEmprestimos.get(i).getIdEquipamento() == id) {
-                emprestimoPorEquipamento.add(listaDeEmprestimos.get(i));
-            }
-        }
-        return emprestimoPorEquipamento;
-    }
-    
     /**
      * Insere o novo equipamento no banco de dados
      */
@@ -474,7 +359,150 @@ public class Controlador {
         }
     }
     
+    public void devolveEmprestimo(int idEmprestimo, Timestamp devolucao, int idResponsavel){
+        System.out.println("---- inicio devolveEmprestimo");
+        String sql = "UPDATE emprestimo "
+                   + "SET devolucao = ?, idresponsavel = ?, situacao = 'R' "
+                   + "WHERE idemprestimo = ?";
+        try{
+            //Prepara a query
+            pst = conecta.prepareStatement(sql);
+            
+            pst.setTimestamp(1, devolucao);
+            pst.setInt(2, idResponsavel);
+            pst.setInt(3, idEmprestimo);
+            
+            pst.execute();
+            pst.close();
+        }
+        catch(SQLException error){
+            JOptionPane.showMessageDialog(null, "ERRO SQL: " + error);
+        }
+        System.out.println("---- fim devolveEmprestimo");
+    }
     
+    
+    public static ArrayList<Emprestimo> getListaDeEmprestimos(){        
+        return listaDeEmprestimos;
+    }
+    
+    public static ArrayList<Responsavel> getListaDeResponsaveis() {
+        return listaDeResponsaveis;
+    }
+
+    public static ArrayList<Equipamento> getListaDeEquipamentos() {
+        return listaDeEquipamentos;
+    }
+
+    /**
+     * Busca na lista de equipamentos pelo ID e retorna apenas o objeto.
+     * É necessário pois nem sempre o índice do arraylist será igual ao id
+     * @param id
+     * @return equipamento
+     */
+    public Equipamento getEquipamentoPeloID(int id){
+        for (int i = 0; i < listaDeEquipamentos.size(); i++) {
+            if (listaDeEquipamentos.get(i).getIdEquipamento()== id) {
+                return listaDeEquipamentos.get(i);
+            }            
+        }
+        return null;
+    }
+    /**
+     * Busca na lista de equipamentos pelo Código e retorna apenas o objeto.
+     * É necessário pois nem sempre o índice do arraylist será igual ao id
+     * @param codigo
+     * @return equipamento
+     */
+    public Equipamento getEquipamentoPeloCodigo(int codigo){
+        for (int i = 0; i < listaDeEquipamentos.size(); i++) {
+            if (listaDeEquipamentos.get(i).getCodigo() == codigo) {
+                return listaDeEquipamentos.get(i);
+            }            
+        }
+        return null;
+    }
+    
+    /**
+     * Busca na lista de responsaveis pelo ID e retorna apenas o objeto.
+     * É necessário pois nem sempre o índice do arraylist será igual ao id
+     * @param id
+     * @return responsavel
+     */
+    public Responsavel getResponsavelPeloID(int id){
+        for (int i = 0; i < listaDeResponsaveis.size(); i++) {
+            if (listaDeResponsaveis.get(i).getIdResponsavel()== id) {
+                return listaDeResponsaveis.get(i);
+            }            
+        }
+        return null;
+    }
+    
+    /**
+     * Busca na lista de responsaveis pelo ID e retorna apenas o objeto.
+     * É necessário pois nem sempre o índice do arraylist será igual ao id
+     * @param id
+     * @return responsavel
+     */
+    public Responsavel getResponsavelPeloCodigo(int id){
+        for (int i = 0; i < listaDeResponsaveis.size(); i++) {
+            if (listaDeResponsaveis.get(i).getCodigo()== id) {
+                return listaDeResponsaveis.get(i);
+            }            
+        }
+        return null;
+    }
+    
+    /**
+     * Recebe o id e percorre a lista de responsáveis para pegar o nome
+     * correspondente ao id
+     * @param id id do responsavel
+     * @return String
+     */
+    public String getNomeResponsavel(int id){
+        for (int i = 0; i < listaDeResponsaveis.size(); i++) {
+            if (listaDeResponsaveis.get(i).getIdResponsavel() == id) {
+                return listaDeResponsaveis.get(i).getNome();
+            }            
+        }
+        return null;
+    }
+    
+    /**
+     * Recebe o id e percorre a lista de responsáveis para pegar o nome
+     * correspondente ao id
+     * @param id id do responsavel
+     * @return String
+     */
+    public String getTelefoneResponsavel(int id){
+        for (int i = 0; i < listaDeResponsaveis.size(); i++) {
+            if (listaDeResponsaveis.get(i).getIdResponsavel() == id) {
+                return listaDeResponsaveis.get(i).getTelefone();
+            }            
+        }
+        return null;
+    }
+    
+    /**
+     * Cria um array com todos os empréstimos que contenham o equipamento
+     * relacionado
+     * @param id id do equipamento
+     * @return lista de emprestimos
+     */
+    public ArrayList<Emprestimo> getEmprestimosPeloIdEquipamento(int id){
+        System.out.println(" ---- inicio getEmprestimosPeloIdEquipamento");
+        ArrayList<Emprestimo> emprestimoPorEquipamento = new ArrayList<>();
+        for (int i = 0; i < listaDeEmprestimos.size(); i++) {
+            System.out.println("ID dentro for " + listaDeEmprestimos.get(i).getIdEquipamento());
+            if (listaDeEmprestimos.get(i).getIdEquipamento() == id) {
+                System.out.println("é igual");
+                emprestimoPorEquipamento.add(listaDeEmprestimos.get(i));
+            }
+        }
+        System.out.println("tamanho lista " + emprestimoPorEquipamento.size());
+        System.out.println(" ---- fim getEmprestimosPeloIdEquipamento");
+        return emprestimoPorEquipamento;
+    }
     /** 
      * Cria um novo responsavel e adiciona ele à lista
      * @param id
@@ -505,13 +533,20 @@ public class Controlador {
      * @return o objeto emprestimo
      */
     public Emprestimo getEmprestimoPeloCodigoDoEquipamento(int codigo){
+        System.out.println(" ***** inicio getEmprestimoPeloCodigoDoEquipamento");
+        System.out.println("EQP " + codigo);
         int idEqp = getEquipamentoPeloCodigo(codigo).getIdEquipamento();
+        System.out.println("ideqp " + idEqp);
         ArrayList<Emprestimo> temp = getEmprestimosPeloIdEquipamento(idEqp);
+        System.out.println("tamanho temp " + temp.size());
         for (int i = 0; i < temp.size(); i++) {
+            System.out.println("situacao emprestimo em getEmprestimoPeloCodigoDoEquipamento " + temp.get(0).getSituacaoEmprestimo());
             if ("P".equals(temp.get(i).getSituacaoEmprestimo())) {
+        System.out.println(" ***** fim getEmprestimoPeloCodigoDoEquipamento");
                 return temp.get(i);
             }
         }
+        System.out.println(" ***** fim getEmprestimoPeloCodigoDoEquipamento");
         return null;
     }
         
@@ -558,9 +593,8 @@ public class Controlador {
      * @return bool
      */
     public boolean estaEmprestado(int codigo){
-        int id = getEquipamentoPeloCodigo(codigo).getIdEquipamento();
-        System.out.println(listaDeEquipamentos.get(id).getTudo());
-        return "E".equals(listaDeEquipamentos.get(id).getSituacao());
+        System.out.println("situacao " + getEquipamentoPeloCodigo(codigo).getSituacao());
+        return "E".equals(getEquipamentoPeloCodigo(codigo).getSituacao());
     }
     public String situacao(String situacao){
         switch (situacao.toUpperCase()){

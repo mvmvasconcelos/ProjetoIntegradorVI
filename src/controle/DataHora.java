@@ -28,6 +28,22 @@ public class DataHora {
         return dataFormatada;
     }
     
+    /**
+     * Converte data simples em long, sem pegar hora
+     * @param data
+     * @return 
+     */
+    public static long converteDataParaLong(String data){
+        SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+        try {
+            java.util.Date d = df.parse(data);
+            long milliseconds = d.getTime();
+            return milliseconds;
+        } catch (java.text.ParseException e) {
+            return 0;
+        }
+    }
+    
     public static String horaFormatada (Timestamp ts){
         System.out.println("TS " + ts);
         if (ts != null) {
@@ -42,6 +58,7 @@ public class DataHora {
     }
     
     public static Timestamp converteParaTimestamp(long data){
+        System.out.println("");
         Timestamp ts = new Timestamp(data);
         return ts;
     }

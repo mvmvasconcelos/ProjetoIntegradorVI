@@ -6,6 +6,8 @@
 package telas;
 
 import controle.Controlador;
+import controle.DataHora;
+import java.text.ParseException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.ArrayList;
@@ -300,12 +302,13 @@ public class TelaPrincipal extends javax.swing.JFrame {
     
     void acionaEmprestimo(int cod){
         //Se existe o equipamento cadastrado
-        if (controlador.existeObjeto(cod, "CodEqp")) {
+        if (controlador.existeObjeto(cod, "CODEQP")) {
             this.telaEmprestimo = new TelaEmprestimo(this, true, cod, controlador);
             this.telaEmprestimo.setVisible(true);
             consultarTodosEmprestimos();
         } else {
             JOptionPane.showMessageDialog(this, "Não existe o código digitado"); 
+            consultarTodosEmprestimos();
         } 
     }
     

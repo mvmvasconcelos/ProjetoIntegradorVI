@@ -8,6 +8,7 @@ package telas;
 import controle.Controlador;
 import controle.DataHora;
 import java.awt.Color;
+import javax.swing.JOptionPane;
 import negocio.Emprestimo;
 import negocio.Equipamento;
 
@@ -19,12 +20,16 @@ public class TelaEmprestimo extends javax.swing.JDialog {
     Controlador ctl;
     Emprestimo emprestimo;
     Equipamento equipamento;
-    TelaBuscaResponsavel telaBusca;
+    TelaBuscaResponsavel telaBuscarResponsavel;
     private boolean estaEmprestado;
     private long dataHoraAgora;
     private int idResponsavel;
+    private int idResponsavelOriginal;
     private int idEmprestimo;
     private int idEquipamento;
+    boolean clicouAgora;
+    String dataDevolucao;
+
     
     public TelaEmprestimo(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
@@ -56,11 +61,13 @@ public class TelaEmprestimo extends javax.swing.JDialog {
     private void preencheFormSeEmprestado(int codigo){
         emprestimo = ctl.getEmprestimoPeloCodigoDoEquipamento(codigo);
         txtRetirada.setText(emprestimo.getDataRetirada());
-        preencheDadosResponsavel(emprestimo.getIdResponsavel());
+        idResponsavelOriginal = emprestimo.getIdResponsavel();
+        preencheDadosResponsavel(idResponsavelOriginal);
         preencheDadosEquipamento(codigo);
         txtRetirada.setEnabled(false);
         btnAgoraRet.setEnabled(false);
         btnAcao.setText("Devolver");
+        System.out.println("DEVOLUÇÂO " + txtDevolucao.getText());
     }
     
     private void preencheFormSeDisponivel(int codigo){
@@ -104,23 +111,42 @@ public class TelaEmprestimo extends javax.swing.JDialog {
     }
     
     private void abreBusca(){
-        this.telaBusca = new TelaBuscaResponsavel(this, true);
+        this.telaBuscarResponsavel = new TelaBuscaResponsavel(this, true);
         //Abre a janela de busca e fica aguardando
-        telaBusca.setVisible(true);
+        telaBuscarResponsavel.setVisible(true);
         
         //Se o usuário tiver escolhido um responsável, atualiza
-        if (this.telaBusca.isSelecionado()) {
-            idResponsavel = this.telaBusca.getIdResponsavel();
-            preencheDadosResponsavel(idResponsavel);
+        if (this.telaBuscarResponsavel.isSelecionado()) {
+            idResponsavel = this.telaBuscarResponsavel.getIdResponsavel();
             
+            if (JOptionPane.showConfirmDialog(null, "Você alterou o responsável.\nTem certeza que deseja continuar?", "ATENÇÃO", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                preencheDadosResponsavel(idResponsavel);
+            } else {
+                preencheDadosResponsavel(idResponsavelOriginal);
+            }            
         }           
     }
     
     private void devolverEquipamento(){
-        emprestimo.setDevolucao(DataHora.converteParaTimestamp(dataHoraAgora));
+        boolean validado = true;
+        if (txtDevolucao.getText().isBlank() && validado) {
+            JOptionPane.showMessageDialog(null, "A data não pode estar em branco");
+            validado = false;
+        }
+        if (DataHora.converteDataParaLong(txtDevolucao.getText()) < 100000 && txtDevolucao.getText().length() != 10 && validado) {
+            JOptionPane.showMessageDialog(null, "A data precisa ter o formato dd/mm/aaaa.");
+            validado = false;
+        }
+        
+        if (validado) {
+            java.sql.Timestamp devolucao = DataHora.converteParaTimestamp(DataHora.converteDataParaLong(dataDevolucao));
+            ctl.devolveEmprestimo(idEmprestimo, devolucao, idResponsavel);
+            JOptionPane.showMessageDialog(null, "Equipamento devolvido com sucesso!");
+        }
+        /*emprestimo.setDevolucao(DataHora.converteParaTimestamp(dataHoraAgora));
         emprestimo.setSituacaoEmprestimo("C");
         equipamento.setSituacao("D");
-        this.dispose();
+        this.dispose();*/
     }
     
     private void retirarEquipamento(){
@@ -179,10 +205,13 @@ public class TelaEmprestimo extends javax.swing.JDialog {
 
         lblDataDevolucao.setText("Data de Devolução:");
 
-        txtDevolucao.setText("00/00/0000");
+        txtDevolucao.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtDevolucaoFocusLost(evt);
+            }
+        });
 
         txtRetirada.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.DateFormatter(new java.text.SimpleDateFormat("dd/MM/yyyy"))));
-        txtRetirada.setText("00/00/0000");
 
         lblResponsavel.setText("Responsável:");
 
@@ -423,8 +452,15 @@ public class TelaEmprestimo extends javax.swing.JDialog {
 
     private void btnAgoraRetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgoraRetActionPerformed
         dataHoraAgora = System.currentTimeMillis();
+        clicouAgora = true;
         txtRetirada.setText(DataHora.dataFormatada(dataHoraAgora));
     }//GEN-LAST:event_btnAgoraRetActionPerformed
+
+    private void txtDevolucaoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtDevolucaoFocusLost
+        if (clicouAgora) {
+            
+        }
+    }//GEN-LAST:event_txtDevolucaoFocusLost
 
     /**
      * @param args the command line arguments

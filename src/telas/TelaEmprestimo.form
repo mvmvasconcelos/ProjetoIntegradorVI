@@ -163,16 +163,15 @@
           </Properties>
         </Component>
         <Component class="javax.swing.JFormattedTextField" name="txtDevolucao">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="00/00/0000"/>
-          </Properties>
+          <Events>
+            <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="txtDevolucaoFocusLost"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JFormattedTextField" name="txtRetirada">
           <Properties>
             <Property name="formatterFactory" type="javax.swing.JFormattedTextField$AbstractFormatterFactory" editor="org.netbeans.modules.form.editors.AbstractFormatterFactoryEditor">
               <Format format="dd/MM/yyyy" subtype="-1" type="1"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="00/00/0000"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="lblResponsavel">
