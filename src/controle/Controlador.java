@@ -148,7 +148,7 @@ public class Controlador {
             //armazena número de colunas da tabela
             int nrDeColunas = rsmd.getColumnCount();
             //variáveis que serão gravadas com os dados
-            int id = 0; Timestamp retirada = null; int idResponsavel = 0; int idEquipamento = 0; String situacao = null;
+            int id = 0; Timestamp retirada = null; Timestamp devolucao = null; int idResponsavel = 0; int idEquipamento = 0; String situacao = null;
             //Percorre resultado enquanto houver registros
             while (resultado.next()) {
                 //Para cada coluna no registro, salva o dado correspondente de acordo com a coluna
@@ -159,7 +159,12 @@ public class Controlador {
                             break;
                         case 2:
                             retirada = Timestamp.valueOf(resultado.getString(i));
-                            break;                         
+                            break;
+                        case 3:
+                            if (resultado.getString(i) != null) {
+                                devolucao = Timestamp.valueOf(resultado.getString(i));
+                            }
+                            break;
                         case 4:
                             idResponsavel = Integer.parseInt(resultado.getString(i));
                             break;
@@ -172,7 +177,8 @@ public class Controlador {
                     }
                 }
                 //Armazena o registro na listaDeEmprestimos
-                adicionaEmprestimoNaLista(id, retirada, idResponsavel,idEquipamento, situacao);
+                adicionaEmprestimoNaLista(id, retirada, devolucao, idResponsavel,idEquipamento, situacao);
+                devolucao = null;
             }
             pst.close();
         }
@@ -184,11 +190,11 @@ public class Controlador {
      * Insere o novo equipamento no banco de dados
      */
     public void cadastraEquipamento(int codigo, String tipo, String descricao, String situacao){
-        System.out.println("Entrou no cadastraEquipamento");
+        
         String sql = "insert into equipamentos (patrimonio, tipo, descricao, situacao)"
                         + "values (?, ?, ?, ?)";
         try{
-            System.out.println("Tentou");
+            
 
              //Prepara a query
             pst = conecta.prepareStatement(sql);
@@ -206,7 +212,7 @@ public class Controlador {
             
         }
         catch(SQLException error){
-            System.out.println("Errou");
+            
             JOptionPane.showMessageDialog(null, "ERRO SQL: " + error);
 
         }
@@ -221,12 +227,12 @@ public class Controlador {
      * @param situacao 
      */
     public void modificaEquipamento(int id, int codigo, String tipo, String descricao, String situacao){
-        System.out.println("Entrou no modificaEquipamento");
+        
         String sql = "UPDATE equipamentos "
                    + "SET patrimonio = ?, tipo = ?, descricao = ?, situacao = ? "
                    + "WHERE idEquipamento = ?";
         try{
-            System.out.println("Tentou modificar equipamento");
+            
 
              //Prepara a query
             pst = conecta.prepareStatement(sql);
@@ -243,17 +249,17 @@ public class Controlador {
             pst.close();
         }
         catch(SQLException error){
-            System.out.println("Errou ao modificar equipamento");
+            
             JOptionPane.showMessageDialog(null, "ERRO SQL: " + error);
 
         }
     }
     public void deletaEquipamento(int id){
-        System.out.println("Entrou no deletaEquipamento");
+        
         String sql = "DELETE FROM equipamentos "
                    + "WHERE idEquipamento = ?";
         try{
-            System.out.println("Tentou deletar Equipamento");
+            
 
              //Prepara a query
             pst = conecta.prepareStatement(sql);
@@ -266,7 +272,7 @@ public class Controlador {
             pst.close();
         }
         catch(SQLException error){
-            System.out.println("Errou");
+            
             JOptionPane.showMessageDialog(null, "ERRO SQL: " + error);
         }
     }
@@ -279,7 +285,7 @@ public class Controlador {
      */
     public void cadastraResponsavel(String nome, String email, String telefone, int codigo){
         String sql = "insert into responsaveis (nome, email, telefone, siape)"
-                        + "values (?, ?, ?, ?, ?)";
+                        + "values (?, ?, ?, ?)";
         try{
             //Prepara a query
             pst = conecta.prepareStatement(sql);
@@ -293,18 +299,18 @@ public class Controlador {
             pst.close();
             //adicionaResponsavelNaLista(id, nome, email, telefone, codigo);            
         }catch(SQLException error){
-            System.out.println("Errou");
+            
             JOptionPane.showMessageDialog(null, "ERRO SQL: " + error);
         }
     }
     
     public void modificaResponsavel(int id, String nome, String email, String telefone, int codigo){
-        System.out.println("Entrou no modificaResponsavel");
+        
         String sql = "UPDATE responsaveis "
                    + "SET nome = ?, email = ?, telefone = ?, siape = ?"
                    + "WHERE idResponsavel = ?";
         try{
-            System.out.println("Tentou o modificaResponsavel");
+            
 
              //Prepara a query
             pst = conecta.prepareStatement(sql);
@@ -321,64 +327,45 @@ public class Controlador {
             pst.close();
         }
         catch(SQLException error){
-            System.out.println("Errou o modificaResponsavel");
+            
             JOptionPane.showMessageDialog(null, "ERRO SQL: " + error);
         }
     }
     
     public void cadastraEmprestimo(Timestamp retirada, int idResponsavel, int idEquipamento){
-        String sqlEqp = "UPDATE equipamentos SET situacao = 'E' WHERE idEquipamento";
-        String sqlEmp = "INSERT INTO emprestimos (retirada, idResponsavel, idEquipamento, situacao) "
+        String sql = "INSERT INTO emprestimos (retirada, idresponsavel, idequipamento, situacao) "
                    + "VALUES (?, ?, ?, 'P') ";
         try{
             //Prepara a query
-            pst = conecta.prepareStatement(sqlEqp);
+            pst = conecta.prepareStatement(sql);
+
+            pst.setTimestamp(1, retirada);
+            pst.setInt(2, idResponsavel);
+            pst.setInt(3, idEquipamento);
             //executa a query            
             pst.execute();
             pst.close();
-            //adicionaResponsavelNaLista(id, nome, email, telefone, codigo);
-            try {
-                //Prepara a query
-                pst = conecta.prepareStatement(sqlEmp);
-
-                pst.setTimestamp(1, retirada);
-                pst.setInt(4, idResponsavel);
-                pst.setInt(5, idEquipamento);
-                //executa a query            
-                pst.execute();
-                pst.close();
-                //adicionaResponsavelNaLista(id, nome, email, telefone, codigo);
-            } catch (SQLException error){
-                System.out.println("Errou");
-                JOptionPane.showMessageDialog(null, "ERRO SQL: " + error);
-            }
-            
-        }catch(SQLException error){
-            System.out.println("Errou");
+        } catch (SQLException error){
             JOptionPane.showMessageDialog(null, "ERRO SQL: " + error);
         }
     }
     
-    public void devolveEmprestimo(int idEmprestimo, Timestamp devolucao, int idResponsavel){
-        System.out.println("---- inicio devolveEmprestimo");
-        String sql = "UPDATE emprestimo "
+    public void devolveEmprestimo(int idEmprestimo, Timestamp devolucao, int idResponsavel){        
+        String sql = "UPDATE emprestimos "
                    + "SET devolucao = ?, idresponsavel = ?, situacao = 'R' "
                    + "WHERE idemprestimo = ?";
         try{
             //Prepara a query
             pst = conecta.prepareStatement(sql);
-            
             pst.setTimestamp(1, devolucao);
             pst.setInt(2, idResponsavel);
             pst.setInt(3, idEmprestimo);
-            
             pst.execute();
             pst.close();
         }
         catch(SQLException error){
             JOptionPane.showMessageDialog(null, "ERRO SQL: " + error);
         }
-        System.out.println("---- fim devolveEmprestimo");
     }
     
     
@@ -439,6 +426,20 @@ public class Controlador {
     }
     
     /**
+     * Busca na lista de empréstimos pelo ID e retorna apenas o objeto
+     * @param id
+     * @return emprestimo
+     */
+    public Emprestimo getEmprestimoPeloID(int id){
+        for (int i = 0; i < listaDeEmprestimos.size(); i++) {
+            if (listaDeEmprestimos.get(i).getIdEmprestimo() == id) {
+                return listaDeEmprestimos.get(i);
+            }            
+        }
+        return null;
+    }
+    
+    /**
      * Busca na lista de responsaveis pelo ID e retorna apenas o objeto.
      * É necessário pois nem sempre o índice do arraylist será igual ao id
      * @param id
@@ -490,17 +491,17 @@ public class Controlador {
      * @return lista de emprestimos
      */
     public ArrayList<Emprestimo> getEmprestimosPeloIdEquipamento(int id){
-        System.out.println(" ---- inicio getEmprestimosPeloIdEquipamento");
+        
         ArrayList<Emprestimo> emprestimoPorEquipamento = new ArrayList<>();
         for (int i = 0; i < listaDeEmprestimos.size(); i++) {
-            System.out.println("ID dentro for " + listaDeEmprestimos.get(i).getIdEquipamento());
+            
             if (listaDeEmprestimos.get(i).getIdEquipamento() == id) {
-                System.out.println("é igual");
+                
                 emprestimoPorEquipamento.add(listaDeEmprestimos.get(i));
             }
         }
-        System.out.println("tamanho lista " + emprestimoPorEquipamento.size());
-        System.out.println(" ---- fim getEmprestimosPeloIdEquipamento");
+        
+        
         return emprestimoPorEquipamento;
     }
     /** 
@@ -516,8 +517,8 @@ public class Controlador {
         listaDeResponsaveis.add(novo);
     }
     
-    public void adicionaEmprestimoNaLista(int id, Timestamp retirada, int idResponsavel,int idEquipamento, String situacao){
-        Emprestimo novo = new Emprestimo(id, retirada, idResponsavel, idEquipamento, situacao);
+    public void adicionaEmprestimoNaLista(int id, Timestamp retirada, Timestamp devolucao, int idResponsavel,int idEquipamento, String situacao){
+        Emprestimo novo = new Emprestimo(id, retirada, devolucao, idResponsavel, idEquipamento, situacao);
         listaDeEmprestimos.add(novo);
     }
     
@@ -533,20 +534,14 @@ public class Controlador {
      * @return o objeto emprestimo
      */
     public Emprestimo getEmprestimoPeloCodigoDoEquipamento(int codigo){
-        System.out.println(" ***** inicio getEmprestimoPeloCodigoDoEquipamento");
-        System.out.println("EQP " + codigo);
-        int idEqp = getEquipamentoPeloCodigo(codigo).getIdEquipamento();
-        System.out.println("ideqp " + idEqp);
-        ArrayList<Emprestimo> temp = getEmprestimosPeloIdEquipamento(idEqp);
-        System.out.println("tamanho temp " + temp.size());
-        for (int i = 0; i < temp.size(); i++) {
-            System.out.println("situacao emprestimo em getEmprestimoPeloCodigoDoEquipamento " + temp.get(0).getSituacaoEmprestimo());
-            if ("P".equals(temp.get(i).getSituacaoEmprestimo())) {
-        System.out.println(" ***** fim getEmprestimoPeloCodigoDoEquipamento");
+        int idEqp = getEquipamentoPeloCodigo(codigo).getIdEquipamento();        
+        ArrayList<Emprestimo> temp = getEmprestimosPeloIdEquipamento(idEqp);        
+        for (int i = 0; i < temp.size(); i++) {            
+            if ("P".equals(temp.get(i).getSituacaoEmprestimo())) {        
                 return temp.get(i);
             }
         }
-        System.out.println(" ***** fim getEmprestimoPeloCodigoDoEquipamento");
+        
         return null;
     }
         
@@ -593,7 +588,7 @@ public class Controlador {
      * @return bool
      */
     public boolean estaEmprestado(int codigo){
-        System.out.println("situacao " + getEquipamentoPeloCodigo(codigo).getSituacao());
+        
         return "E".equals(getEquipamentoPeloCodigo(codigo).getSituacao());
     }
     public String situacao(String situacao){

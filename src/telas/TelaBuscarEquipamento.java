@@ -129,11 +129,7 @@ public class TelaBuscarEquipamento extends javax.swing.JDialog {
         //Armazena o id presente na coluna 4 da linha clicada em idEquipamento
         idEquipamento = (int) tabelaResponsavel.getValueAt(tabelaResponsavel.getSelectedRow(), 4);
         if (evt.getClickCount() == 2) {
-            System.out.println("2 cliques no ID:" + idEquipamento);
             //selecionaEquipamento();
-        } else {
-            //selecionaTermo(idTermoSelecionado);
-            System.out.println("1 clique no ID " + idEquipamento);
         }
     }//GEN-LAST:event_tabelaResponsavelMouseClicked
 

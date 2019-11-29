@@ -178,8 +178,6 @@ public class TelaBuscaResponsavel extends javax.swing.JDialog {
 
         lblBuscar.setText("Digite o nome do responsável");
 
-        txtBuscar.setText("Fulano");
-
         btnBuscar.setText("Buscar");
         btnBuscar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -263,11 +261,7 @@ public class TelaBuscaResponsavel extends javax.swing.JDialog {
         //Armazena o id presente na coluna 4 da linha clicada em idResponsavel
         idResponsavel = (int) tabelaResponsavel.getValueAt(tabelaResponsavel.getSelectedRow(), 4);
         if (evt.getClickCount() == 2) {
-            System.out.println("2 cliques no ID:" + idResponsavel);
             selecionaResponsavel();
-        } else {
-            //selecionaTermo(idTermoSelecionado);
-            System.out.println("1 clique no ID " + idResponsavel);
         }
     }//GEN-LAST:event_tabelaResponsavelMouseClicked
 

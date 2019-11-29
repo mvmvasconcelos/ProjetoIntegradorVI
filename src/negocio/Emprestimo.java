@@ -20,10 +20,11 @@ public class Emprestimo {
     private int idEquipamento;
     private String situacaoEmprestimo;
 
-    public Emprestimo(int id, Timestamp retirada, int idResponsavel, int idEquipamento, String situacao) {
+    public Emprestimo(int id, Timestamp retirada, Timestamp devolucao, int idResponsavel, int idEquipamento, String situacao) {
         this.idEmprestimo = id;
         this.idResponsavel = idResponsavel;
         this.retirada = retirada;
+        this.devolucao = devolucao;
         this.idEquipamento = idEquipamento;
         this.situacaoEmprestimo = situacao;
     }

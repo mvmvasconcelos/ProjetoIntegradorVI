@@ -45,7 +45,6 @@ public class DataHora {
     }
     
     public static String horaFormatada (Timestamp ts){
-        System.out.println("TS " + ts);
         if (ts != null) {
             //Formata a data conforme modelo
             SimpleDateFormat hf = new SimpleDateFormat("HH:mm");
@@ -58,7 +57,6 @@ public class DataHora {
     }
     
     public static Timestamp converteParaTimestamp(long data){
-        System.out.println("");
         Timestamp ts = new Timestamp(data);
         return ts;
     }

@@ -163,6 +163,9 @@
           </Properties>
         </Component>
         <Component class="javax.swing.JFormattedTextField" name="txtDevolucao">
+          <Properties>
+            <Property name="toolTipText" type="java.lang.String" value="Data de Devolu&#xe7;&#xe3;o"/>
+          </Properties>
           <Events>
             <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="txtDevolucaoFocusLost"/>
           </Events>
@@ -172,7 +175,11 @@
             <Property name="formatterFactory" type="javax.swing.JFormattedTextField$AbstractFormatterFactory" editor="org.netbeans.modules.form.editors.AbstractFormatterFactoryEditor">
               <Format format="dd/MM/yyyy" subtype="-1" type="1"/>
             </Property>
+            <Property name="toolTipText" type="java.lang.String" value="Data de Retirada"/>
           </Properties>
+          <Events>
+            <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="txtRetiradaFocusLost"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JLabel" name="lblResponsavel">
           <Properties>
@@ -288,6 +295,7 @@
             </Component>
             <Component class="javax.swing.JTextField" name="txtCodigo">
               <Properties>
+                <Property name="editable" type="boolean" value="false"/>
                 <Property name="text" type="java.lang.String" value="00000"/>
               </Properties>
             </Component>
@@ -321,6 +329,7 @@
             <Component class="javax.swing.JButton" name="btnBuscarEquipamento">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Buscar"/>
+                <Property name="enabled" type="boolean" value="false"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JLabel" name="lblStatus">

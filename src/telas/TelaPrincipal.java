@@ -6,8 +6,6 @@
 package telas;
 
 import controle.Controlador;
-import controle.DataHora;
-import java.text.ParseException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.ArrayList;
@@ -300,10 +298,21 @@ public class TelaPrincipal extends javax.swing.JFrame {
        // controlador.adicionaEmprestimoNaLista(2, DataHora.converteParaTimestamp(1572392211 ), 0);
     }
     
-    void acionaEmprestimo(int cod){
+    void abreTelaEmprestimo(int cod){
         //Se existe o equipamento cadastrado
         if (controlador.existeObjeto(cod, "CODEQP")) {
             this.telaEmprestimo = new TelaEmprestimo(this, true, cod, controlador);
+            this.telaEmprestimo.setVisible(true);
+            consultarTodosEmprestimos();
+        } else {
+            JOptionPane.showMessageDialog(this, "Não existe o código digitado"); 
+            consultarTodosEmprestimos();
+        } 
+    }
+    void abreTelaEmprestimo(int cod, int id){
+        //Se existe o equipamento cadastrado
+        if (controlador.existeObjeto(cod, "CODEQP")) {
+            this.telaEmprestimo = new TelaEmprestimo(this, true, cod, id, controlador);
             this.telaEmprestimo.setVisible(true);
             consultarTodosEmprestimos();
         } else {
@@ -595,7 +604,11 @@ public class TelaPrincipal extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarActionPerformed
-        acionaEmprestimo(Integer.parseInt(txtCodigo.getText())); 
+        try {
+            abreTelaEmprestimo(Integer.parseInt(txtCodigo.getText()));             
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Código inválido");
+        }
     }//GEN-LAST:event_btnRegistrarActionPerformed
 
     private void jmiSairActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiSairActionPerformed
@@ -635,6 +648,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_btnEmprestActionPerformed
 
     private void jmiPendenteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiPendenteActionPerformed
+        
         JOptionPane.showMessageDialog(this, 
                                         "<html>"
                                             + "<p><b>Objetivos:</b></p>"
@@ -646,16 +660,21 @@ public class TelaPrincipal extends javax.swing.JFrame {
                                             + "<p> ou mesmo pressionar enter.</p><br>"
                                             + "<p><b>Pendências:</b></p>"
                                             + "<ul>"
+                                                + "<li>Listagem apenas emprestados</li>"
+                                                + "<li>Ordenação por data/situção/nome/etc</li>"
+                                                + "<li><del>Validações</del> - Resolvido em partes</li>"
+                                                + "<li>Busca equipamento no empréstimo</li>"
+                                            + "</ul>"
+                                            + "<p><b>Finalizados:</b></p>"
+                                            + "<ul>"                                                
                                                 + "<li>Criação BD</li>"
                                                 + "<li>Integração com BD</li>"
                                                 + "<li>Clique duplo item na tabela</li>"
                                                 + "<li>Implementação cadastro de equipamento</li>"
                                                 + "<li>Implementação cadastro de responsáveis</li>"
-                                                + "<li>Listagem apenas emprestados</li>"
-                                                + "<li>Ordenação por data/situção/nome/etc</li>"
-                                                + "<li>Validações</li>"
-                                                + "<li>Busca equipamento no empréstimo</li>"
                                             + "</ul>"
+                                            + "<p><b>Código fonte disponível em:</b></p>"
+                                            + "<a href=https://github.com/mvmvasconcelos/ProjetoIntegradorVI>https://github.com/mvmvasconcelos/ProjetoIntegradorVI</a>"
                                        +"</html>"
                                     );
     }//GEN-LAST:event_jmiPendenteActionPerformed
@@ -663,9 +682,10 @@ public class TelaPrincipal extends javax.swing.JFrame {
     private void tabelaPrincipalMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabelaPrincipalMouseClicked
         idSelecionado = (int) tabelaPrincipal.getValueAt(tabelaPrincipal.getSelectedRow(), 0);
         if (evt.getClickCount() == 2) {
-            System.out.println("idSelecionado na tabela " + idSelecionado);
             switch (tipoListagem){
                 case 1: //emprestimo
+                    int cod = (int) tabelaPrincipal.getValueAt(tabelaPrincipal.getSelectedRow(), 2);
+                    abreTelaEmprestimo(cod, idSelecionado);
                     break;
                 case 2://responsavel
                     abreTelaResponsavel(idSelecionado);
@@ -673,10 +693,8 @@ public class TelaPrincipal extends javax.swing.JFrame {
                 case 3://equipamento
                     abreTelaEquipamento(idSelecionado);
                     break;
-            }
-            //System.out.println("2 cliques " + idTermoSelecionado);            
+            }         
         } else if (evt.getClickCount() == 1) {
-            System.out.println("idSelecionado na tabela " + idSelecionado);
             switch (tipoListagem){
                 case 1: //emprestimo
                     txtCodigo.setText(String.valueOf(tabelaPrincipal.getValueAt(tabelaPrincipal.getSelectedRow(), 2)));
@@ -686,8 +704,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
                 case 3://equipamento
                     txtCodigo.setText(String.valueOf(tabelaPrincipal.getValueAt(tabelaPrincipal.getSelectedRow(), 1)));
                     break;
-            }
-            //System.out.println("2 cliques " + idTermoSelecionado);            
+            }          
         }
     }//GEN-LAST:event_tabelaPrincipalMouseClicked
 

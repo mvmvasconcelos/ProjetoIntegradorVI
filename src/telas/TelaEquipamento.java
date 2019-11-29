@@ -112,7 +112,6 @@ public class TelaEquipamento extends javax.swing.JDialog {
             if (continua) {
                 ctl.modificaEquipamento(idEquipamento, codigo, tipo, descricao, situacao);
                 JOptionPane.showMessageDialog(null, "Modificado com sucesso!");
-                System.out.println("DISPONIBILIDADE: " + situacao);
                 this.dispose();
             }
         }
